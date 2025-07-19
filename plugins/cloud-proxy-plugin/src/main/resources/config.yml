@@ -1,0 +1,20 @@
+permission: "potatocloud.proxy"
+useTablist: true
+useMotd: true
+whitelist:
+  - TruaYT
+  - jirmjahu
+maintenance: false
+tablist:
+  header: " \n                      <dark_gray>» <green>potato<white>cloud <dark_gray>«                      \n<dark_gray>• <gray>Service<dark_gray>: <green>%service% <dark_gray>| <gray>online<dark_gray>: <green>%online_players% <dark_gray>•\n "
+  footer: "\n<dark_gray>• <gray>contributors <dark_gray>•\n<white>jirmjahu, TruaYT\n "
+# %service%, %group%, %proxy%, %online_players%, %max_players%
+
+motd:
+  default:
+    firstLine: "<dark_gray>» <green>potato<white>cloud <dark_gray>• <gray>Powered by potatoes <dark_gray>• <white>1.20+"
+    secondLine: "               <green>we are online, please join"
+  maintenance:
+    firstLine: "<dark_gray>» <green>potato<white>cloud <dark_gray>• <gray>Powered by potatoes <dark_gray>• <white>1.20+"
+    secondLine: "                  <red>we are in maintenance"
+    version: "<red>maintenance"

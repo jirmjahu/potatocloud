@@ -153,7 +153,8 @@ public class VelocityPlugin {
             return;
         }
 
-        if (event.getPlayer().getUniqueId().equals(UUID.fromString("74eb9589-198f-465b-8d59-c452436ca99b"))) {
+        if (event.getPlayer().getUniqueId().equals(UUID.fromString("74eb9589-198f-465b-8d59-c452436ca99b"))
+                ||event.getPlayer().getUniqueId().equals(UUID.fromString("b44abeab-480e-438c-8109-e870feea3121"))) {
             event.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>This network uses <bold>potatocloud"));
         }
 

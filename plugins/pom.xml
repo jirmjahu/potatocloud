@@ -15,6 +15,8 @@
     <modules>
         <module>cloud-notify-plugin</module>
         <module>cloud-hub-plugin</module>
+
+        <module>cloud-proxy-plugin</module>
     </modules>
 
     <properties>

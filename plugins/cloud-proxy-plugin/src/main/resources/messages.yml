@@ -1,0 +1,23 @@
+prefix: "<dark_gray>» <green>potato<white>cloud <dark_gray>• <reset>"
+notWhitelist: "<dark_gray>» <red>you not whitelisted on this server"
+no-permission: "<red>You do not have enough permissions for this command"
+
+help:
+  toggle: "<white>/proxy toggle <dark_gray>- <gray>toggles maintenance mode"
+  list: "<white>/proxy list <dark_gray>- <gray>show whitelist"
+  reload: "<white>/proxy reload <dark_gray>- <gray>reload config"
+  whitelist: "<white>/proxy whitelist <add, remove> <Name> <dark_gray>- <gray>add or remove player from whitelist"
+
+now_maintenance: "<red>the maintenance mode is <green>enabled"
+now_not_maintenance: "<red>the maintenance mode is <red>disabled"
+
+info_text: "<gray>Follow players are whitelisted"
+info_key: "<dark_gray>» <green>%name%"
+
+reload: "<red>The config got reloaded"
+
+whitelist:
+  already: "<red>this player is already on the whitelist"
+  not: "<red>this player is not on the whitelist"
+  added: "<gray>the player <green>%name% <gray>is now whitelisted"
+  removed: "<gray> the player <green>%name% <gray>is now removed from the whitelist"

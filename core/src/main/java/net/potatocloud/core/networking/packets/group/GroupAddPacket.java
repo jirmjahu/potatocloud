@@ -18,6 +18,7 @@ public class GroupAddPacket implements Packet {
 
     private String name;
     private String platformName;
+    private String platformVersionName;
     private int minOnlineCount;
     private int maxOnlineCount;
     private int maxPlayers;
@@ -39,6 +40,7 @@ public class GroupAddPacket implements Packet {
     public void write(PacketBuffer buf) {
         buf.writeString(name);
         buf.writeString(platformName);
+        buf.writeString(platformVersionName);
         buf.writeInt(minOnlineCount);
         buf.writeInt(maxOnlineCount);
         buf.writeInt(maxPlayers);
@@ -56,6 +58,7 @@ public class GroupAddPacket implements Packet {
     public void read(PacketBuffer buf) {
         name = buf.readString();
         platformName = buf.readString();
+        platformVersionName = buf.readString();
         minOnlineCount = buf.readInt();
         maxOnlineCount = buf.readInt();
         maxPlayers = buf.readInt();

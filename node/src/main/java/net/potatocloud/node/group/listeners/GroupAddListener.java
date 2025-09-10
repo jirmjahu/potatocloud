@@ -17,6 +17,7 @@ public class GroupAddListener implements PacketListener<GroupAddPacket> {
         groupManager.createServiceGroup(
                 packet.getName(),
                 packet.getPlatformName(),
+                packet.getPlatformVersionName(),
                 packet.getMinOnlineCount(),
                 packet.getMaxOnlineCount(),
                 packet.getMaxPlayers(),

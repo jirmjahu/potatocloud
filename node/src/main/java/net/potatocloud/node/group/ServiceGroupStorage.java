@@ -18,7 +18,7 @@ public class ServiceGroupStorage {
     public void saveToFile(ServiceGroup group, Path directory) {
         final YamlFile config = new YamlFile(directory.resolve(group.getName() + ".yml").toFile());
         config.set("name", group.getName());
-        config.set("platform", group.getPlatform().getFullName());
+        config.set("platform", group.getPlatform().getName() + "-" + group.getPlatformVersionName());
         config.set("templates", group.getServiceTemplates());
         config.set("minOnlineCount", group.getMinOnlineCount());
         config.set("maxOnlineCount", group.getMaxOnlineCount());
@@ -62,9 +62,15 @@ public class ServiceGroupStorage {
             }
         }
 
+        final String platformFullName = config.getString("platform");
+        final String[] parts = platformFullName.split("-", 2);
+        final String platformName = parts[0];
+        final String platformVersion = parts[1];
+
         return new ServiceGroupImpl(
                 config.getString("name"),
-                config.getString("platform"),
+                platformName,
+                platformVersion,
                 config.getStringList("templates"),
                 config.getInt("minOnlineCount"),
                 config.getInt("maxOnlineCount"),

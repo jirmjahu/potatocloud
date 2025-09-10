@@ -1,0 +1,83 @@
+paper:
+  download: https://fill-data.papermc.io/v1/objects/{sha256}/paper-{version}-{build}.jar
+  base: bukkit
+  custom: false
+  proxy: false
+  parser: paper
+  hash-type: sha256
+  prepare-steps:
+    - default-files
+    - eula
+    - port
+  versions:
+    - version: latest
+    - version: 1.21.8
+    - version: 1.21.7
+    - version: 1.21.6
+    - version: 1.21.5
+    - version: 1.21.4
+    - version: 1.21.3
+    - version: 1.20.6
+    - version: 1.20.5
+    - version: 1.20.4
+velocity:
+  download: https://fill-data.papermc.io/v1/objects/{sha256}/velocity-{version}-{build}.jar
+  base: velocity
+  custom: false
+  proxy: true
+  parser: velocity
+  hash-type: sha256
+  prepare-steps:
+    - default-files
+    - port
+  versions:
+    - version: latest
+    - version: 3.4.0-SNAPSHOT
+    - version: 3.3.0-SNAPSHOT
+purpur:
+  download: https://api.purpurmc.org/v2/purpur/{version}/{build}/download
+  base: bukkit
+  custom: false
+  proxy: false
+  parser: purpur
+  hash-type: md5
+  prepare-steps:
+    - default-files
+    - eula
+    - port
+  versions:
+    - version: latest
+    - version: 1.21.8
+    - version: 1.21.7
+    - version: 1.21.6
+    - version: 1.21.5
+    - version: 1.21.4
+    - version: 1.21.3
+    - version: 1.20.6
+    - version: 1.20.5
+    - version: 1.20.4
+pandaspigot:
+  base: bukkit
+  custom: false
+  proxy: false
+  prepare-steps:
+    - default-files
+    - eula
+    - port
+  versions:
+    - version: latest
+      download: https://downloads.hpfxd.com/v2/projects/pandaspigot/versions/1.8.8/builds/latest/downloads/paperclip
+      legacy: true
+pufferfish:
+  base: bukkit
+  custom: false
+  proxy: false
+  prepare-steps:
+    - default-files
+    - eula
+    - port
+  versions:
+    - version: 1.21.8
+      download: https://ci.pufferfish.host/job/Pufferfish-1.21/32/artifact/pufferfish-server/build/libs/pufferfish-paperclip-1.21.8-R0.1-SNAPSHOT-mojmap.jar
+    - version: 1.20.4
+      download: https://ci.pufferfish.host/job/Pufferfish-1.20/52/artifact/build/libs/pufferfish-paperclip-1.20.4-R0.1-SNAPSHOT-reobf.jar

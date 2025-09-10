@@ -19,6 +19,7 @@ public class RequestGroupsListener implements PacketListener<RequestGroupsPacket
             connection.send(new GroupAddPacket(
                     group.getName(),
                     group.getPlatformName(),
+                    group.getPlatformVersionName(),
                     group.getMinOnlineCount(),
                     group.getMaxOnlineCount(),
                     group.getMaxPlayers(),

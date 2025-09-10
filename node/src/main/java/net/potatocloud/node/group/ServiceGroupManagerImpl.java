@@ -62,6 +62,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
     public void createServiceGroup(
             String name,
             String platformName,
+            String platformVersionName,
             int minOnlineCount,
             int maxOnlineCount,
             int maxPlayers,
@@ -82,6 +83,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
         final ServiceGroup serviceGroup = new ServiceGroupImpl(
                 name,
                 platformName,
+                platformVersionName,
                 minOnlineCount,
                 maxOnlineCount,
                 maxPlayers,
@@ -103,6 +105,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
         server.broadcastPacket(new GroupAddPacket(
                 name,
                 platformName,
+                platformVersionName,
                 minOnlineCount,
                 maxOnlineCount,
                 maxPlayers,

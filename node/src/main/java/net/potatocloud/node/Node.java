@@ -8,7 +8,6 @@ import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.group.ServiceGroupManager;
 import net.potatocloud.api.player.CloudPlayerManager;
 import net.potatocloud.api.service.Service;
-import net.potatocloud.api.service.ServiceManager;
 import net.potatocloud.core.event.ServerEventManager;
 import net.potatocloud.core.networking.NetworkConnection;
 import net.potatocloud.core.networking.NetworkServer;
@@ -21,7 +20,8 @@ import net.potatocloud.node.console.Console;
 import net.potatocloud.node.console.ExceptionMessageHandler;
 import net.potatocloud.node.console.Logger;
 import net.potatocloud.node.group.ServiceGroupManagerImpl;
-import net.potatocloud.node.platform.PlatformManager;
+import net.potatocloud.node.platform.DownloadManager;
+import net.potatocloud.node.platform.PlatformManagerImpl;
 import net.potatocloud.node.player.CloudPlayerManagerImpl;
 import net.potatocloud.node.screen.Screen;
 import net.potatocloud.node.screen.ScreenManager;
@@ -57,7 +57,8 @@ public class Node extends CloudAPI {
     private final CloudPlayerManager playerManager;
     private final TemplateManager templateManager;
     private final ServiceGroupManager groupManager;
-    private final PlatformManager platformManager;
+    private final PlatformManagerImpl platformManager;
+    private final DownloadManager downloadManager;
     private final ServiceManagerImpl serviceManager;
     private final ServiceStartQueue serviceStartQueue;
 
@@ -115,7 +116,9 @@ public class Node extends CloudAPI {
             }
         }
 
-        platformManager = new PlatformManager(Path.of(config.getPlatformsFolder()), logger);
+        platformManager = new PlatformManagerImpl(logger, server);
+        platformManager.loadPlatformsFile();
+        downloadManager = new DownloadManager(Path.of(config.getPlatformsFolder()), logger);
         serviceManager = new ServiceManagerImpl(
                 config, logger, server, eventManager, groupManager, screenManager, templateManager, platformManager, console
         );
@@ -131,6 +134,11 @@ public class Node extends CloudAPI {
 
     public static Node getInstance() {
         return (Node) CloudAPI.getInstance();
+    }
+
+    @Override
+    public ServiceGroupManager getServiceGroupManager() {
+        return groupManager;
     }
 
     private void checkForUpdates() {
@@ -168,31 +176,11 @@ public class Node extends CloudAPI {
         commandManager.registerCommand(new GroupCommand(logger, groupManager));
         commandManager.registerCommand(new ServiceCommand(logger, serviceManager, groupManager));
         commandManager.registerCommand(new ShutdownCommand(this));
-        commandManager.registerCommand(new PlatformCommand(logger, Path.of(config.getPlatformsFolder()), platformManager));
+        commandManager.registerCommand(new PlatformCommand(logger, Path.of(config.getPlatformsFolder()), platformManager, downloadManager));
         commandManager.registerCommand(new ClearCommand(console));
         commandManager.registerCommand(new HelpCommand(logger, commandManager));
         commandManager.registerCommand(new PlayerCommand(logger, playerManager, serviceManager));
         commandManager.registerCommand(new InfoCommand(logger));
-    }
-
-    @Override
-    public ServiceGroupManager getServiceGroupManager() {
-        return groupManager;
-    }
-
-    @Override
-    public ServiceManager getServiceManager() {
-        return serviceManager;
-    }
-
-    @Override
-    public EventManager getEventManager() {
-        return eventManager;
-    }
-
-    @Override
-    public CloudPlayerManager getPlayerManager() {
-        return playerManager;
     }
 
     @SneakyThrows

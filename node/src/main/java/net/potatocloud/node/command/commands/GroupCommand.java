@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.CloudAPI;
 import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.group.ServiceGroupManager;
-import net.potatocloud.api.platform.PlatformVersions;
 import net.potatocloud.api.property.Property;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.node.Node;
@@ -14,7 +13,6 @@ import net.potatocloud.node.console.Logger;
 import net.potatocloud.node.setup.setups.GroupConfigurationSetup;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -219,7 +217,8 @@ public class GroupCommand implements Command, TabCompleter {
     }
 
     private void createGroup(String[] args) {
-        Node.getInstance().getSetupManager().startSetup(new GroupConfigurationSetup(Node.getInstance().getConsole(), Node.getInstance().getScreenManager(), groupManager));
+        //todo
+        Node.getInstance().getSetupManager().startSetup(new GroupConfigurationSetup(Node.getInstance().getConsole(), Node.getInstance().getScreenManager(), groupManager, Node.getInstance().getPlatformManager()));
     }
 
     private void deleteGroup(String[] args) {
@@ -253,7 +252,8 @@ public class GroupCommand implements Command, TabCompleter {
 
         final ServiceGroup group = groupManager.getServiceGroup(name);
         logger.info("&7Info for group &a" + group.getName() + "&8:");
-        logger.info("&8» &7Platform: &a" + group.getPlatform().getFullName());
+        logger.info("&8» &7Platform: &a" + group.getPlatform().getName());
+        logger.info("&8» &7Version: &a" + group.getPlatformVersion().getName());
         logger.info("&8» &7Templates: &a" + String.join(", ", group.getServiceTemplates()));
         logger.info("&8» &7Min Online Count: &a" + group.getMinOnlineCount());
         logger.info("&8» &7Max Online Count: &a" + group.getMaxOnlineCount());
@@ -301,26 +301,6 @@ public class GroupCommand implements Command, TabCompleter {
         }
 
         final String sub = args[0].toLowerCase();
-
-        if (sub.equals("create")) {
-            if (args.length == 3) {
-                return Arrays.stream(PlatformVersions.values())
-                        .map(platform -> platform.platform().getFullName())
-                        .toList();
-            }
-
-            if (args.length == 7) {
-                return List.of("512", "1024", "2048", "4096", "8192", "16384").stream().filter(s -> s.startsWith(args[6])).toList();
-            }
-
-            if (args.length == 8) {
-                return List.of("true", "false").stream().filter(s -> s.startsWith(args[7])).toList();
-            }
-
-            if (args.length == 9) {
-                return List.of("true", "false").stream().filter(s -> s.startsWith(args[8])).toList();
-            }
-        }
 
         if ((sub.equals("info") || sub.equals("delete") || sub.equals("edit"))) {
             if (args.length == 2) {

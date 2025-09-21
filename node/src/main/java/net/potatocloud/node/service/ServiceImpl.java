@@ -16,11 +16,13 @@ import net.potatocloud.api.service.ServiceManager;
 import net.potatocloud.api.service.ServiceStatus;
 import net.potatocloud.core.networking.NetworkServer;
 import net.potatocloud.core.networking.packets.service.ServiceRemovePacket;
+import net.potatocloud.node.Node;
 import net.potatocloud.node.config.NodeConfig;
 import net.potatocloud.node.console.Console;
 import net.potatocloud.node.console.Logger;
 import net.potatocloud.node.platform.DownloadManager;
 import net.potatocloud.node.platform.PlatformManagerImpl;
+import net.potatocloud.node.platform.PlatformUtils;
 import net.potatocloud.node.screen.Screen;
 import net.potatocloud.node.screen.ScreenManager;
 import net.potatocloud.node.template.TemplateManager;
@@ -175,13 +177,15 @@ public class ServiceImpl implements Service {
 
         downloadManager.downloadPlatformVersion(platform, platform.getVersion(serviceGroup.getPlatformVersionName()));
 
-        // copy server file
-        final Path platformFile = Path.of(config.getPlatformsFolder())
-                .resolve(platform.getName() + "-" + version.getName())
-                .resolve(platform.getName() + "-" + version.getName() + ".jar");
+        final Path cacheFolder = Node.getInstance().getCacheManager().preCachePlatform(serviceGroup);
 
+        Node.getInstance().getCacheManager().copyCacheToService(serviceGroup, cacheFolder, directory);
+
+        // copy server file
+        final File platformFile = PlatformUtils.getPlatformJarFile(platform, version);
         final Path finalServerFilePath = directory.resolve("server.jar");
-        FileUtils.copyFile(platformFile.toFile(), finalServerFilePath.toFile());
+
+        FileUtils.copyFile(platformFile, finalServerFilePath.toFile());
 
         // execute the prepare steps
         for (String step : platform.getPrepareSteps()) {
@@ -203,7 +207,7 @@ public class ServiceImpl implements Service {
         }
 
         args.add("-jar");
-        args.add(platformFile.toAbsolutePath().toString());
+        args.add(finalServerFilePath.toAbsolutePath().toString());
 
         if (platform.isBukkit() && !version.isLegacy()) {
             args.add("-nogui");

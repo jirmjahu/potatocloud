@@ -22,6 +22,7 @@ import net.potatocloud.node.console.Logger;
 import net.potatocloud.node.group.ServiceGroupManagerImpl;
 import net.potatocloud.node.platform.DownloadManager;
 import net.potatocloud.node.platform.PlatformManagerImpl;
+import net.potatocloud.node.platform.cache.CacheManager;
 import net.potatocloud.node.player.CloudPlayerManagerImpl;
 import net.potatocloud.node.screen.Screen;
 import net.potatocloud.node.screen.ScreenManager;
@@ -59,6 +60,7 @@ public class Node extends CloudAPI {
     private final ServiceGroupManager groupManager;
     private final PlatformManagerImpl platformManager;
     private final DownloadManager downloadManager;
+    private final CacheManager cacheManager;
     private final ServiceManagerImpl serviceManager;
     private final ServiceStartQueue serviceStartQueue;
 
@@ -119,6 +121,7 @@ public class Node extends CloudAPI {
         platformManager = new PlatformManagerImpl(logger, server);
         platformManager.loadPlatformsFile();
         downloadManager = new DownloadManager(Path.of(config.getPlatformsFolder()), logger);
+        cacheManager = new CacheManager(logger);
         serviceManager = new ServiceManagerImpl(
                 config, logger, server, eventManager, groupManager, screenManager, templateManager, platformManager, console
         );

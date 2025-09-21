@@ -37,11 +37,7 @@ public class DownloadManager {
             Files.createDirectories(platformsFolder);
         }
 
-        final File platformFile = platformsFolder
-                .resolve(version.getFullName())
-                .resolve(version.getFullName() + ".jar")
-                .toFile();
-
+        final File platformFile = PlatformUtils.getPlatformJarFile(platform, version);
 
         final BuildParser parser = PARSERS.stream()
                 .filter(p -> p.getName().equalsIgnoreCase(version.getParser()))
@@ -72,8 +68,8 @@ public class DownloadManager {
         if (version.getDownloadUrl() == null || version.getDownloadUrl().isEmpty()) {
             logger.error("No download URL found for platform: " + platform.getName());
             return;
-        }
 
+        }
         FileUtils.copyURLToFile(URI.create(version.getDownloadUrl()).toURL(), platformFile, 5000, 5000);
         logger.info("&7Finished downloading platform: &a" + platform.getName());
     }

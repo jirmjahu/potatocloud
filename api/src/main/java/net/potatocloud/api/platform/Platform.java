@@ -18,6 +18,8 @@ public interface Platform {
 
     String getBase();
 
+    String getPreCacher();
+
     default PlatformVersion getVersion(String name) {
         return getVersions().stream()
                 .filter(version -> version.getName().equalsIgnoreCase(name))

@@ -129,9 +129,10 @@ public class PlatformManagerImpl implements PlatformManager {
             final boolean proxy = section.getBoolean("proxy", false);
             final String base = section.getString("base", "UNKNOWN");
             final List<String> steps = new ArrayList<>(section.getStringList("prepare-steps"));
+            final String preCache = section.getString("pre-cache");
 
             // create platform with read infos
-            final PlatformImpl platform = new PlatformImpl(key, downloadUrl, custom, proxy, base);
+            final PlatformImpl platform = new PlatformImpl(key, downloadUrl, custom, proxy, base, preCache);
             platform.getPrepareSteps().addAll(steps);
             platform.getVersions().addAll(versions);
             platforms.add(platform);

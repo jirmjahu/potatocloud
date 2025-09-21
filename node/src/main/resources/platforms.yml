@@ -5,6 +5,7 @@ paper:
   proxy: false
   parser: paper
   hash-type: sha256
+  pre-cache: paper
   prepare-steps:
     - default-files
     - eula
@@ -41,6 +42,7 @@ purpur:
   proxy: false
   parser: purpur
   hash-type: md5
+  pre-cache: paper
   prepare-steps:
     - default-files
     - eula
@@ -72,6 +74,7 @@ pufferfish:
   base: bukkit
   custom: false
   proxy: false
+  pre-cache: paper
   prepare-steps:
     - default-files
     - eula

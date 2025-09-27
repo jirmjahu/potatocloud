@@ -63,7 +63,7 @@ public class DownloadManager {
 
     @SneakyThrows
     private void download(Platform platform, PlatformVersion version, File platformFile) {
-        logger.info("&7Downloading platform: &a" + platform.getName());
+        logger.info("&7Downloading platform &a" + platform.getName() + "&7 version &a" + version.getName());
 
         if (version.getDownloadUrl() == null || version.getDownloadUrl().isEmpty()) {
             logger.error("No download URL found for platform: " + platform.getName());
@@ -71,7 +71,7 @@ public class DownloadManager {
 
         }
         FileUtils.copyURLToFile(URI.create(version.getDownloadUrl()).toURL(), platformFile, 5000, 5000);
-        logger.info("&7Finished downloading platform: &a" + platform.getName());
+        logger.info("&7Finished downloading platform &a" + platform.getName() + "&7 version &a" + version.getName());
     }
 
     @SneakyThrows

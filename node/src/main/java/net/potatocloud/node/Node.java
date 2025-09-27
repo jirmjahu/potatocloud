@@ -31,8 +31,8 @@ import net.potatocloud.node.service.ServiceManagerImpl;
 import net.potatocloud.node.service.ServiceStartQueue;
 import net.potatocloud.node.setup.SetupManager;
 import net.potatocloud.node.template.TemplateManager;
-import net.potatocloud.node.update.UpdateChecker;
-import net.potatocloud.node.utils.VersionFile;
+import net.potatocloud.node.version.UpdateChecker;
+import net.potatocloud.node.version.VersionFile;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -159,7 +159,7 @@ public class Node extends CloudAPI {
     @SneakyThrows
     private void copyDefaultFiles() {
         final Path dataFolder = Path.of(config.getDataFolder());
-        final List<String> files = List.of("server.properties", "spigot.yml", "velocity.toml", "potatocloud-plugin.jar");
+        final List<String> files = List.of("server.properties", "spigot.yml", "paper-global.yml", "velocity.toml", "potatocloud-plugin.jar");
 
         Files.createDirectories(dataFolder);
         for (String name : files) {

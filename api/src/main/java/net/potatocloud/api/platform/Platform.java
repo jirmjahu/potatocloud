@@ -27,11 +27,15 @@ public interface Platform {
                 .orElse(null);
     }
 
-    default boolean isBukkit() {
-        return getBase().equalsIgnoreCase("bukkit");
+    default boolean isBukkitBased() {
+        return getBase().equalsIgnoreCase("bukkit") || isPaperBased();
     }
 
-    default boolean isVelocity() {
+    default boolean isPaperBased() {
+        return getBase().equalsIgnoreCase("paper");
+    }
+
+    default boolean isVelocityBased() {
         return getBase().equalsIgnoreCase("velocity");
     }
 }

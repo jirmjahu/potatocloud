@@ -16,7 +16,7 @@ public class PortStep implements PrepareStep {
     @Override
     @SneakyThrows
     public void execute(Service service, Platform platform, Path serverDirectory) {
-        if (platform.isBukkit()) {
+        if (platform.isBukkitBased()) {
             final Path propertiesPath = serverDirectory.resolve("server.properties");
             final Properties properties = new Properties();
 
@@ -33,16 +33,16 @@ public class PortStep implements PrepareStep {
             return;
         }
 
-        if (platform.isProxy() && platform.isVelocity()) {
-            final Path velocityConfig = serverDirectory.resolve("velocity.toml");
+        if (platform.isProxy() && platform.isVelocityBased()) {
+            final Path velocityToml = serverDirectory.resolve("velocity.toml");
 
-            String fileContent = Files.readString(velocityConfig);
+            String fileContent = Files.readString(velocityToml);
             fileContent = fileContent.replace(
                     "bind = \"0.0.0.0:25565\"",
                     "bind = \"0.0.0.0:" + service.getPort() + "\""
             );
 
-            Files.writeString(velocityConfig, fileContent);
+            Files.writeString(velocityToml, fileContent);
         }
     }
 

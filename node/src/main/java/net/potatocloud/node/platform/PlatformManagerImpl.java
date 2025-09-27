@@ -11,9 +11,7 @@ import net.potatocloud.core.networking.NetworkServer;
 import net.potatocloud.core.networking.PacketIds;
 import net.potatocloud.core.networking.packets.platform.PlatformAddPacket;
 import net.potatocloud.node.console.Logger;
-import net.potatocloud.node.platform.steps.DefaultFilesStep;
-import net.potatocloud.node.platform.steps.EulaStep;
-import net.potatocloud.node.platform.steps.PortStep;
+import net.potatocloud.node.platform.steps.*;
 import org.apache.commons.io.FileUtils;
 import org.simpleyaml.configuration.ConfigurationSection;
 import org.simpleyaml.configuration.file.YamlConfiguration;
@@ -149,6 +147,10 @@ public class PlatformManagerImpl implements PlatformManager {
                 return new EulaStep();
             case "port":
                 return new PortStep();
+            case "setup-forwarding":
+                return new SetupForwardingStep();
+            case "setup-proxy":
+                return new SetupProxyStep();
             default:
                 logger.warn("Unknown prepare step: " + stepName);
                 return null;

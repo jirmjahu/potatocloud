@@ -209,7 +209,7 @@ public class ServiceImpl implements Service {
         args.add("-jar");
         args.add(finalServerFilePath.toAbsolutePath().toString());
 
-        if (platform.isBukkit() && !version.isLegacy()) {
+        if (platform.isBukkitBased() && !version.isLegacy()) {
             args.add("-nogui");
         }
 

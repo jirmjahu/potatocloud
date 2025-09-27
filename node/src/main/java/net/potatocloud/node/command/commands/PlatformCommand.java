@@ -6,6 +6,7 @@ import net.potatocloud.api.platform.Platform;
 import net.potatocloud.api.platform.PlatformManager;
 import net.potatocloud.api.platform.PlatformVersion;
 import net.potatocloud.node.command.Command;
+import net.potatocloud.node.command.CommandInfo;
 import net.potatocloud.node.command.TabCompleter;
 import net.potatocloud.node.console.Logger;
 import net.potatocloud.node.platform.DownloadManager;
@@ -14,7 +15,8 @@ import java.nio.file.Path;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class PlatformCommand implements Command, TabCompleter {
+@CommandInfo(name = "platform", description = "Manage your platforms", aliases = {"platforms"})
+public class PlatformCommand extends Command implements TabCompleter {
 
     private final Logger logger;
     private final Path platformsFolder;
@@ -105,20 +107,5 @@ public class PlatformCommand implements Command, TabCompleter {
         }
 
         return List.of();
-    }
-
-    @Override
-    public String getName() {
-        return "platform";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Manage your platforms";
-    }
-
-    @Override
-    public List<String> getAliases() {
-        return List.of("platforms");
     }
 }

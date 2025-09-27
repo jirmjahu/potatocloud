@@ -8,6 +8,7 @@ import net.potatocloud.api.property.Property;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.node.Node;
 import net.potatocloud.node.command.Command;
+import net.potatocloud.node.command.CommandInfo;
 import net.potatocloud.node.command.TabCompleter;
 import net.potatocloud.node.console.Logger;
 import net.potatocloud.node.setup.setups.GroupConfigurationSetup;
@@ -17,7 +18,8 @@ import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class GroupCommand implements Command, TabCompleter {
+@CommandInfo(name = "group", description = "Manage service groups", aliases = {"groups"})
+public class GroupCommand extends Command implements TabCompleter {
 
     private final Logger logger;
     private final ServiceGroupManager groupManager;
@@ -275,21 +277,6 @@ public class GroupCommand implements Command, TabCompleter {
         logger.info("group edit &8[&aname&8] &7removeTemplate &8[&atemplate&8] - &7Remove a template from the group");
         logger.info("group edit &8[&aname&8] &7addJvmFlag &8[&aflag&8] - &7Add a custom JVM flag to the group");
         logger.info("group property &8[&7list&8|&7set&8|&7remove&8] [&aname&8] [&akey&8] [&avalue&8] - &7Manage properties of the group");
-    }
-
-    @Override
-    public String getName() {
-        return "group";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Manage service groups";
-    }
-
-    @Override
-    public List<String> getAliases() {
-        return List.of("groups");
     }
 
     @Override

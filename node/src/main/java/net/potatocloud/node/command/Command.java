@@ -1,15 +1,27 @@
 package net.potatocloud.node.command;
 
+import lombok.Getter;
+
+import java.util.Arrays;
 import java.util.List;
 
-public interface Command {
+@Getter
+public abstract class Command {
 
-    void execute(String[] args);
+    private final String name;
+    private final String description;
+    private final List<String> aliases;
 
-    String getName();
+    protected Command() {
+        final CommandInfo info = this.getClass().getAnnotation(CommandInfo.class);
+        if (info == null) {
+            throw new IllegalStateException("CommandInfo annotation missing in Command: " + getClass().getSimpleName());
+        }
+        name = info.name();
+        description = info.description();
+        aliases = Arrays.asList(info.aliases());
+    }
 
-    String getDescription();
-
-    List<String> getAliases();
+    public abstract void execute(String[] args);
 
 }

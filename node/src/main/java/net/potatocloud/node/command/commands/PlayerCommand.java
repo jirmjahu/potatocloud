@@ -6,6 +6,7 @@ import net.potatocloud.api.player.CloudPlayerManager;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceManager;
 import net.potatocloud.node.command.Command;
+import net.potatocloud.node.command.CommandInfo;
 import net.potatocloud.node.command.TabCompleter;
 import net.potatocloud.node.console.Logger;
 
@@ -13,7 +14,8 @@ import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class PlayerCommand implements Command, TabCompleter {
+@CommandInfo(name = "player", description = "Manage players", aliases = {"players", "cloudplayer"})
+public class PlayerCommand extends Command implements TabCompleter {
 
     private final Logger logger;
     private final CloudPlayerManager playerManager;
@@ -73,21 +75,6 @@ public class PlayerCommand implements Command, TabCompleter {
     private void sendHelp() {
         logger.info("player list &8- &7List all online players");
         logger.info("player connect &8[&aplayerName&8] [&aserviceName&8] - &7Connect a player to a service");
-    }
-
-    @Override
-    public String getName() {
-        return "player";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Manage players";
-    }
-
-    @Override
-    public List<String> getAliases() {
-        return List.of("players", "cloudplayer");
     }
 
     @Override

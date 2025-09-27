@@ -8,6 +8,7 @@ import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceManager;
 import net.potatocloud.node.Node;
 import net.potatocloud.node.command.Command;
+import net.potatocloud.node.command.CommandInfo;
 import net.potatocloud.node.command.TabCompleter;
 import net.potatocloud.node.console.Logger;
 import net.potatocloud.node.screen.Screen;
@@ -19,7 +20,8 @@ import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class ServiceCommand implements Command, TabCompleter {
+@CommandInfo(name = "service", description = "Manage services", aliases = {"ser"})
+public class ServiceCommand extends Command implements TabCompleter {
 
     private final Logger logger;
     private final ServiceManager serviceManager;
@@ -354,21 +356,6 @@ public class ServiceCommand implements Command, TabCompleter {
         logger.info("service edit &8[&aname&8] [&akey&8] [&avalue&8] - &7Edit a service");
         logger.info("service property &8[&7list&8|&7set&8|&7remove&8] [&aname&8] [&akey&8] [&avalue&8] - &7Manage properties of a service");
         logger.info("service copy &8[&aname&8] [&atemplate&8] (&afilter&8) - &7Copy files from a service to a template");
-    }
-
-    @Override
-    public String getName() {
-        return "service";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Manage services";
-    }
-
-    @Override
-    public List<String> getAliases() {
-        return List.of("services", "ser");
     }
 
     @Override

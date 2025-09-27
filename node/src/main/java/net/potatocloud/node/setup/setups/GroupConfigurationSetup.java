@@ -1,15 +1,19 @@
 package net.potatocloud.node.setup.setups;
 
+import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.group.ServiceGroupManager;
 import net.potatocloud.api.platform.Platform;
 import net.potatocloud.api.platform.PlatformManager;
 import net.potatocloud.api.platform.PlatformVersion;
+import net.potatocloud.api.property.Property;
+import net.potatocloud.node.Node;
 import net.potatocloud.node.console.Console;
 import net.potatocloud.node.screen.ScreenManager;
 import net.potatocloud.node.setup.Setup;
 import net.potatocloud.node.setup.SetupAnswerResult;
 import net.potatocloud.node.setup.validator.BooleanValidator;
 import net.potatocloud.node.setup.validator.IntegerValidator;
+import net.potatocloud.node.utils.ProxyUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -126,12 +130,32 @@ public class GroupConfigurationSetup extends Setup {
                 .defaultAnswer("80")
                 .validator(new IntegerValidator())
                 .done();
+
+        question("velocity_modern_forwarding")
+                .question("Do you want to use Velocity modern forwarding? Modern forwarding is more secure but will break support for versions below 1.13")
+                .choices(answers -> List.of("true", "false", "yes", "no"))
+                .validator(new BooleanValidator())
+                .skipCondition(answers -> {
+                    final String platformName = answers.get("platform");
+                    if (platformName == null) {
+                        return true;
+                    }
+                    final Platform platform = platformManager.getPlatform(platformName);
+                    return platform == null || !platform.isVelocityBased();
+                })
+                .done();
+
     }
 
     @Override
     protected void onFinish(Map<String, String> answers) {
+        if (ProxyUtils.getProxyGroups() != null && ProxyUtils.getProxyGroups().size() > 1) {
+            Node.getInstance().getLogger().warn("You have more than one proxy group! This may cause issues");
+        }
+
+        final String name = answers.get("name");
         groupManager.createServiceGroup(
-                answers.get("name"),
+                name,
                 answers.get("platform"),
                 answers.get("platform_version"),
                 Integer.parseInt(answers.get("min_online_count")),
@@ -143,6 +167,13 @@ public class GroupConfigurationSetup extends Setup {
                 Integer.parseInt(answers.get("start_priority")),
                 Integer.parseInt(answers.get("start_percentage"))
         );
+
+        final String modernForwarding = answers.get("velocity_modern_forwarding");
+        if (modernForwarding != null) {
+            final ServiceGroup group = groupManager.getServiceGroup(name);
+            group.setProperty(Property.ofBoolean("velocity_modern_forwarding", Boolean.parseBoolean(modernForwarding)));
+            group.update();
+        }
     }
 
     @Override

@@ -23,15 +23,15 @@ import net.potatocloud.api.event.events.service.ServiceStartedEvent;
 import net.potatocloud.api.player.CloudPlayer;
 import net.potatocloud.api.player.impl.CloudPlayerImpl;
 import net.potatocloud.api.service.Service;
+import net.potatocloud.connector.ConnectorAPI;
+import net.potatocloud.connector.event.ConnectPlayerWithServiceEvent;
+import net.potatocloud.connector.player.CloudPlayerManagerImpl;
 import net.potatocloud.core.networking.NetworkConnection;
 import net.potatocloud.core.networking.PacketIds;
 import net.potatocloud.core.networking.packets.player.CloudPlayerConnectPacket;
 import net.potatocloud.core.networking.packets.service.ServiceRemovePacket;
 import net.potatocloud.plugin.PlatformPlugin;
 import net.potatocloud.plugin.PluginUtils;
-import net.potatocloud.plugin.api.impl.PluginCloudAPI;
-import net.potatocloud.plugin.api.impl.event.ConnectPlayerWithServiceEvent;
-import net.potatocloud.plugin.api.impl.player.CloudPlayerManagerImpl;
 
 import java.net.InetSocketAddress;
 import java.util.Optional;
@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 
 public class VelocityPlugin implements PlatformPlugin {
 
-    private final PluginCloudAPI api;
+    private final ConnectorAPI api;
     private final ProxyServer server;
     private final Logger logger;
     private Service currentService;
@@ -50,7 +50,7 @@ public class VelocityPlugin implements PlatformPlugin {
     public VelocityPlugin(ProxyServer server, Logger logger) {
         this.server = server;
         this.logger = logger;
-        api = new PluginCloudAPI();
+        api = new ConnectorAPI();
     }
 
     @Subscribe

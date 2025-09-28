@@ -39,12 +39,6 @@
         </dependency>
 
         <dependency>
-            <groupId>net.potatocloud.plugin</groupId>
-            <artifactId>plugin</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.github.Carleslc.Simple-YAML</groupId>
             <artifactId>Simple-Yaml</artifactId>
             <version>${simpleyaml.version}</version>
@@ -80,6 +74,24 @@
             <version>${slf4j-nop.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.potatocloud.plugin.spigot</groupId>
+            <artifactId>plugin-spigot</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.potatocloud.plugin.velocity</groupId>
+            <artifactId>plugin-velocity</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.potatocloud.plugin.limbo</groupId>
+            <artifactId>plugin-limbo</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -101,11 +113,25 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>net.potatocloud.plugin</groupId>
-                                    <artifactId>plugin</artifactId>
+                                    <groupId>net.potatocloud.plugin.spigot</groupId>
+                                    <artifactId>plugin-spigot</artifactId>
                                     <version>${project.version}</version>
                                     <outputDirectory>${project.build.outputDirectory}/default-files</outputDirectory>
-                                    <destFileName>potatocloud-plugin.jar</destFileName>
+                                    <destFileName>potatocloud-plugin-spigot.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>net.potatocloud.plugin.velocity</groupId>
+                                    <artifactId>plugin-velocity</artifactId>
+                                    <version>${project.version}</version>
+                                    <outputDirectory>${project.build.outputDirectory}/default-files</outputDirectory>
+                                    <destFileName>potatocloud-plugin-velocity.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>net.potatocloud.plugin.limbo</groupId>
+                                    <artifactId>plugin-limbo</artifactId>
+                                    <version>${project.version}</version>
+                                    <outputDirectory>${project.build.outputDirectory}/default-files</outputDirectory>
+                                    <destFileName>potatocloud-plugin-limbo.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -125,17 +151,8 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-
-                            <relocations>
-                                <relocation>
-                                    <pattern>io.netty</pattern>
-                                    <shadedPattern>net.potatocloud.shaded.netty</shadedPattern>
-                                </relocation>
-                            </relocations>
-
                             <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>net.potatocloud.node.NodeMain</mainClass>
                                 </transformer>
                             </transformers>

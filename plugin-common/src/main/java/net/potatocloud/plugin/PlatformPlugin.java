@@ -2,8 +2,8 @@ package net.potatocloud.plugin;
 
 import net.potatocloud.api.CloudAPI;
 import net.potatocloud.api.service.Service;
+import net.potatocloud.connector.ConnectorAPI;
 import net.potatocloud.core.networking.packets.service.ServiceStartedPacket;
-import net.potatocloud.plugin.api.impl.PluginCloudAPI;
 
 public interface PlatformPlugin {
 
@@ -20,7 +20,7 @@ public interface PlatformPlugin {
             return;
         }
 
-        PluginCloudAPI.getInstance().getClient().send(new ServiceStartedPacket(currentService.getName()));
+        ConnectorAPI.getInstance().getClient().send(new ServiceStartedPacket(currentService.getName()));
         onServiceReady(currentService);
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -9,8 +9,8 @@
         <version>1.3.0-BETA</version>
     </parent>
 
-    <groupId>net.potatocloud.plugin</groupId>
-    <artifactId>plugin</artifactId>
+    <groupId>net.potatocloud.plugin.velocity</groupId>
+    <artifactId>plugin-velocity</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -20,8 +20,8 @@
 
     <repositories>
         <repository>
-            <id>papermc</id>
-            <url>https://repo.papermc.io/repository/maven-public/</url>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
 
@@ -33,16 +33,9 @@
         </dependency>
 
         <dependency>
-            <groupId>net.potatocloud.core</groupId>
-            <artifactId>core</artifactId>
+            <groupId>net.potatocloud.connector</groupId>
+            <artifactId>connector</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.papermc.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>${paper.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -52,10 +45,16 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>net.potatocloud.plugin.common</groupId>
+            <artifactId>plugin-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
-        <finalName>potatocloud-plugin-${project.version}</finalName>
+        <finalName>potatocloud-plugin-velocity-${project.version}</finalName>
 
         <plugins>
             <plugin>
@@ -73,22 +72,6 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>org/bukkit/**</exclude>
-                                        <exclude>net/minecraft/**</exclude>
-                                        <exclude>com/velocitypowered/api/**</exclude>
-                                        <exclude>io/papermc/paper/**</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

@@ -17,7 +17,9 @@ public class ServiceDefaultFiles {
     @SneakyThrows
     public void copyDefaultFiles(Logger logger, NodeConfig config, ClassLoader classLoader) {
         final Path dataFolder = Path.of(config.getDataFolder());
-        final List<String> files = List.of("server.properties", "spigot.yml", "paper-global.yml", "velocity.toml", "potatocloud-plugin.jar");
+        final List<String> files = List.of("server.properties", "spigot.yml", "paper-global.yml",
+                "velocity.toml", "limbo-server.properties", "potatocloud-plugin-spigot.jar",
+                "potatocloud-plugin-velocity.jar", "potatocloud-plugin-limbo.jar");
 
         Files.createDirectories(dataFolder);
         for (String name : files) {

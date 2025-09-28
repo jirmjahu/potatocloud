@@ -169,7 +169,16 @@ public class ServiceImpl implements Service {
         final Path pluginsFolder = directory.resolve("plugins");
         Files.createDirectories(pluginsFolder);
 
-        FileUtils.copyFile(Path.of(config.getDataFolder(), "potatocloud-plugin.jar").toFile(), pluginsFolder.resolve("potatocloud-plugin.jar").toFile(), StandardCopyOption.REPLACE_EXISTING);
+        String pluginName = "";
+        if (serviceGroup.getPlatform().isBukkitBased()) {
+            pluginName = "potatocloud-plugin-spigot.jar";
+        } else if (serviceGroup.getPlatform().isVelocityBased()) {
+            pluginName = "potatocloud-plugin-velocity.jar";
+        } else if (serviceGroup.getPlatform().isLimboBased()) {
+            pluginName = "potatocloud-plugin-limbo.jar";
+        }
+
+        FileUtils.copyFile(Path.of(config.getDataFolder(), pluginName).toFile(), pluginsFolder.resolve(pluginName).toFile(), StandardCopyOption.REPLACE_EXISTING);
 
         // download the platform of the service
         final Platform platform = serviceGroup.getPlatform();

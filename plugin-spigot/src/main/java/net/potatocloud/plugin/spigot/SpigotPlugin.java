@@ -1,23 +1,22 @@
-package net.potatocloud.plugin.paper;
+package net.potatocloud.plugin.spigot;
 
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.potatocloud.api.service.Service;
+import net.potatocloud.connector.ConnectorAPI;
 import net.potatocloud.plugin.PlatformPlugin;
-import net.potatocloud.plugin.api.impl.PluginCloudAPI;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class PaperPlugin extends JavaPlugin implements Listener, PlatformPlugin {
+public class SpigotPlugin extends JavaPlugin implements Listener, PlatformPlugin {
 
-    private PluginCloudAPI api;
+    private ConnectorAPI api;
     private Service currentService;
 
     @Override
     public void onLoad() {
-        api = new PluginCloudAPI();
+        api = new ConnectorAPI();
     }
 
     @Override
@@ -50,7 +49,7 @@ public class PaperPlugin extends JavaPlugin implements Listener, PlatformPlugin 
         if (event.getPlayer().hasPermission("potatocloud.maxplayers.bypass")) {
             return;
         }
-        event.disallow(PlayerLoginEvent.Result.KICK_FULL, MiniMessage.miniMessage().deserialize("<red>The server has reached its maximum players!"));
+        event.disallow(PlayerLoginEvent.Result.KICK_FULL, "§cThe server has reached its maximum players!");
     }
 
     @Override

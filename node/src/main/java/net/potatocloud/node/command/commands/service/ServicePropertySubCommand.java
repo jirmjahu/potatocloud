@@ -39,7 +39,7 @@ public class ServicePropertySubCommand extends SubCommand implements TabComplete
                     return;
                 }
 
-                final String name = args[0];
+                final String name = args[1];
                 final Service service = serviceManager.getService(name);
                 if (service == null) {
                     logger.info("&cNo service found with the name &a" + name);
@@ -64,7 +64,7 @@ public class ServicePropertySubCommand extends SubCommand implements TabComplete
                     return;
                 }
 
-                final String name = args[0];
+                final String name = args[1];
                 final Service service = serviceManager.getService(name);
                 if (service == null) {
                     logger.info("&cNo service found with the name &a" + name);
@@ -88,7 +88,7 @@ public class ServicePropertySubCommand extends SubCommand implements TabComplete
                     return;
                 }
 
-                final String name = args[0];
+                final String name = args[1];
                 final Service service = serviceManager.getService(name);
                 if (service == null) {
                     logger.info("&cNo service found with the name &a" + name);
@@ -120,7 +120,7 @@ public class ServicePropertySubCommand extends SubCommand implements TabComplete
         if (args.length == 2) {
             return serviceManager.getAllServices().stream()
                     .map(Service::getName)
-                    .filter(name -> name.startsWith(args[0]))
+                    .filter(name -> name.startsWith(args[1]))
                     .toList();
         }
 

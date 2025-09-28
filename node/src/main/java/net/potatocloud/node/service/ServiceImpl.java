@@ -237,7 +237,7 @@ public class ServiceImpl implements Service {
             }
         }, "ProcessReader-" + getName()).start();
 
-        logger.info("Service &a" + this.getName() + "&7 is now starting... &8[&7Port&8: &a" + port + "&8, &7Group&8: &a" + serviceGroup.getName() + "&8]");
+        logger.info("Service &a" + this.getName() + "&7 is now starting&8... &8[&7Port&8: &a" + port + "&8, &7Group&8: &a" + serviceGroup.getName() + "&8]");
         eventManager.call(new PreparedServiceStartingEvent(this.getName()));
     }
 

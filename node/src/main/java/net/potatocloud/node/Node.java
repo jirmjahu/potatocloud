@@ -112,7 +112,7 @@ public class Node extends CloudAPI {
         ((ServiceGroupManagerImpl) groupManager).loadGroups();
 
         if (!groupManager.getAllServiceGroups().isEmpty()) {
-            logger.info("Loaded &a" + groupManager.getAllServiceGroups().size() + "&7 Service Groups:");
+            logger.info("Loaded &a" + groupManager.getAllServiceGroups().size() + "&7 Service Groups&8:");
             for (ServiceGroup group : groupManager.getAllServiceGroups()) {
                 logger.info("&8» &a" + group.getName());
             }
@@ -129,7 +129,7 @@ public class Node extends CloudAPI {
         registerCommands();
 
         startedTime = System.currentTimeMillis();
-        logger.info("Startup completed in &a" + (System.currentTimeMillis() - Long.parseLong(System.getProperty("nodeStartupTime"))) + "ms &7| Use &8'&ahelp&8' &7to see available commands");
+        logger.info("Startup completed in &a" + (System.currentTimeMillis() - Long.parseLong(System.getProperty("nodeStartupTime"))) + "ms &8| &7Use &8'&ahelp&8' &7to see available commands");
 
         serviceStartQueue = new ServiceStartQueue(groupManager, serviceManager);
         serviceStartQueue.start();
@@ -149,7 +149,7 @@ public class Node extends CloudAPI {
             if (updateChecker.isUpdateAvailable()) {
                 logger.warn("A new version is available! &8(&7Latest&8: &a" + updateChecker.getLatestVersion() + "&8, &7Current&8: &a" + CloudAPI.VERSION + "&8)");
             } else {
-                logger.info("You are running the latest version!");
+                logger.info("You are running the latest version&8!");
             }
         } catch (Exception e) {
             logger.warn("Failed to check for updates: " + e.getMessage());

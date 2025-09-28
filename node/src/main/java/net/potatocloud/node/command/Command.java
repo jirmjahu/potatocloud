@@ -3,9 +3,10 @@ package net.potatocloud.node.command;
 import lombok.Getter;
 import net.potatocloud.node.Node;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 public abstract class Command {
@@ -14,7 +15,7 @@ public abstract class Command {
     private final String description;
     private final List<String> aliases;
 
-    private final List<SubCommand> subCommands;
+    private final Set<SubCommand> subCommands;
 
     protected Command() {
         final CommandInfo info = this.getClass().getAnnotation(CommandInfo.class);
@@ -24,7 +25,7 @@ public abstract class Command {
         name = info.name();
         description = info.description();
         aliases = Arrays.asList(info.aliases());
-        subCommands = new ArrayList<>();
+        subCommands = new HashSet<>();
     }
 
     public abstract void execute(String[] args);

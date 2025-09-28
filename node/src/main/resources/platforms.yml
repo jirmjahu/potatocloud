@@ -94,7 +94,6 @@ limbo:
   proxy: false
   prepare-steps:
     - default-files
-    - eula
     - port
     - setup-proxy
   versions:

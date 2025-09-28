@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @SubCommandInfo(
         name = "property",
-        description = "Edit the properties of the given service group",
+        description = "Manage properties of the given service group",
         usage = "group property &8[&alist&8|&aset&8|&aremove&8] [&agroup&8] [&akey&8] [&avalue&8]"
 )
 public class GroupPropertySubCommand extends SubCommand implements TabCompleter {
@@ -110,15 +110,7 @@ public class GroupPropertySubCommand extends SubCommand implements TabCompleter 
         }
     }
 
-
     public List<String> complete(String[] args) {
-        if (args.length == 0) {
-            return groupManager.getAllServiceGroups().stream()
-                    .map(ServiceGroup::getName)
-                    .filter(name -> name.startsWith(args[0]))
-                    .toList();
-        }
-
         if (args.length == 1) {
             return Stream.of("list", "set", "remove")
                     .filter(s -> s.startsWith(args[0].toLowerCase()))

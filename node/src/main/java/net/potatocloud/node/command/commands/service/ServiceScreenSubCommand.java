@@ -22,7 +22,7 @@ public class ServiceScreenSubCommand extends SubCommand implements TabCompleter 
 
     @Override
     public void execute(String[] args) {
-        if (args.length < 2) {
+        if (args.length < 1) {
             sendUsage();
             return;
         }

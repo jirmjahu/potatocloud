@@ -375,13 +375,6 @@ public class ServiceImpl implements Service {
         }
     }
 
-    @SneakyThrows
-    public List<String> getLogs() {
-        synchronized (logs) {
-            return new ArrayList<>(logs);
-        }
-    }
-
     @Override
     public String getPropertyHolderName() {
         return getName();

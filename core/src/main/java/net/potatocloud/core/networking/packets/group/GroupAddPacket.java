@@ -9,7 +9,7 @@ import net.potatocloud.core.networking.PacketIds;
 import net.potatocloud.core.networking.netty.PacketBuffer;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -29,7 +29,7 @@ public class GroupAddPacket implements Packet {
     private int startPercentage;
     private String javaCommand;
     private List<String> customJvmFlags;
-    private Set<Property> properties;
+    private Map<String, Property<?>> propertyMap;
 
     @Override
     public int getId() {
@@ -51,7 +51,7 @@ public class GroupAddPacket implements Packet {
         buf.writeInt(startPercentage);
         buf.writeString(javaCommand);
         buf.writeStringList(customJvmFlags);
-        buf.writePropertySet(properties);
+        buf.writePropertyMap(propertyMap);
     }
 
     @Override
@@ -69,6 +69,6 @@ public class GroupAddPacket implements Packet {
         startPercentage = buf.readInt();
         javaCommand = buf.readString();
         customJvmFlags = buf.readStringList();
-        properties = buf.readPropertySet();
+        propertyMap = buf.readPropertyMap();
     }
 }

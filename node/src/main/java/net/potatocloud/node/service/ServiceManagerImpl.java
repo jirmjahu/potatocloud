@@ -87,7 +87,7 @@ public class ServiceManagerImpl implements ServiceManager {
                 service.getName(),
                 service.getStatus().name(),
                 service.getMaxPlayers(),
-                service.getProperties()
+                service.getPropertyMap()
         ));
     }
 
@@ -123,7 +123,7 @@ public class ServiceManagerImpl implements ServiceManager {
                 service.getPort(),
                 service.getStartTimestamp(),
                 service.getServiceGroup().getName(),
-                service.getProperties(),
+                service.getPropertyMap(),
                 service.getStatus().name(),
                 service.getMaxPlayers())
         );

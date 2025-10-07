@@ -8,8 +8,8 @@ import net.potatocloud.api.property.Property;
 import org.simpleyaml.configuration.file.YamlFile;
 
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 @UtilityClass
 public class ServiceGroupStorage {
@@ -35,7 +35,7 @@ public class ServiceGroupStorage {
         }
 
         if (!group.getProperties().isEmpty()) {
-            for (Property property : group.getProperties()) {
+            for (Property<?> property : group.getProperties()) {
                 config.set("properties." + property.getName() + ".value", property.getValue());
                 config.set("properties." + property.getName() + ".default", property.getDefaultValue());
             }
@@ -49,7 +49,7 @@ public class ServiceGroupStorage {
         final YamlFile config = new YamlFile(groupFile.toFile());
         config.load();
 
-        final Set<Property> properties = new HashSet<>();
+        final Map<String, Property<?>> properties = new HashMap<>();
         if (config.isSet("properties")) {
             for (String key : config.getConfigurationSection("properties").getKeys(false)) {
                 final Object value = config.get("properties." + key + ".value");
@@ -58,7 +58,7 @@ public class ServiceGroupStorage {
                     defaultValue = value;
                 }
 
-                properties.add(Property.of(key, defaultValue, value));
+                properties.put(key, Property.of(key, defaultValue, value));
             }
         }
 

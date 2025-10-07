@@ -2,6 +2,7 @@ package net.potatocloud.node.utils;
 
 import lombok.experimental.UtilityClass;
 import net.potatocloud.api.group.ServiceGroup;
+import net.potatocloud.api.property.DefaultProperties;
 import net.potatocloud.api.property.Property;
 import net.potatocloud.node.Node;
 
@@ -22,11 +23,11 @@ public class ProxyUtils {
         if (getProxyGroup() == null) {
             return false;
         }
-        final Property property = getProxyGroup().getProperty("velocity_modern_forwarding");
+        final Property<Boolean> property = getProxyGroup().getProperty(DefaultProperties.VELOCITY_MODERN_FORWARDING);
         if (property == null) {
             return false;
         }
 
-        return (boolean) property.getValue();
+        return property.getValue();
     }
 }

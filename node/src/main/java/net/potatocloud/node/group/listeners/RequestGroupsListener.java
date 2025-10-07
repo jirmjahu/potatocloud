@@ -30,7 +30,7 @@ public class RequestGroupsListener implements PacketListener<RequestGroupsPacket
                     group.getStartPercentage(),
                     group.getJavaCommand(),
                     group.getCustomJvmFlags(),
-                    group.getProperties()
+                    group.getPropertyMap()
             ));
         }
     }

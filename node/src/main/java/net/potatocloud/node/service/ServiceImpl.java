@@ -35,10 +35,7 @@ import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Getter
@@ -62,7 +59,7 @@ public class ServiceImpl implements Service {
     private final ServiceManager serviceManager;
     private final Console console;
 
-    private final Set<Property> properties;
+    private final Map<String, Property<?>> propertyMap;
     private final Screen screen;
 
     @Setter
@@ -112,7 +109,7 @@ public class ServiceImpl implements Service {
         this.console = console;
 
         maxPlayers = serviceGroup.getMaxPlayers();
-        properties = new HashSet<>(serviceGroup.getProperties());
+        propertyMap = new HashMap<>(serviceGroup.getPropertyMap());
 
         screen = new Screen(getName());
         screenManager.addScreen(screen);

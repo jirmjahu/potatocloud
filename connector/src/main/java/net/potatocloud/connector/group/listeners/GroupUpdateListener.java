@@ -34,9 +34,9 @@ public class GroupUpdateListener implements PacketListener<GroupUpdatePacket> {
         group.getCustomJvmFlags().clear();
         packet.getCustomJvmFlags().forEach(group::addCustomJvmFlag);
 
-        group.getProperties().clear();
-        for (Property property : packet.getProperties()) {
-            group.setProperty(property, property.getValue(), false);
+        group.getPropertyMap().clear();
+        for (Property<?> property : packet.getPropertyMap().values()) {
+            group.setProperty((Property) property, property.getValue(), false);
         }
     }
 }

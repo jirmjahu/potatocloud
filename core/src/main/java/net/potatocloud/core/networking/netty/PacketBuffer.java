@@ -10,9 +10,9 @@ import net.potatocloud.api.property.Property;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class PacketBuffer {
@@ -101,13 +101,13 @@ public class PacketBuffer {
         };
     }
 
-    public void writeProperty(Property property) {
+    public <T> void writeProperty(Property<T> property) {
         writeString(property.getName());
         writeObject(property.getDefaultValue());
         writeObject(property.getValue());
     }
 
-    public Property readProperty() {
+    public Property<?> readProperty() {
         final String name = readString();
         final Object defaultValue = readObject();
         final Object value = readObject();
@@ -115,20 +115,22 @@ public class PacketBuffer {
         return Property.of(name, defaultValue, value);
     }
 
-    public void writePropertySet(Set<Property> properties) {
-        buf.writeInt(properties.size());
-        for (Property property : properties) {
-            writeProperty(property);
+    public void writePropertyMap(Map<String, Property<?>> propertyMap) {
+        writeInt(propertyMap.size());
+        for (Property<?> prop : propertyMap.values()) {
+            writeProperty(prop);
         }
     }
 
-    public Set<Property> readPropertySet() {
+    public Map<String, Property<?>> readPropertyMap() {
         final int size = readInt();
-        final Set<Property> properties = new HashSet<>(size);
+        final Map<String, Property<?>> map = new HashMap<>(size);
         for (int i = 0; i < size; i++) {
-            properties.add(readProperty());
+            final Property<?> property = readProperty();
+
+            map.put(property.getName(), property);
         }
-        return properties;
+        return map;
     }
 
     public void writeLong(long value) {

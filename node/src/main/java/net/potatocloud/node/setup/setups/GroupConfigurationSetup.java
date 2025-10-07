@@ -5,7 +5,7 @@ import net.potatocloud.api.group.ServiceGroupManager;
 import net.potatocloud.api.platform.Platform;
 import net.potatocloud.api.platform.PlatformManager;
 import net.potatocloud.api.platform.PlatformVersion;
-import net.potatocloud.api.property.Property;
+import net.potatocloud.api.property.DefaultProperties;
 import net.potatocloud.node.Node;
 import net.potatocloud.node.console.Console;
 import net.potatocloud.node.screen.ScreenManager;
@@ -178,7 +178,7 @@ public class GroupConfigurationSetup extends Setup {
         final String modernForwarding = answers.get("velocity_modern_forwarding");
         if (modernForwarding != null) {
             final ServiceGroup group = groupManager.getServiceGroup(name);
-            group.setProperty(Property.ofBoolean("velocity_modern_forwarding", Boolean.parseBoolean(modernForwarding)));
+            group.setProperty(DefaultProperties.VELOCITY_MODERN_FORWARDING, Boolean.parseBoolean(modernForwarding));
             group.update();
         }
     }

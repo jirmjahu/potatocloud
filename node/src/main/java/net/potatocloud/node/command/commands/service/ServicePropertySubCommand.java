@@ -1,6 +1,7 @@
 package net.potatocloud.node.command.commands.service;
 
 import lombok.RequiredArgsConstructor;
+import net.potatocloud.api.property.DefaultProperties;
 import net.potatocloud.api.property.Property;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceManager;
@@ -46,7 +47,7 @@ public class ServicePropertySubCommand extends SubCommand implements TabComplete
                     return;
                 }
 
-                final Set<Property> properties = service.getProperties();
+                final List<Property<?>> properties = service.getProperties();
 
                 if (properties.isEmpty()) {
                     logger.info("No properties found for service &a" + name);
@@ -137,7 +138,7 @@ public class ServicePropertySubCommand extends SubCommand implements TabComplete
         if (args.length == 3 && args[0].equalsIgnoreCase("set")) {
             final List<String> completions = new ArrayList<>();
             completions.add("<custom>");
-            completions.addAll(Property.getDefaultProperties().stream()
+            completions.addAll(DefaultProperties.asSet().stream()
                     .map(Property::getName)
                     .filter(s -> s.startsWith(args[2].toLowerCase()))
                     .toList());

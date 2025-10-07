@@ -4,6 +4,7 @@ import com.velocitypowered.api.proxy.Player;
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.CloudAPI;
 import net.potatocloud.api.group.ServiceGroup;
+import net.potatocloud.api.property.DefaultProperties;
 import net.potatocloud.api.property.Property;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceManager;
@@ -11,7 +12,6 @@ import net.potatocloud.plugins.cloudcommand.MessagesConfig;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @RequiredArgsConstructor
 public class ServiceSubCommand {
@@ -162,7 +162,7 @@ public class ServiceSubCommand {
 
         switch (sub) {
             case "list" -> {
-                final Set<Property> props = service.getProperties();
+                final List<Property<?>> props = service.getProperties();
 
                 if (props.isEmpty()) {
                     player.sendMessage(messages.get("service.property.empty")
@@ -330,7 +330,7 @@ public class ServiceSubCommand {
             if (args.length == 5 && args[2].equalsIgnoreCase("set")) {
                 List<String> completions = new ArrayList<>();
                 completions.add("<custom>");
-                completions.addAll(Property.getDefaultProperties().stream()
+                completions.addAll(DefaultProperties.asSet().stream()
                         .map(Property::getName)
                         .filter(name -> name.toLowerCase().startsWith(args[4].toLowerCase()))
                         .toList());

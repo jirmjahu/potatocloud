@@ -28,7 +28,7 @@ public class GroupAddListener implements PacketListener<GroupAddPacket> {
                 packet.getStartPercentage(),
                 packet.getJavaCommand(),
                 packet.getCustomJvmFlags(),
-                packet.getProperties()
+                packet.getPropertyMap()
         );
 
         Node.getInstance().getServer().getConnectedSessions().stream()

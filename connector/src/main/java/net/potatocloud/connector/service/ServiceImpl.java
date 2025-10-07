@@ -7,13 +7,13 @@ import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.property.Property;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceStatus;
+import net.potatocloud.connector.ConnectorAPI;
 import net.potatocloud.core.networking.NetworkClient;
 import net.potatocloud.core.networking.packets.service.ServiceCopyPacket;
 import net.potatocloud.core.networking.packets.service.ServiceExecuteCommandPacket;
 import net.potatocloud.core.networking.packets.service.StopServicePacket;
-import net.potatocloud.connector.ConnectorAPI;
 
-import java.util.Set;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -25,7 +25,7 @@ public class ServiceImpl implements Service {
     private final int port;
     private final long startTimestamp;
     private final ServiceGroup group;
-    private final Set<Property> properties;
+    private final Map<String, Property<?>> propertyMap;
     private ServiceStatus status;
     private int maxPlayers;
 

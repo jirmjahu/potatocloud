@@ -3,6 +3,7 @@ package net.potatocloud.node.command.commands.group;
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.group.ServiceGroupManager;
+import net.potatocloud.api.property.DefaultProperties;
 import net.potatocloud.api.property.Property;
 import net.potatocloud.node.command.SubCommand;
 import net.potatocloud.node.command.SubCommandInfo;
@@ -11,7 +12,6 @@ import net.potatocloud.node.console.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -46,7 +46,7 @@ public class GroupPropertySubCommand extends SubCommand implements TabCompleter 
                     return;
                 }
 
-                final Set<Property> properties = group.getProperties();
+                final List<Property<?>> properties = group.getProperties();
 
                 if (properties.isEmpty()) {
                     logger.info("No properties found for group &a" + name);
@@ -137,7 +137,7 @@ public class GroupPropertySubCommand extends SubCommand implements TabCompleter 
         if (args.length == 3 && args[0].equalsIgnoreCase("set")) {
             final List<String> completions = new ArrayList<>();
             completions.add("<custom>");
-            completions.addAll(Property.getDefaultProperties().stream()
+            completions.addAll(DefaultProperties.asSet().stream()
                     .map(Property::getName)
                     .filter(s -> s.startsWith(args[2].toLowerCase()))
                     .toList());

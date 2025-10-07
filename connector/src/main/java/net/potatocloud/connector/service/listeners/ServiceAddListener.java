@@ -23,7 +23,7 @@ public class ServiceAddListener implements PacketListener<ServiceAddPacket> {
                 packet.getPort(),
                 packet.getStartTimestamp(),
                 CloudAPI.getInstance().getServiceGroupManager().getServiceGroup(packet.getGroupName()),
-                packet.getProperties(),
+                packet.getPropertyMap(),
                 ServiceStatus.valueOf(packet.getStatus()),
                 packet.getMaxPlayers()
         );

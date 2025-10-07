@@ -14,10 +14,7 @@ import net.potatocloud.connector.group.listeners.GroupAddListener;
 import net.potatocloud.connector.group.listeners.GroupDeleteListener;
 import net.potatocloud.connector.group.listeners.GroupUpdateListener;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ServiceGroupManagerImpl implements ServiceGroupManager {
 
@@ -55,7 +52,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
     }
 
     @Override
-    public void createServiceGroup(String name, String platformName, String platformVersionName, int minOnlineCount, int maxOnlineCount, int maxPlayers, int maxMemory, boolean fallback, boolean isStatic, int startPriority, int startPercentage, String javaCommand, List<String> customJvmFlags, Set<Property> properties) {
+    public void createServiceGroup(String name, String platformName, String platformVersionName, int minOnlineCount, int maxOnlineCount, int maxPlayers, int maxMemory, boolean fallback, boolean isStatic, int startPriority, int startPercentage, String javaCommand, List<String> customJvmFlags, Map<String, Property<?>> propertyMap) {
         client.send(new GroupAddPacket(
                 name,
                 platformName,
@@ -70,7 +67,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
                 startPercentage,
                 javaCommand,
                 customJvmFlags,
-                properties
+                propertyMap
         ));
 
         final ServiceGroupImpl group = new ServiceGroupImpl(
@@ -87,7 +84,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
                 startPercentage,
                 javaCommand,
                 customJvmFlags,
-                properties
+                propertyMap
         );
 
         addServiceGroup(group);
@@ -121,7 +118,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
                 group.getStartPriority(),
                 group.getStartPercentage(),
                 group.getServiceTemplates(),
-                group.getProperties(),
+                group.getPropertyMap(),
                 group.getCustomJvmFlags()
         ));
     }

@@ -58,7 +58,7 @@ public class ServiceManagerImpl implements ServiceManager {
                 service.getName(),
                 service.getStatus().name(),
                 service.getMaxPlayers(),
-                service.getProperties())
+                service.getPropertyMap())
         );
     }
 

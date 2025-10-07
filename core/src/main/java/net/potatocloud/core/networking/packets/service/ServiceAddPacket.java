@@ -8,6 +8,7 @@ import net.potatocloud.core.networking.Packet;
 import net.potatocloud.core.networking.PacketIds;
 import net.potatocloud.core.networking.netty.PacketBuffer;
 
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -20,7 +21,7 @@ public class ServiceAddPacket implements Packet {
     private int port;
     private long startTimestamp;
     private String groupName;
-    private Set<Property> properties;
+    private Map<String, Property<?>> propertyMap;
     private String status;
     private int maxPlayers;
 
@@ -36,7 +37,7 @@ public class ServiceAddPacket implements Packet {
         buf.writeInt(port);
         buf.writeLong(startTimestamp);
         buf.writeString(groupName);
-        buf.writePropertySet(properties);
+        buf.writePropertyMap(propertyMap);
         buf.writeString(status);
         buf.writeInt(maxPlayers);
     }
@@ -48,7 +49,7 @@ public class ServiceAddPacket implements Packet {
         port = buf.readInt();
         startTimestamp = buf.readLong();
         groupName = buf.readString();
-        properties = buf.readPropertySet();
+        propertyMap = buf.readPropertyMap();
         status = buf.readString();
         maxPlayers = buf.readInt();
     }

@@ -23,7 +23,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class ServiceGroupManagerImpl implements ServiceGroupManager {
@@ -73,7 +73,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
             int startPercentage,
             String javaCommand,
             List<String> customJvmFlags,
-            Set<Property> properties
+            Map<String, Property<?>> propertyMap
     ) {
 
         if (existsServiceGroup(name)) {
@@ -94,7 +94,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
                 startPercentage,
                 javaCommand,
                 customJvmFlags,
-                properties
+                propertyMap
         );
 
         for (String templateName : serviceGroup.getServiceTemplates()) {
@@ -116,7 +116,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
                 startPercentage,
                 javaCommand,
                 customJvmFlags,
-                properties
+                propertyMap
         ));
 
         ServiceGroupStorage.saveToFile(serviceGroup, groupsPath);
@@ -157,7 +157,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
                 group.getStartPriority(),
                 group.getStartPercentage(),
                 group.getServiceTemplates(),
-                group.getProperties(),
+                group.getPropertyMap(),
                 group.getCustomJvmFlags()
         ));
     }

@@ -2,10 +2,7 @@ package net.potatocloud.api.group;
 
 import net.potatocloud.api.property.Property;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public interface ServiceGroupManager {
 
@@ -40,7 +37,7 @@ public interface ServiceGroupManager {
                 startPercentage,
                 "java",
                 new ArrayList<>(),
-                new HashSet<>()
+                new HashMap<>()
         );
     }
 
@@ -58,7 +55,7 @@ public interface ServiceGroupManager {
             int startPercentage,
             String javaCommand,
             List<String> customJvmFlags,
-            Set<Property> properties
+            Map<String, Property<?>> propertyMap
     );
 
 

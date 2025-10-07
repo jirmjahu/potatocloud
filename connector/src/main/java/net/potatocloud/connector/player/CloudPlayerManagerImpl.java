@@ -97,7 +97,7 @@ public class CloudPlayerManagerImpl implements CloudPlayerManager {
     @Override
     public void updatePlayer(CloudPlayer player) {
         client.send(new CloudPlayerUpdatePacket(player.getUniqueId(), player.getConnectedProxyName(),
-                player.getConnectedServiceName(), player.getProperties()));
+                player.getConnectedServiceName(), player.getPropertyMap()));
     }
 }
 

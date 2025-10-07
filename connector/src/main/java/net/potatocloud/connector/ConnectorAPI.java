@@ -6,14 +6,14 @@ import net.potatocloud.api.group.ServiceGroupManager;
 import net.potatocloud.api.platform.PlatformManager;
 import net.potatocloud.api.player.CloudPlayerManager;
 import net.potatocloud.api.service.ServiceManager;
-import net.potatocloud.core.event.ClientEventManager;
-import net.potatocloud.core.networking.NetworkClient;
-import net.potatocloud.core.networking.PacketManager;
-import net.potatocloud.core.networking.netty.NettyNetworkClient;
 import net.potatocloud.connector.group.ServiceGroupManagerImpl;
 import net.potatocloud.connector.platform.PlatformManagerImpl;
 import net.potatocloud.connector.player.CloudPlayerManagerImpl;
 import net.potatocloud.connector.service.ServiceManagerImpl;
+import net.potatocloud.core.event.ClientEventManager;
+import net.potatocloud.core.networking.NetworkClient;
+import net.potatocloud.core.networking.PacketManager;
+import net.potatocloud.core.networking.netty.NettyNetworkClient;
 
 @Getter
 public class ConnectorAPI extends CloudAPI {

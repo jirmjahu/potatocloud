@@ -9,7 +9,6 @@ import net.potatocloud.core.networking.PacketIds;
 import net.potatocloud.core.networking.netty.PacketBuffer;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 @Data

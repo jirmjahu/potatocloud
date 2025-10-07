@@ -4,7 +4,6 @@ import lombok.SneakyThrows;
 import net.potatocloud.api.platform.Platform;
 import net.potatocloud.api.platform.PrepareStep;
 import net.potatocloud.api.property.DefaultProperties;
-import net.potatocloud.api.property.Property;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.node.platform.VelocityForwardingSecret;
 import net.potatocloud.node.utils.ProxyUtils;

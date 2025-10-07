@@ -2,7 +2,10 @@ package net.potatocloud.api.group;
 
 import net.potatocloud.api.property.Property;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface ServiceGroupManager {
 

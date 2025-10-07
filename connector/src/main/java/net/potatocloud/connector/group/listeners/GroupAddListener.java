@@ -2,10 +2,10 @@ package net.potatocloud.connector.group.listeners;
 
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.group.impl.ServiceGroupImpl;
+import net.potatocloud.connector.group.ServiceGroupManagerImpl;
 import net.potatocloud.core.networking.NetworkConnection;
 import net.potatocloud.core.networking.PacketListener;
 import net.potatocloud.core.networking.packets.group.GroupAddPacket;
-import net.potatocloud.connector.group.ServiceGroupManagerImpl;
 
 @RequiredArgsConstructor
 public class GroupAddListener implements PacketListener<GroupAddPacket> {

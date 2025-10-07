@@ -6,8 +6,6 @@ import net.potatocloud.api.platform.PrepareStep;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.node.utils.PropertiesUtils;
 
-import java.io.FileInputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;

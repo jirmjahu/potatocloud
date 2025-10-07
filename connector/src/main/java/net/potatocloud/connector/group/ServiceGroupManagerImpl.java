@@ -4,17 +4,20 @@ import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.group.ServiceGroupManager;
 import net.potatocloud.api.group.impl.ServiceGroupImpl;
 import net.potatocloud.api.property.Property;
+import net.potatocloud.connector.group.listeners.GroupAddListener;
+import net.potatocloud.connector.group.listeners.GroupDeleteListener;
+import net.potatocloud.connector.group.listeners.GroupUpdateListener;
 import net.potatocloud.core.networking.NetworkClient;
 import net.potatocloud.core.networking.PacketIds;
 import net.potatocloud.core.networking.packets.group.GroupAddPacket;
 import net.potatocloud.core.networking.packets.group.GroupDeletePacket;
 import net.potatocloud.core.networking.packets.group.GroupUpdatePacket;
 import net.potatocloud.core.networking.packets.group.RequestGroupsPacket;
-import net.potatocloud.connector.group.listeners.GroupAddListener;
-import net.potatocloud.connector.group.listeners.GroupDeleteListener;
-import net.potatocloud.connector.group.listeners.GroupUpdateListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class ServiceGroupManagerImpl implements ServiceGroupManager {
 

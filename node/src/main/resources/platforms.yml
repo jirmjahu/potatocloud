@@ -13,6 +13,8 @@ paper:
     - setup-proxy
   versions:
     - version: latest
+    - version: 1.21.10
+    - version: 1.21.9
     - version: 1.21.8
     - version: 1.21.7
     - version: 1.21.6
@@ -52,6 +54,8 @@ purpur:
     - setup-proxy
   versions:
     - version: latest
+    - version: 1.21.10
+    - version: 1.21.9
     - version: 1.21.8
     - version: 1.21.7
     - version: 1.21.6
@@ -85,7 +89,7 @@ pufferfish:
     - setup-proxy
   versions:
     - version: 1.21.8
-      download: https://ci.pufferfish.host/job/Pufferfish-1.21/32/artifact/pufferfish-server/build/libs/pufferfish-paperclip-1.21.8-R0.1-SNAPSHOT-mojmap.jar
+      download: https://ci.pufferfish.host/job/Pufferfish-1.21/33/artifact/pufferfish-server/build/libs/pufferfish-paperclip-1.21.8-R0.1-SNAPSHOT-mojmap.jar
     - version: 1.20.4
       download: https://ci.pufferfish.host/job/Pufferfish-1.20/52/artifact/build/libs/pufferfish-paperclip-1.20.4-R0.1-SNAPSHOT-reobf.jar
 limbo:

@@ -106,7 +106,6 @@ public class Node extends CloudAPI {
         }
 
         platformManager = new PlatformManagerImpl(logger, server);
-        platformManager.loadPlatformsFile();
         downloadManager = new DownloadManager(Path.of(config.getPlatformsFolder()), logger);
         cacheManager = new CacheManager(logger);
 

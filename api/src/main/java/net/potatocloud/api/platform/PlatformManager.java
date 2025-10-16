@@ -13,4 +13,7 @@ public interface PlatformManager {
     default boolean exists(String name) {
         return getPlatform(name) != null;
     }
+
+    void updatePlatform(Platform platform);
+
 }

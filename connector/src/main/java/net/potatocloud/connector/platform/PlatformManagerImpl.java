@@ -29,4 +29,9 @@ public class PlatformManagerImpl implements PlatformManager {
 
         client.send(new RequestPlatformsPacket());
     }
+
+    @Override
+    public void updatePlatform(Platform platform) {
+        //TODO
+    }
 }

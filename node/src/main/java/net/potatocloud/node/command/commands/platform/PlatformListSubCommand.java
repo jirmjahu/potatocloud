@@ -11,8 +11,8 @@ import net.potatocloud.node.console.Logger;
 @SubCommandInfo(name = "list", description = "List all available platforms", usage = "platform list")
 public class PlatformListSubCommand extends SubCommand {
 
-    private final Logger logger;
     private final PlatformManager platformManager;
+    private final Logger logger;
 
     @Override
     public void execute(String[] args) {

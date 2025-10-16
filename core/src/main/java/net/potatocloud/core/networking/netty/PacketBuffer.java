@@ -148,14 +148,14 @@ public class PacketBuffer {
         writeBoolean(platform.isProxy());
         writeString(platform.getBase());
         writeString(platform.getPreCacheBuilder());
+        writeString(platform.getParser());
+        writeString(platform.getHashType());
 
         writeInt(platform.getVersions().size());
         for (PlatformVersion version : platform.getVersions()) {
             writeString(version.getPlatformName());
             writeString(version.getName());
             writeString(version.getDownloadUrl());
-            writeString(version.getParser());
-            writeString(version.getHashType());
             writeString(version.getFileHash());
             writeBoolean(version.isLegacy());
         }
@@ -170,22 +170,21 @@ public class PacketBuffer {
         final boolean isProxy = readBoolean();
         final String base = readString();
         final String preCacheBuilder = readString();
+        final String parser = readString();
+        final String hashType = readString();
 
-        final PlatformImpl platform = new PlatformImpl(name, downloadUrl, custom, isProxy, base, preCacheBuilder);
+        final PlatformImpl platform = new PlatformImpl(name, downloadUrl, custom, isProxy, base, preCacheBuilder, parser, hashType);
 
         final int versionCount = readInt();
         for (int i = 0; i < versionCount; i++) {
             final String platformName = readString();
             final String versionName = readString();
             final String versionDownloadUrl = readString();
-            final String parser = readString();
-            final String hashType = readString();
             final String fileHash = readString();
             final boolean legacy = readBoolean();
 
-
             final PlatformVersion version = new PlatformVersionImpl(
-                    platformName, versionName, versionDownloadUrl, parser, hashType, fileHash, legacy);
+                    platformName, versionName, versionDownloadUrl, fileHash, legacy);
             platform.getVersions().add(version);
         }
 

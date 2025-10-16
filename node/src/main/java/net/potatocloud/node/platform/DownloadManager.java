@@ -40,7 +40,7 @@ public class DownloadManager {
         final File platformFile = PlatformUtils.getPlatformJarFile(platform, version);
 
         final BuildParser parser = PARSERS.stream()
-                .filter(p -> p.getName().equalsIgnoreCase(version.getParser()))
+                .filter(p -> p.getName().equalsIgnoreCase(platform.getParser()))
                 .findFirst()
                 .orElse(null);
 
@@ -82,7 +82,7 @@ public class DownloadManager {
         }
 
         try (FileInputStream stream = new FileInputStream(platformFile)) {
-            final String currentFileHash = version.getHashType().equals("md5")
+            final String currentFileHash = version.getPlatform().getHashType().equals("md5")
                     ? DigestUtils.md5Hex(stream)
                     : DigestUtils.sha256Hex(stream);
 

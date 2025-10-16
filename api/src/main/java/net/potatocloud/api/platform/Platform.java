@@ -1,5 +1,7 @@
 package net.potatocloud.api.platform;
 
+import net.potatocloud.api.CloudAPI;
+
 import java.util.List;
 
 public interface Platform {
@@ -20,11 +22,25 @@ public interface Platform {
 
     String getPreCacheBuilder();
 
+    String getParser();
+
+    String getHashType();
+
+    void addVersion(PlatformVersion version);
+
+    default void update() {
+        CloudAPI.getInstance().getPlatformManager().updatePlatform(this);
+    }
+
     default PlatformVersion getVersion(String name) {
         return getVersions().stream()
                 .filter(version -> version.getName().equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(null);
+    }
+
+    default boolean hasVersion(String name) {
+        return getVersion(name) != null;
     }
 
     default boolean isBukkitBased() {

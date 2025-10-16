@@ -20,7 +20,14 @@ public class PlatformImpl implements Platform {
     private final boolean isProxy;
     private final String base;
     private final String preCacheBuilder;
+    private final String parser;
+    private final String hashType;
 
     private final List<PlatformVersion> versions = new ArrayList<>();
     private final List<String> prepareSteps = new ArrayList<>();
+
+    @Override
+    public void addVersion(PlatformVersion version) {
+        versions.add(version);
+    }
 }

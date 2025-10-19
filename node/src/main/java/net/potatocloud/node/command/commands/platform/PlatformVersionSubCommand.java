@@ -102,17 +102,19 @@ public class PlatformVersionSubCommand extends SubCommand implements TabComplete
             }
 
             case "info" -> {
-                if (args.length < 2) {
+                if (args.length < 3) {
                     sendUsage();
                     return;
                 }
 
-                final PlatformVersion version = platformManager.getPlatforms().stream()
-                        .flatMap(p -> p.getVersions().stream())
-                        .filter(v -> v.getName().equalsIgnoreCase(args[1]))
-                        .findFirst()
-                        .orElse(null);
 
+                final Platform platform = platformManager.getPlatform(args[1]);
+                if (platform == null) {
+                    logger.info("This platform does &cnot &7exist");
+                    return;
+                }
+
+                final PlatformVersion version = platform.getVersion(args[2]);
                 if (version == null) {
                     logger.info("This platform version does &cnot &7exist");
                     return;
@@ -136,14 +138,14 @@ public class PlatformVersionSubCommand extends SubCommand implements TabComplete
                     .toList();
         }
 
-        if (args.length == 2 && List.of("add", "remove", "list").contains(args[0].toLowerCase())) {
+        if (args.length == 2 && List.of("add", "remove", "list", "info").contains(args[0].toLowerCase())) {
             return platformManager.getPlatforms().stream()
                     .map(Platform::getName)
                     .filter(name -> name.toLowerCase().startsWith(args[1].toLowerCase()))
                     .toList();
         }
 
-        if (args.length == 3 && args[0].equalsIgnoreCase("remove")) {
+        if (args.length == 3 && List.of("add", "remove", "info").contains(args[0].toLowerCase())) {
             final Platform platform = platformManager.getPlatform(args[1]);
             if (platform != null) {
                 return platform.getVersions().stream()

@@ -43,11 +43,10 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!--TODO move to properties -->
         <dependency>
             <groupId>com.loohp</groupId>
             <artifactId>Limbo</artifactId>
-            <version>0.7.16-ALPHA</version>
+            <version>${limbo.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

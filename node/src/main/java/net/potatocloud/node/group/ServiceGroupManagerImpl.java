@@ -97,9 +97,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
                 propertyMap
         );
 
-        for (String templateName : serviceGroup.getServiceTemplates()) {
-            Node.getInstance().getTemplateManager().createTemplate(templateName);
-        }
+        addServiceGroup(serviceGroup);
 
         // send group add packet to clients
         server.broadcastPacket(new GroupAddPacket(
@@ -119,8 +117,20 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
                 propertyMap
         ));
 
-        ServiceGroupStorage.saveToFile(serviceGroup, groupsPath);
-        groups.add(serviceGroup);
+        Node.getInstance().getLogger().info("Group &a" + name + " &7was successfully created");
+    }
+
+    public void addServiceGroup(ServiceGroup group) {
+        if (group == null || existsServiceGroup(group.getName())) {
+            return;
+        }
+
+        for (String templateName : group.getServiceTemplates()) {
+            Node.getInstance().getTemplateManager().createTemplate(templateName);
+        }
+
+        ServiceGroupStorage.saveToFile(group, groupsPath);
+        groups.add(group);
     }
 
     @Override

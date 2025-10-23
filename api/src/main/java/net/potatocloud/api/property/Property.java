@@ -8,12 +8,27 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Property<T> {
 
+    /**
+     * The name of the property.
+     */
     private final String name;
+
+    /**
+     * The default value of the property.
+     */
     private final T defaultValue;
 
+    /**
+     * The value of the property.
+     */
     @Setter
     private T value;
 
+    /**
+     * Gets the current value of the property. Returns the default value if the current value is {@code null}
+     *
+     * @return the property value
+     */
     public T getValue() {
         return value != null ? value : defaultValue;
     }

@@ -11,23 +11,54 @@ import net.potatocloud.api.service.ServiceManager;
 @Getter
 public abstract class CloudAPI {
 
+    /**
+     * The current CloudAPI instance.
+     */
     @Getter
     private static CloudAPI instance;
 
+    /**
+     * The current version.
+     */
     public static final String VERSION = "1.3.0";
 
     public CloudAPI() {
         instance = this;
     }
 
+    /**
+     * Gets the service group manager.
+     *
+     * @return the service group manager
+     */
     public abstract ServiceGroupManager getServiceGroupManager();
 
+    /**
+     * Gets the service manager.
+     *
+     * @return the service manager
+     */
     public abstract ServiceManager getServiceManager();
 
+    /**
+     * Gets the platform manager.
+     *
+     * @return the platform manager
+     */
     public abstract PlatformManager getPlatformManager();
 
+    /**
+     * Gets the event manager.
+     *
+     * @return the event manager
+     */
     public abstract EventManager getEventManager();
 
+    /**
+     * Gets the player manager.
+     *
+     * @return the player manager
+     */
     public abstract CloudPlayerManager getPlayerManager();
 
     /**

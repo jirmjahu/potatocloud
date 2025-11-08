@@ -46,7 +46,7 @@ public class ConsoleCompleter implements Completer {
                 candidates.add(new Candidate("back"));
                 candidates.add(new Candidate("cancel"));
 
-                final List<String> possibleChoices = currentSetup.getQuestions().get(currentSetup.getCurrentIndex()).getPossibleChoices(currentSetup.getAnswers());
+                final List<String> possibleChoices = currentSetup.getQuestions().get(currentSetup.getCurrentIndex()).getSuggestions();
                 if (possibleChoices != null) {
                     for (String possibleChoice : possibleChoices) {
                         candidates.add(new Candidate(possibleChoice));

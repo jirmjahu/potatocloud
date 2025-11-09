@@ -15,6 +15,7 @@ public abstract class AbstractQuestion implements Question {
 
     private final String name;
     private final String prompt;
+    private final QuestionType type;
     private QuestionSkipCondition skipCondition;
     private String defaultAnswer;
     private SuggestionProvider suggestions;
@@ -39,22 +40,27 @@ public abstract class AbstractQuestion implements Question {
     @Override
     public boolean validateInput(String input) {
         final AnswerValidator defaultValidator = getDefaultValidator();
-        if (defaultValidator != null && defaultValidator.validateInput(input).isSuccess()) {
-            return false;
-        }
+        if (defaultValidator != null) {
+            final AnswerResult result = defaultValidator.validateInput(input);
 
-        return customValidator == null || customValidator.validateInput(input).isSuccess();
-    }
-
-    @Override
-    public String getValidatorError(String input) {
-        if (customValidator != null) {
-            final AnswerResult result = customValidator.validateInput(input);
             if (!result.isSuccess()) {
-                return result.getErrorMessage();
+                return false;
             }
         }
 
+        if (customValidator != null) {
+            final AnswerResult result = customValidator.validateInput(input);
+            if (!result.isSuccess()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    @Override
+    public String getValidatorError(String input) {
         final AnswerValidator defaultValidator = getDefaultValidator();
         if (defaultValidator != null) {
             final AnswerResult result = defaultValidator.validateInput(input);
@@ -63,8 +69,16 @@ public abstract class AbstractQuestion implements Question {
             }
         }
 
+        if (customValidator != null) {
+            final AnswerResult result = customValidator.validateInput(input);
+            if (!result.isSuccess()) {
+                return result.getErrorMessage();
+            }
+        }
+
         return "Error";
     }
+
 }
 
 

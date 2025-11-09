@@ -7,7 +7,7 @@ public class TextValidator implements AnswerValidator {
     @Override
     public AnswerResult validateInput(String input) {
         if (input.isBlank()) {
-            return AnswerResult.error("Please enter a valid text");
+            return AnswerResult.error("The input cannot be blank");
         }
         return AnswerResult.success();
     }

@@ -3,6 +3,7 @@ package net.potatocloud.node.setup.questions;
 import lombok.Getter;
 import lombok.Setter;
 import net.potatocloud.node.setup.AbstractQuestion;
+import net.potatocloud.node.setup.QuestionType;
 import net.potatocloud.node.setup.validator.AnswerValidator;
 import net.potatocloud.node.setup.validator.TextValidator;
 
@@ -11,7 +12,7 @@ import net.potatocloud.node.setup.validator.TextValidator;
 public class TextQuestion extends AbstractQuestion {
 
     public TextQuestion(String name, String prompt) {
-        super(name, prompt);
+        super(name, prompt, QuestionType.TEXT);
     }
 
     @Override

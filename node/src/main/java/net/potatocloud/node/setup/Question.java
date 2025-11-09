@@ -33,4 +33,6 @@ public interface Question {
 
     void setCustomValidator(AnswerValidator validator);
 
+    QuestionType getType();
+
 }

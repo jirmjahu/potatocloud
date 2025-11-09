@@ -8,7 +8,6 @@ import net.potatocloud.node.console.Logger;
 import net.potatocloud.node.screen.Screen;
 import net.potatocloud.node.screen.ScreenManager;
 import net.potatocloud.node.setup.builder.QuestionBuilder;
-import net.potatocloud.node.setup.validator.BooleanValidator;
 
 import java.util.*;
 
@@ -109,8 +108,8 @@ public abstract class Setup {
         final Question question = questions.get(currentIndex);
         String answer = input;
 
-        //only replace yes and no to booleans in a question that expects a boolean
-        if (question instanceof BooleanValidator) {
+        // only replace yes and no to booleans in a boolean question
+        if (question.getType() == QuestionType.BOOLEAN) {
             if (answer.equalsIgnoreCase("yes")) {
                 answer = "true";
             }
@@ -131,12 +130,12 @@ public abstract class Setup {
             }
         }
 
-        final boolean result = question.validateInput(answer);
-        if (result) {
-            lastErrorMessage = question.getValidatorError(input);
+        if (!question.validateInput(answer)) {
+            lastErrorMessage = question.getValidatorError(answer);
             showQuestion();
             return;
         }
+
 
         answers.put(question.getName(), answer);
         lastErrorMessage = null;

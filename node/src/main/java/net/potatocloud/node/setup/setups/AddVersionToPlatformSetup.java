@@ -10,6 +10,7 @@ import net.potatocloud.node.setup.AnswerResult;
 import net.potatocloud.node.setup.Setup;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 public class AddVersionToPlatformSetup extends Setup {
@@ -48,8 +49,8 @@ public class AddVersionToPlatformSetup extends Setup {
                         final File platformFolder = new File("platforms/" + platform.getName() + "/" + answer);
                         platformFolder.mkdirs();
                     }
-
                 })
+                .suggestions(() -> List.of("true", "false", "yes", "no"))
                 .add();
 
         question("local_ready")
@@ -68,6 +69,7 @@ public class AddVersionToPlatformSetup extends Setup {
                 .skipIf(answers ->
                         answers.get("use_download").equalsIgnoreCase("true") || answers.get("use_download").equalsIgnoreCase("yes")
                 )
+                .suggestions(() -> List.of("done", "cancel"))
                 .add();
 
         question("has_template")
@@ -80,6 +82,7 @@ public class AddVersionToPlatformSetup extends Setup {
                     final String useDownload = answers.getOrDefault("use_download", "false");
                     return !(useDownload.equalsIgnoreCase("true") || useDownload.equalsIgnoreCase("yes"));
                 })
+                .suggestions(() -> List.of("true", "false", "yes", "no"))
                 .add();
 
         question("download_url")
@@ -97,11 +100,11 @@ public class AddVersionToPlatformSetup extends Setup {
                     return !(useDownload.equalsIgnoreCase("true") || useDownload.equalsIgnoreCase("yes"))
                             || (hasTemplate.equalsIgnoreCase("true") || hasTemplate.equalsIgnoreCase("yes"));
                 })
-
                 .add();
 
         question("legacy")
                 .bool("Is this a legacy version? (1.8)")
+                .suggestions(() -> List.of("true", "false", "yes", "no"))
                 .add();
     }
 

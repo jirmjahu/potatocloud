@@ -86,9 +86,12 @@ service:
     status: "<gray>Name: <green>%status%"
     online-players: "<gray>Online Players: <green>%players%"
     max-players: "<gray>Max Players: <green>%maxPlayers%"
+    online-time: "<gray>Online Time: <green>%onlineTime%"
+    start-time: "<gray>Started At: <green>%startTime%"
+    used-memory: "<gray>Used Memory: <green>%usedMemory%M"
   edit:
     usage: "<red>Usage<dark_gray>: <gray>/cloud service edit <dark_gray>[<green>name<dark_gray>] [<green>key<dark_gray>] [<green>value<dark_gray>]"
-    success: "<gray>Updated <green>%key% <gray>for service <green>%name% <gray>to<green >%value%"
+    success: "<gray>Updated <green>%key% <gray>for service <green>%name% <gray>to<green>%value%"
   property:
     usage: "<red>Usage<dark_gray>: <gray>/cloud service property [<gray>list<dark_gray>|<gray>set<dark_gray>|<gray>remove<dark_gray>] [<green>name<dark_gray>] [<green>key<dark_gray>] [<green>value<dark_gray>]"
     empty: "<gray>No properties found for service <green>%name%"

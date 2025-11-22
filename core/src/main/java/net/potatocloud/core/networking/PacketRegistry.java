@@ -24,6 +24,7 @@ public class PacketRegistry {
         manager.register(PacketIds.STOP_SERVICE, StopServicePacket::new);
         manager.register(PacketIds.SERVICE_EXECUTE_COMMAND, ServiceExecuteCommandPacket::new);
         manager.register(PacketIds.SERVICE_COPY, ServiceCopyPacket::new);
+        manager.register(PacketIds.SERVICE_MEMORY_UPDATE, ServiceMemoryUpdatePacket::new);
 
         manager.register(PacketIds.REQUEST_GROUPS, RequestGroupsPacket::new);
         manager.register(PacketIds.GROUP_ADD, GroupAddPacket::new);

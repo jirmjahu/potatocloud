@@ -11,6 +11,7 @@ public class PacketIds {
     public static final int STOP_SERVICE = 6;
     public static final int SERVICE_EXECUTE_COMMAND = 7;
     public static final int SERVICE_COPY = 8;
+    public static final int SERVICE_MEMORY_UPDATE = 9;
 
     public static final int REQUEST_GROUPS = 100;
     public static final int GROUP_ADD = 101;

@@ -7,7 +7,6 @@ public enum ServiceStatus {
      */
     STARTING,
 
-
     /**
      * The service is running.
      */

@@ -25,7 +25,8 @@ public class ServiceAddListener implements PacketListener<ServiceAddPacket> {
                 CloudAPI.getInstance().getServiceGroupManager().getServiceGroup(packet.getGroupName()),
                 packet.getPropertyMap(),
                 ServiceStatus.valueOf(packet.getStatus()),
-                packet.getMaxPlayers()
+                packet.getMaxPlayers(),
+                0
         );
 
         if (!serviceManager.getAllServices().contains(service)) {

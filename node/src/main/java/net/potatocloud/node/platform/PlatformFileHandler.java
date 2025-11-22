@@ -75,9 +75,9 @@ public class PlatformFileHandler {
                 final String version = String.valueOf(map.get("version"));
                 final String download = map.containsKey("download") ? String.valueOf(map.get("download")) : null;
                 final boolean legacy = map.containsKey("legacy") && Boolean.parseBoolean(map.get("legacy").toString());
+                final boolean local = map.containsKey("local") && Boolean.parseBoolean(map.get("local").toString());
 
-                //todo
-                versions.add(new PlatformVersionImpl(key, version, false, download, legacy));
+                versions.add(new PlatformVersionImpl(key, version, local, download, legacy));
             }
 
             platform.getVersions().addAll(versions);
@@ -144,8 +144,8 @@ public class PlatformFileHandler {
         config.set(platform.getName() + ".versions", versions);
         config.save(file);
     }
-    @SneakyThrows
 
+    @SneakyThrows
     public void addPlatform(Platform platform) {
         if (platform == null) {
             return;
@@ -153,22 +153,23 @@ public class PlatformFileHandler {
 
         final Map<String, Object> platformMap = new LinkedHashMap<>();
         putIfNotNull(platformMap, "download", platform.getDownloadUrl());
-        putIfNotNull(platformMap,"base", platform.getBase());
-        putIfNotNull(platformMap,"custom", platform.isCustom());
-        putIfNotNull(platformMap,"pre-cache", platform.getPreCacheBuilder());
-        putIfNotNull(platformMap,"parser", platform.getParser());
-        putIfNotNull(platformMap,"proxy", platform.isProxy());
-        putIfNotNull(platformMap,"hash-type", platform.getHashType());
-        putIfNotNull(platformMap,"prepare-steps", new ArrayList<>(platform.getPrepareSteps()));
+        putIfNotNull(platformMap, "base", platform.getBase());
+        putIfNotNull(platformMap, "custom", platform.isCustom());
+        putIfNotNull(platformMap, "pre-cache", platform.getPreCacheBuilder());
+        putIfNotNull(platformMap, "parser", platform.getParser());
+        putIfNotNull(platformMap, "proxy", platform.isProxy());
+        putIfNotNull(platformMap, "hash-type", platform.getHashType());
+        putIfNotNull(platformMap, "prepare-steps", new ArrayList<>(platform.getPrepareSteps()));
 
         final List<Map<String, Object>> versions = new ArrayList<>();
 
         for (PlatformVersion version : platform.getVersions()) {
             final Map<String, Object> versionMap = new LinkedHashMap<>();
 
-            putIfNotNull(versionMap,"version", version.getName());
-            putIfNotNull(versionMap,"download", version.getDownloadUrl());
-            putIfNotNull(versionMap,"legacy", version.isLegacy());
+            putIfNotNull(versionMap, "version", version.getName());
+            putIfNotNull(versionMap, "download", version.getDownloadUrl());
+            putIfNotNull(versionMap, "legacy", version.isLegacy());
+            putIfNotNull(versionMap, "local", version.isLocal());
 
             versions.add(versionMap);
         }

@@ -161,17 +161,17 @@ public interface Service extends PropertyHolder {
     boolean executeCommand(String command);
 
     /**
-     * Copies a template to the service.
+     * Copies service files to a template.
      *
-     * @param template the template to copy
-     * @param filter   the filter to apply to the template
+     * @param template the template to copy to
+     * @param filter   the filter to apply
      */
     void copy(String template, String filter);
 
     /**
-     * Copies a template to the service.
+     * Copies service files to a template.
      *
-     * @param template the template to copy
+     * @param template the template to copy to
      */
     default void copy(String template) {
         copy(template, "");

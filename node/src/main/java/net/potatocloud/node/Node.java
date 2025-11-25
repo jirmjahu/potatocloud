@@ -63,6 +63,7 @@ public class Node extends CloudAPI {
     private final ServiceStartQueue serviceStartQueue;
 
     private final String previousVersion;
+    private boolean ready = false;
     private boolean isStopping;
 
     public Node(long startupTime) {
@@ -80,7 +81,6 @@ public class Node extends CloudAPI {
 
         commandManager = new CommandManager();
         console = new Console(commandManager, this);
-        console.start();
         logger = new Logger(console, Path.of(config.getLogsFolder()));
         new ExceptionMessageHandler(logger);
 
@@ -88,6 +88,8 @@ public class Node extends CloudAPI {
         final Screen nodeScreen = new Screen(Screen.NODE_SCREEN);
         screenManager.addScreen(nodeScreen);
         screenManager.setCurrentScreen(nodeScreen);
+
+        console.start();
 
         setupManager = new SetupManager();
 
@@ -127,6 +129,7 @@ public class Node extends CloudAPI {
         logger.info("Startup completed in &a" + (System.currentTimeMillis() - startupTime) + "ms &8| &7Use &8'&ahelp&8' &7to see available commands");
 
         serviceStartQueue.start();
+        ready = true;
     }
 
     private void registerCommands() {

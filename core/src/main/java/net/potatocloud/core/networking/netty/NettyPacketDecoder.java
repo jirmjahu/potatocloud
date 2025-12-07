@@ -15,6 +15,8 @@ public class NettyPacketDecoder extends ByteToMessageDecoder {
 
     private final PacketManager packetManager;
 
+    private static final int MAX_PACKET_SIZE = 65536;
+
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         if (in.readableBytes() < 4) {
@@ -25,7 +27,7 @@ public class NettyPacketDecoder extends ByteToMessageDecoder {
 
         // Read packet length and stop if too big
         final int length = in.readInt();
-        if (length > 65536) {
+        if (length > MAX_PACKET_SIZE) {
             ctx.close();
             throw new PacketToBigException(length);
         }

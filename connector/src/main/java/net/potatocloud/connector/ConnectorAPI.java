@@ -43,8 +43,8 @@ public class ConnectorAPI extends CloudAPI {
 
         eventManager = new ClientEventManager(client);
         propertiesHolder = new ConnectorPropertiesHolder(client);
-        groupManager = new ServiceGroupManagerImpl(client);
         platformManager = new PlatformManagerImpl(client);
+        groupManager = new ServiceGroupManagerImpl(client);
         serviceManager = new ServiceManagerImpl(client);
         playerManager = new CloudPlayerManagerImpl(client);
     }

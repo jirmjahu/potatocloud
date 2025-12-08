@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.labymod.serverapi.server.bukkit.event.LabyModPlayerJoinEvent;
 import net.potatocloud.api.CloudAPI;
 import net.potatocloud.api.service.Service;
-import net.potatocloud.plugins.labymod.Config;
+import net.potatocloud.plugins.utils.Config;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -14,13 +14,13 @@ public class LabyModPlayerJoinListener implements Listener {
     private final Config config;
 
     @EventHandler
-    public void handle(LabyModPlayerJoinEvent event) {
+    public void onJoin(LabyModPlayerJoinEvent event) {
         final Service service = CloudAPI.getInstance().getServiceManager().getCurrentService();
         if (service == null) {
             return;
         }
 
-        final String notifyMessage = config.notifyMessage()
+        final String notifyMessage = config.yaml().getString("notify-message")
                 .replace("%service%", service.getName())
                 .replace("%group%", service.getServiceGroup().getName())
                 .replace("%id%", String.valueOf(service.getServiceId()));

@@ -5,7 +5,8 @@
   "main": "net.potatocloud.plugins.proxy.ProxyPlugin",
   "authors": [
     "TruaYT",
-    "einCode_"
+    "einCode_",
+    "jirmjahu"
   ],
   "depends": ["potatocloud-plugin"]
 }

@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     compileOnly(project(":api"))
+    implementation(project(":plugins:utils"))
     implementation(libs.simpleyaml)
     implementation(libs.labymod.common)
     implementation(libs.labymod.velocity)

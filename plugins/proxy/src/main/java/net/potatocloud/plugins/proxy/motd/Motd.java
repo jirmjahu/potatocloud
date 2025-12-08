@@ -17,6 +17,6 @@ public class Motd {
     public Motd(String firstLine, String secondLine) {
         this.firstLine = firstLine;
         this.secondLine = secondLine;
-        this.version = null;
+        version = null;
     }
 }

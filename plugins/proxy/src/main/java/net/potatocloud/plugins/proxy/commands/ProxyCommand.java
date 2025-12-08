@@ -4,8 +4,9 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import lombok.RequiredArgsConstructor;
-import net.potatocloud.plugins.proxy.Config;
-import net.potatocloud.plugins.proxy.MessagesConfig;
+import net.potatocloud.plugins.proxy.ProxyPlugin;
+import net.potatocloud.plugins.utils.Config;
+import net.potatocloud.plugins.utils.MessagesConfig;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProxyCommand implements SimpleCommand {
 
+    private final ProxyPlugin plugin;
     private final Config config;
     private final MessagesConfig messages;
 
@@ -25,7 +27,8 @@ public class ProxyCommand implements SimpleCommand {
             return;
         }
 
-        if (!player.hasPermission(config.getPermission())) {
+        final String permission = config.yaml().getString("permission");
+        if (!player.hasPermission(permission)) {
             player.sendMessage(messages.get("no-permission"));
             return;
         }
@@ -33,9 +36,9 @@ public class ProxyCommand implements SimpleCommand {
         if (args.length == 1) {
             switch (args[0].toLowerCase()) {
                 case "toggle" -> {
-                    final boolean state = config.maintenance();
+                    final boolean state = plugin.isMaintenance();
                     final boolean newState = !state;
-                    config.maintenance(newState);
+                    plugin.setMaintenance(newState);
 
                     player.sendMessage(newState
                             ? messages.get("now_maintenance")
@@ -43,7 +46,7 @@ public class ProxyCommand implements SimpleCommand {
                 }
                 case "list", "info" -> {
                     player.sendMessage(messages.get("info_text"));
-                    config.whitelist().forEach(name -> {
+                    plugin.getWhitelist().forEach(name -> {
                         player.sendMessage(messages.get("info_key")
                                 .replaceText(text -> text.match("%name%").replacement(name)));
                     });
@@ -63,7 +66,7 @@ public class ProxyCommand implements SimpleCommand {
                 return;
             }
 
-            final List<String> whitelist = config.whitelist();
+            final List<String> whitelist = plugin.getWhitelist();
             final String name = args[2];
 
             if (args[1].equalsIgnoreCase("add")) {
@@ -72,7 +75,7 @@ public class ProxyCommand implements SimpleCommand {
                     return;
                 }
                 whitelist.add(name);
-                config.whitelist(whitelist);
+                plugin.setWhitelist(whitelist);
                 player.sendMessage(messages.get("whitelist.added")
                         .replaceText(text -> text.match("%name%").replacement(name)));
                 return;
@@ -85,7 +88,7 @@ public class ProxyCommand implements SimpleCommand {
                     return;
                 }
                 whitelist.remove(name);
-                config.whitelist(whitelist);
+                plugin.setWhitelist(whitelist);
                 player.sendMessage(messages.get("whitelist.removed")
                         .replaceText(text -> text.match("%name%").replacement(name)));
                 return;
@@ -113,14 +116,14 @@ public class ProxyCommand implements SimpleCommand {
         if (!(source instanceof Player player)) {
             return Collections.emptyList();
         }
-
-        if (!player.hasPermission(config.getPermission())) {
+        final String permission = config.yaml().getString("permission");
+        if (!player.hasPermission(permission)) {
             return Collections.emptyList();
         }
 
         if (args.length == 3) {
             if (args[1].equalsIgnoreCase("remove")) {
-                return config.whitelist();
+                return plugin.getWhitelist();
             }
         }
 

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.CloudAPI;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceStatus;
-import net.potatocloud.plugins.hub.MessagesConfig;
+import net.potatocloud.plugins.utils.MessagesConfig;
 
 import java.util.Comparator;
 import java.util.Optional;
@@ -23,7 +23,6 @@ public class HubCommand implements SimpleCommand {
     @Override
     public void execute(Invocation invocation) {
         final CommandSource source = invocation.source();
-        final String[] args = invocation.arguments();
 
         if (!(source instanceof Player player)) {
             return;
@@ -31,19 +30,19 @@ public class HubCommand implements SimpleCommand {
 
         final Service playerService = CloudAPI.getInstance().getPlayerManager().getCloudPlayer(player.getUniqueId()).getConnectedService();
         if (playerService.getServiceGroup().isFallback()) {
-            player.sendMessage(this.messagesConfig.get("alreadyOnFallback"));
+            player.sendMessage(messagesConfig.get("alreadyOnFallback"));
             return;
         }
 
-        final Optional<RegisteredServer> fallback = this.getBestFallbackServer();
+        final Optional<RegisteredServer> fallback = getBestFallbackServer();
         if (fallback.isEmpty()) {
-            player.sendMessage(this.messagesConfig.get("noFallbackFound"));
+            player.sendMessage(messagesConfig.get("noFallbackFound"));
             return;
         }
 
         final RegisteredServer registeredServer = fallback.get();
         player.createConnectionRequest(registeredServer).fireAndForget();
-        player.sendMessage(this.messagesConfig.get("connect")
+        player.sendMessage(messagesConfig.get("connect")
                 .replaceText(text -> text.match("%service%").replacement(registeredServer.getServerInfo().getName())));
     }
 

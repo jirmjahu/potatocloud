@@ -14,6 +14,7 @@ spigot = "1.20.4-R0.1-SNAPSHOT"
 limbo = "0.7.16-ALPHA"
 velocity = "3.4.0-SNAPSHOT"
 labymod = "1.0.6"
+minimessage = "4.25.0"
 
 [libraries]
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
@@ -30,6 +31,7 @@ velocity = { module = "com.velocitypowered:velocity-api", version.ref = "velocit
 labymod-common = { module = "net.labymod.serverapi:server-common", version.ref = "labymod" }
 labymod-bukkit = { module = "net.labymod.serverapi:server-bukkit", version.ref = "labymod" }
 labymod-velocity = { module = "net.labymod.serverapi:server-velocity", version.ref = "labymod" }
+minimessage = { module = "net.kyori:adventure-text-minimessage", version.ref = "minimessage" }
 
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

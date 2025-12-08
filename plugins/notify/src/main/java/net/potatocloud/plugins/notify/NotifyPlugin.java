@@ -14,6 +14,8 @@ import net.potatocloud.api.event.events.service.ServiceStartedEvent;
 import net.potatocloud.api.event.events.service.ServiceStoppedEvent;
 import net.potatocloud.api.event.events.service.ServiceStoppingEvent;
 import net.potatocloud.api.service.Service;
+import net.potatocloud.plugins.utils.Config;
+import net.potatocloud.plugins.utils.MessagesConfig;
 
 import java.util.logging.Logger;
 
@@ -29,24 +31,25 @@ public class NotifyPlugin {
     public NotifyPlugin(ProxyServer server, Logger logger) {
         this.server = server;
         this.logger = logger;
-        messages = new MessagesConfig();
-        config = new Config();
+        final String folder = "plugins/potatocloud-notify";
 
-        messages.load();
+        config = new Config(folder, "config.yml");
+        messages = new MessagesConfig(folder);
         config.load();
+        messages.load();
     }
 
     @Subscribe
     public void onProxyInitialize(ProxyInitializeEvent event) {
         final EventManager eventManager = cloudAPI.getEventManager();
 
-        if (config.enableStarting()) {
+        if (config.yaml().getBoolean("messages.enable-service-starting")) {
             eventManager.on(PreparedServiceStartingEvent.class, startingEvent -> sendMessage(startingEvent.getServiceName(), "service-starting", false));
         }
 
         eventManager.on(ServiceStartedEvent.class, startedEvent -> sendMessage(startedEvent.getServiceName(), "service-started", true));
 
-        if (config.enableStopping()) {
+        if (config.yaml().getBoolean("messages.enable-service-stopping")) {
             eventManager.on(ServiceStoppingEvent.class, stoppingEvent -> sendSimpleMessage("service-stopping", stoppingEvent.getServiceName()));
         }
 
@@ -69,13 +72,13 @@ public class NotifyPlugin {
 
         final Component finalMessage = message;
         server.getAllPlayers().stream()
-                .filter(p -> p.hasPermission(config.getPermission()))
-                .forEach(p -> p.sendMessage(finalMessage));
+                .filter(player -> player.hasPermission(config.yaml().getString("permission")))
+                .forEach(player -> player.sendMessage(finalMessage));
     }
 
     private void sendSimpleMessage(String key, String serviceName) {
         server.getAllPlayers().stream()
-                .filter(player -> player.hasPermission(config.getPermission()))
+                .filter(player -> player.hasPermission(config.yaml().getString("permission")))
                 .forEach(player -> player.sendMessage(messages.get(key).replaceText(text -> text.match("%service%").replacement(serviceName))));
     }
 }

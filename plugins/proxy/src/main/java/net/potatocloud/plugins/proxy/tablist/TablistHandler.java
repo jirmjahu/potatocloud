@@ -8,46 +8,40 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.potatocloud.api.CloudAPI;
 import net.potatocloud.api.player.CloudPlayer;
 import net.potatocloud.api.service.Service;
-import net.potatocloud.plugins.proxy.Config;
+import net.potatocloud.plugins.utils.Config;
+import net.potatocloud.plugins.utils.MessageUtils;
 
 @RequiredArgsConstructor
 public class TablistHandler {
 
     private final Config config;
-    private final ProxyServer proxyServer;
-    private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private final ProxyServer server;
 
     @Subscribe
-    public void handle(ServerPostConnectEvent event) {
-        this.proxyServer.getAllPlayers().forEach(this::updateTablist);
+    public void onServerPostConnection(ServerPostConnectEvent event) {
+        server.getAllPlayers().forEach(this::update);
     }
 
     @Subscribe
-    public void handle(DisconnectEvent event) {
-        this.proxyServer.getAllPlayers().forEach(this::updateTablist);
+    public void onDisconnect(DisconnectEvent event) {
+        server.getAllPlayers().forEach(this::update);
     }
 
     @Subscribe
-    public void handle(PlayerChooseInitialServerEvent event) {
-        this.updateTablist(event.getPlayer());
+    public void onPlayerChooseInitialServer(PlayerChooseInitialServerEvent event) {
+        this.update(event.getPlayer());
     }
 
-    private void updateTablist(Player player) {
+    private void update(Player player) {
         final CloudPlayer cloudPlayer = CloudAPI.getInstance().getPlayerManager().getCloudPlayer(player.getUsername());
         if (cloudPlayer == null) {
             return;
         }
 
-        final String server = cloudPlayer.getConnectedServiceName();
-        if (server == null) {
-            return;
-        }
-
-        final Service service = CloudAPI.getInstance().getServiceManager().getService(server);
+        final Service service = CloudAPI.getInstance().getServiceManager().getService(cloudPlayer.getConnectedServiceName());
         if (service == null || service.getServiceGroup() == null) {
             return;
         }
@@ -58,21 +52,26 @@ public class TablistHandler {
         final int onlinePlayers = CloudAPI.getInstance().getPlayerManager().getOnlinePlayers().size();
         final int maxPlayers = CloudAPI.getInstance().getServiceManager().getCurrentService().getMaxPlayers();
 
-        final Tablist tablist = this.config.tablist();
-        final Component header = this.miniMessage.deserialize(tablist.header())
-                .replaceText(text -> text.match("%service%").replacement(server))
-                .replaceText(text -> text.match("%group%").replacement(group))
-                .replaceText(text -> text.match("%proxy%").replacement(proxy))
-                .replaceText(text -> text.match("%online_players%").replacement(String.valueOf(onlinePlayers)))
-                .replaceText(text -> text.match("%max_players%").replacement(String.valueOf(maxPlayers)));
+        final Tablist tablist = new Tablist(
+                config.yaml().getString("tablist.header"),
+                config.yaml().getString("tablist.footer")
+        );
 
-        final Component footer = this.miniMessage.deserialize(tablist.footer())
-                .replaceText(text -> text.match("%service%").replacement(server))
-                .replaceText(text -> text.match("%group%").replacement(group))
-                .replaceText(text -> text.match("%proxy%").replacement(proxy))
-                .replaceText(text -> text.match("%online_players%").replacement(String.valueOf(onlinePlayers)))
-                .replaceText(text -> text.match("%max_players%").replacement(String.valueOf(maxPlayers)));
+        final Component header = replacePlaceholders(tablist.header(), service.getName(), group,
+                proxy, onlinePlayers, maxPlayers);
+
+        final Component footer = replacePlaceholders(tablist.footer(), service.getName(), group,
+                proxy, onlinePlayers, maxPlayers);
 
         player.sendPlayerListHeaderAndFooter(header, footer);
+    }
+
+    private Component replacePlaceholders(String text, String service, String group, String proxy, int onlinePlayers, int maxPlayers) {
+        return MessageUtils.format(text)
+                .replaceText(b -> b.match("%service%").replacement(service))
+                .replaceText(b -> b.match("%group%").replacement(group))
+                .replaceText(b -> b.match("%proxy%").replacement(proxy))
+                .replaceText(b -> b.match("%online_players%").replacement(String.valueOf(onlinePlayers)))
+                .replaceText(b -> b.match("%max_players%").replacement(String.valueOf(maxPlayers)));
     }
 }

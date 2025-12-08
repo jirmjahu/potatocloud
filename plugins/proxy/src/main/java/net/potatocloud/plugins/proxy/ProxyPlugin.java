@@ -11,7 +11,11 @@ import net.potatocloud.plugins.proxy.maintenance.LoginListener;
 import net.potatocloud.plugins.proxy.motd.ProxyPingListener;
 import net.potatocloud.plugins.proxy.tablist.TablistBannerHandler;
 import net.potatocloud.plugins.proxy.tablist.TablistHandler;
+import net.potatocloud.plugins.utils.Config;
+import net.potatocloud.plugins.utils.MessagesConfig;
 import org.slf4j.Logger;
+
+import java.util.List;
 
 public class ProxyPlugin {
 
@@ -24,29 +28,51 @@ public class ProxyPlugin {
     public ProxyPlugin(ProxyServer server, Logger logger) {
         this.server = server;
         this.logger = logger;
-        this.messagesConfig = new MessagesConfig();
-        this.messagesConfig.load();
-        this.config = new Config();
-        this.config.load();
+        final String folder = "plugins/potatocloud-proxy";
+
+        config = new Config(folder, "config.yml");
+        messagesConfig = new MessagesConfig(folder);
+        config.load();
+        messagesConfig.load();
     }
 
     @Subscribe
     public void onProxyInitialize(ProxyInitializeEvent event) {
-        LabyModProtocolService.initialize(this, this.server, logger);
+        LabyModProtocolService.initialize(this, server, logger);
 
-        final EventManager eventManager = this.server.getEventManager();
-        if (this.config.useMotd()) {
-            eventManager.register(this, new ProxyPingListener(this.config));
-        }
-        if (this.config.useTablist()) {
-            eventManager.register(this, new TablistHandler(this.config, this.server));
-        }
-        if (this.config.useTablistBanner()) {
-            eventManager.register(this, new TablistBannerHandler(this.config));
-        }
-        eventManager.register(this, new LoginListener(this.config, this.messagesConfig));
+        final EventManager eventManager = server.getEventManager();
 
-        this.server.getCommandManager().register(server.getCommandManager().metaBuilder("proxy").build(), new ProxyCommand(this.config, this.messagesConfig));
+        if (config.yaml().getBoolean("useMotd")) {
+            eventManager.register(this, new ProxyPingListener(this, config));
+        }
 
+        if (config.yaml().getBoolean("useTablist")) {
+            eventManager.register(this, new TablistHandler(config, server));
+        }
+        if (config.yaml().getBoolean("useTablistBanner")) {
+            eventManager.register(this, new TablistBannerHandler(config));
+        }
+
+        eventManager.register(this, new LoginListener(this, config, messagesConfig));
+
+        server.getCommandManager().register(server.getCommandManager().metaBuilder("proxy").build(), new ProxyCommand(this, config, messagesConfig));
+    }
+
+    public boolean isMaintenance() {
+        return config.yaml().getBoolean("maintenance");
+    }
+
+    public List<String> getWhitelist() {
+        return config.yaml().getStringList("whitelist");
+    }
+
+    public void setWhitelist(List<String> whitelist) {
+        config.yaml().set("whitelist", whitelist);
+        config.save();
+    }
+
+    public void setMaintenance(boolean maintenance) {
+        config.yaml().set("maintenance", maintenance);
+        config.save();
     }
 }

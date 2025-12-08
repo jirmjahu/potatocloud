@@ -57,7 +57,7 @@ public class ConsoleReader extends Thread {
                     continue;
                 }
 
-                if (input.equalsIgnoreCase("leave") || input.equalsIgnoreCase("exit")) {
+                if (input.strip().equalsIgnoreCase("leave") || input.strip().equalsIgnoreCase("exit")) {
                     Node.getInstance().getScreenManager().switchScreen(Screen.NODE_SCREEN);
                     continue;
                 }

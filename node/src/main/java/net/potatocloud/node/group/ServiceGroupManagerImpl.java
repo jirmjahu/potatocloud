@@ -104,6 +104,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
                 name,
                 platformName,
                 platformVersionName,
+                serviceGroup.getServiceTemplates(),
                 minOnlineCount,
                 maxOnlineCount,
                 maxPlayers,

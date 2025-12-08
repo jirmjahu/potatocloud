@@ -14,6 +14,7 @@ repositories {
 dependencies {
     compileOnly(project(":api"))
     implementation(project(":core"))
+    implementation(project(":plugins:utils"))
     implementation(libs.simpleyaml)
     implementation(libs.lombok)
     annotationProcessor(libs.lombok)
@@ -25,6 +26,8 @@ tasks.named<ShadowJar>("shadowJar") {
     archiveBaseName.set("potatocloud-plugin-cloudcommand")
     archiveVersion.set("${rootProject.version}")
     archiveClassifier.set("")
+
+    exclude("net/potatocloud/api/**")
 }
 
 

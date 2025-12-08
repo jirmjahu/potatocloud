@@ -2,19 +2,17 @@ package net.potatocloud.plugins.labymod;
 
 import net.labymod.serverapi.server.bukkit.LabyModProtocolService;
 import net.potatocloud.plugins.labymod.listener.LabyModPlayerJoinListener;
-import org.bukkit.Bukkit;
+import net.potatocloud.plugins.utils.Config;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class LabyModPlugin extends JavaPlugin {
 
-    private Config config;
-
     @Override
     public void onEnable() {
-        this.config = new Config();
-        this.config.load();
+        final Config config = new Config("plugins/potatocloud-labymod", "config.yml");
+        config.load();
         LabyModProtocolService.initialize(this);
 
-        Bukkit.getPluginManager().registerEvents(new LabyModPlayerJoinListener(config), this);
+        getServer().getPluginManager().registerEvents(new LabyModPlayerJoinListener(config), this);
     }
 }

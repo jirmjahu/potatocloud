@@ -1,3 +1,7 @@
+plugins {
+    id("maven-publish")
+}
+
 group = "net.potatocloud.api"
 
 dependencies {

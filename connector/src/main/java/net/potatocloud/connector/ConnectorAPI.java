@@ -28,25 +28,28 @@ public class ConnectorAPI extends CloudAPI {
 
     private final PacketManager packetManager;
     private final NetworkClient client;
-    private final ClientEventManager eventManager;
-    private final ConnectorPropertiesHolder propertiesHolder;
-    private final ServiceGroupManager groupManager;
-    private final ServiceManager serviceManager;
-    private final PlatformManager platformManager;
-    private final CloudPlayerManager playerManager;
+    private ClientEventManager eventManager;
+    private ConnectorPropertiesHolder propertiesHolder;
+    private ServiceGroupManager groupManager;
+    private ServiceManager serviceManager;
+    private PlatformManager platformManager;
+    private CloudPlayerManager playerManager;
 
     public ConnectorAPI() {
         packetManager = new PacketManager();
 
         client = new NettyNetworkClient(packetManager);
-        client.connect(NODE_HOST, NODE_PORT);
 
-        eventManager = new ClientEventManager(client);
-        propertiesHolder = new ConnectorPropertiesHolder(client);
-        platformManager = new PlatformManagerImpl(client);
-        groupManager = new ServiceGroupManagerImpl(client);
-        serviceManager = new ServiceManagerImpl(client);
-        playerManager = new CloudPlayerManagerImpl(client);
+        client.addConnectionListener(() -> {
+            eventManager = new ClientEventManager(client);
+            propertiesHolder = new ConnectorPropertiesHolder(client);
+            platformManager = new PlatformManagerImpl(client);
+            groupManager = new ServiceGroupManagerImpl(client);
+            serviceManager = new ServiceManagerImpl(client);
+            playerManager = new CloudPlayerManagerImpl(client);
+        });
+
+        client.connect(NODE_HOST, NODE_PORT);
     }
 
     public static ConnectorAPI getInstance() {

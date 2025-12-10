@@ -12,4 +12,6 @@ public interface NetworkClient {
 
     boolean isConnected();
 
+    void addConnectionListener(ConnectionListener listener);
+
 }

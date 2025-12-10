@@ -11,6 +11,9 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.core.networking.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 public class NettyNetworkClient implements NetworkClient {
 
@@ -18,6 +21,7 @@ public class NettyNetworkClient implements NetworkClient {
     private EventLoopGroup group;
     private Channel channel;
     private NetworkConnection connection;
+    private final List<ConnectionListener> listeners = new ArrayList<>();
 
     @Override
     public void connect(String host, int port) {
@@ -37,7 +41,7 @@ public class NettyNetworkClient implements NetworkClient {
                         final ChannelPipeline pipeline = channel.pipeline();
                         pipeline.addLast(new NettyPacketDecoder(packetManager));
                         pipeline.addLast(new NettyPacketEncoder());
-                        pipeline.addLast(new NettyClientHandler(packetManager, connection));
+                        pipeline.addLast(new NettyClientHandler(NettyNetworkClient.this, packetManager, connection));
                     }
                 });
 
@@ -48,6 +52,15 @@ public class NettyNetworkClient implements NetworkClient {
     @Override
     public void send(Packet packet) {
         channel.writeAndFlush(packet);
+    }
+
+    @Override
+    public void addConnectionListener(ConnectionListener listener) {
+        listeners.add(listener);
+    }
+
+    public void onConnected() {
+        listeners.forEach(ConnectionListener::onConnected);
     }
 
     @Override

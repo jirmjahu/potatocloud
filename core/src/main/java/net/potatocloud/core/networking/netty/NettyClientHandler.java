@@ -10,8 +10,16 @@ import net.potatocloud.core.networking.PacketManager;
 @RequiredArgsConstructor
 public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
+    private final NettyNetworkClient client;
     private final PacketManager packetManager;
     private final NetworkConnection connection;
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+
+        client.onConnected();
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {

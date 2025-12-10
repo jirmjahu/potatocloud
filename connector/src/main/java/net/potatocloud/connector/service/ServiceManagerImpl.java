@@ -3,6 +3,7 @@ package net.potatocloud.connector.service;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceManager;
 import net.potatocloud.connector.service.listeners.ServiceAddListener;
+import net.potatocloud.connector.service.listeners.ServiceMemoryUpdateListener;
 import net.potatocloud.connector.service.listeners.ServiceUpdateListener;
 import net.potatocloud.core.networking.NetworkClient;
 import net.potatocloud.core.networking.NetworkConnection;
@@ -32,6 +33,8 @@ public class ServiceManagerImpl implements ServiceManager {
                 services.remove(getService(packet.getServiceName())));
 
         client.registerPacketListener(PacketIds.SERVICE_UPDATE, new ServiceUpdateListener(this));
+
+        client.registerPacketListener(PacketIds.SERVICE_MEMORY_UPDATE, new ServiceMemoryUpdateListener(this));
     }
 
     public void addService(Service service) {
@@ -39,9 +42,9 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public Service getService(String serviceName) {
+    public Service getService(String name) {
         return services.stream()
-                .filter(service -> service.getName().equalsIgnoreCase(serviceName))
+                .filter(service -> service.getName().equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(null);
     }

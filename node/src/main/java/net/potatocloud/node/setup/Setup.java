@@ -7,7 +7,7 @@ import net.potatocloud.node.console.Console;
 import net.potatocloud.node.console.Logger;
 import net.potatocloud.node.screen.Screen;
 import net.potatocloud.node.screen.ScreenManager;
-import net.potatocloud.node.setup.validator.BooleanValidator;
+import net.potatocloud.node.setup.builder.QuestionBuilder;
 
 import java.util.*;
 
@@ -18,7 +18,7 @@ public abstract class Setup {
     private final Console console;
     private final ScreenManager screenManager;
 
-    private final List<SetupQuestion> questions = new ArrayList<>();
+    private final List<Question> questions = new ArrayList<>();
     protected final Map<String, String> answers = new HashMap<>();
     private int currentIndex = 0;
     private boolean inSummary = false;
@@ -34,8 +34,8 @@ public abstract class Setup {
     protected abstract void onFinish(Map<String, String> answers);
 
 
-    public SetupQuestionBuilder question(String name) {
-        return new SetupQuestionBuilder(name, this);
+    public QuestionBuilder question(String name) {
+        return new QuestionBuilder(this, name);
     }
 
     public void start() {
@@ -105,11 +105,11 @@ public abstract class Setup {
             return;
         }
 
-        final SetupQuestion question = questions.get(currentIndex);
+        final Question question = questions.get(currentIndex);
         String answer = input;
 
-        //only replace yes and no to booleans in a question that expects a boolean
-        if (question.getValidator() != null && question.getValidator() instanceof BooleanValidator) {
+        // only replace yes and no to booleans in a boolean question
+        if (question.getType() == QuestionType.BOOLEAN) {
             if (answer.equalsIgnoreCase("yes")) {
                 answer = "true";
             }
@@ -130,17 +130,20 @@ public abstract class Setup {
             }
         }
 
-        if (question.getValidator() != null) {
-            final SetupAnswerResult result = question.getValidator().validate(answer);
-            if (!result.isSuccess()) {
-                lastErrorMessage = result.getErrorMessage();
-                showQuestion();
-                return;
-            }
+        if (!question.validateInput(answer)) {
+            lastErrorMessage = question.getValidatorError(answer);
+            showQuestion();
+            return;
         }
+
 
         answers.put(question.getName(), answer);
         lastErrorMessage = null;
+
+        if (question.getAnswerAction() != null) {
+            question.getAnswerAction().execute(answers, answer);
+        }
+
         currentIndex++;
 
         // show the next question as long there are some left
@@ -164,7 +167,7 @@ public abstract class Setup {
             return;
         }
 
-        final SetupQuestion question = questions.get(currentIndex);
+        final Question question = questions.get(currentIndex);
         final String screenName = "setup_" + getName().toLowerCase();
         questionScreen = new Screen(screenName);
         screenManager.addScreen(questionScreen);
@@ -173,7 +176,7 @@ public abstract class Setup {
         console.setPrompt("> ");
         console.println("&7Setup: &a" + getName() + " &8(&7Question &a" + (currentIndex + 1) + "&8/&a" + questions.size() + "&8)");
         console.println(" ");
-        console.println("&8» &7" + question.getQuestion());
+        console.println("&8» &7" + question.getPrompt());
 
         if (question.getDefaultAnswer() != null && !question.getDefaultAnswer().isBlank()) {
             console.println("  &8• &7Default&8: &a" + question.getDefaultAnswer());
@@ -189,7 +192,7 @@ public abstract class Setup {
             commandsText.add("&aEnter&7 = default");
         }
 
-        if (question.getPossibleChoices(answers) != null && !question.getPossibleChoices(answers).isEmpty()) {
+        if (question.getSuggestions() != null && !question.getSuggestions().isEmpty()) {
             commandsText.add("&aTab&7 = show options");
         }
 
@@ -222,10 +225,10 @@ public abstract class Setup {
         console.println("&7Setup: &a" + getName() + " &8(&7Summary&8)");
         console.println("");
 
-        for (final SetupQuestion question : questions) {
+        for (final Question question : questions) {
             final String answer = answers.getOrDefault(question.getName(), "<no answer>");
 
-            console.println("&8» &7" + question.getQuestion());
+            console.println("&8» &7" + question.getPrompt());
             console.println("  &8• &7Answer: &a" + answer);
             console.println(" ");
         }

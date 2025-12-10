@@ -2,13 +2,11 @@ package net.potatocloud.node.setup.setups;
 
 import net.potatocloud.api.platform.Platform;
 import net.potatocloud.api.platform.PlatformManager;
-import net.potatocloud.node.Node;
 import net.potatocloud.node.console.Console;
 import net.potatocloud.node.console.Logger;
 import net.potatocloud.node.screen.ScreenManager;
+import net.potatocloud.node.setup.AnswerResult;
 import net.potatocloud.node.setup.Setup;
-import net.potatocloud.node.setup.SetupAnswerResult;
-import net.potatocloud.node.setup.validator.BooleanValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,34 +26,27 @@ public class PlatformConfigurationSetup extends Setup {
     @Override
     public void initQuestions() {
         question("name")
-                .question("What is the name of the platform?")
-                .validator(input -> {
-                    if (input.isBlank()) {
-                        return SetupAnswerResult.error("Name cannot be empty");
-                    }
+                .text("What is the name of the platform?")
+                .customValidator(input -> {
                     if (platformManager.exists(input)) {
-                        return SetupAnswerResult.error("A platform with the same name already exists");
+                        return AnswerResult.error("A platform with the same name already exists");
                     }
-                    return SetupAnswerResult.success();
+                    return AnswerResult.success();
                 })
-                .done();
+                .add();
 
         question("base")
-                .question("What is the base of the platform?")
-                .validator(input -> {
-                    if (input.isBlank()) {
-                        return SetupAnswerResult.error("Base cannot be empty");
-                    }
-
+                .text("What is the base of the platform?")
+                .customValidator(input -> {
                     final List<String> supportedBases = List.of("bukkit", "spigot", "paper", "velocity", "limbo");
                     if (!supportedBases.contains(input)) {
-                        return SetupAnswerResult.error("This base is not supported");
+                        return AnswerResult.error("This base is not supported");
                     }
 
-                    return SetupAnswerResult.success();
+                    return AnswerResult.success();
                 })
-                .choices(choices -> List.of("bukkit", "spigot", "paper", "velocity", "limbo"))
-                .done();
+                .suggestions(() -> List.of("bukkit", "spigot", "paper", "velocity", "limbo"))
+                .add();
     }
 
     @Override

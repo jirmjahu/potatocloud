@@ -1,0 +1,12 @@
+{
+  "id": "potatocloud-plugin-proxy",
+  "name": "potatocloud-plugin-proxy",
+  "version": "1.4.0",
+  "main": "net.potatocloud.plugins.proxy.ProxyPlugin",
+  "authors": [
+    "TruaYT",
+    "einCode_",
+    "jirmjahu"
+  ],
+  "depends": ["potatocloud-plugin"]
+}

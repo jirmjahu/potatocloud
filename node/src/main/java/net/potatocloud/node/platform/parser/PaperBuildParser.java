@@ -1,12 +1,17 @@
 package net.potatocloud.node.platform.parser;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.platform.PlatformVersion;
 import net.potatocloud.api.platform.impl.PlatformVersionImpl;
-import net.potatocloud.api.utils.RequestUtil;
 import net.potatocloud.node.platform.BuildParser;
+import net.potatocloud.node.utils.RequestUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class PaperBuildParser implements BuildParser {
@@ -14,36 +19,44 @@ public class PaperBuildParser implements BuildParser {
     private final String projectName;
 
     @Override
-    public String getName() {
-        return projectName;
-    }
-
-    @Override
     public void parse(PlatformVersion version, String baseUrl) {
         try {
-            String mcVersion = version.getName();
+            String versionName = version.getName();
 
-            if (mcVersion.equalsIgnoreCase("latest")) {
-                final JsonArray versions = RequestUtil.request("https://api.papermc.io/v2/projects/" + projectName).getAsJsonArray("versions");
+            final JsonObject project = RequestUtil.request("https://fill.papermc.io/v3/projects/" + projectName);
+            final JsonObject versions = project.getAsJsonObject("versions");
 
-                mcVersion = versions.get(versions.size() - 1).getAsString();
+            // Find the latest minecraft version if the user wants the latest
+            if (versionName.equalsIgnoreCase("latest")) {
+                final List<String> allVersions = new ArrayList<>();
+
+                for (Map.Entry<String, JsonElement> entry : versions.entrySet()) {
+                    final JsonArray versionsArray = entry.getValue().getAsJsonArray();
+
+                    for (JsonElement element : versionsArray) {
+                        allVersions.add(element.getAsString());
+                    }
+                }
+
+                versionName = allVersions.getFirst();
             }
 
-            final JsonArray builds = RequestUtil.request("https://api.papermc.io/v2/projects/" + projectName + "/versions/" + mcVersion).getAsJsonArray("builds");
-            final int latestBuild = builds.get(builds.size() - 1).getAsInt();
+            // Get the latest build of the chosen version
+            final JsonObject latestBuild = RequestUtil.request("https://fill.papermc.io/v3/projects/"
+                    + projectName + "/versions/" + versionName + "/builds/latest");
+            final int latestBuildId = latestBuild.get("id").getAsInt();
 
-            final JsonObject buildJson = RequestUtil.request(
-                    "https://api.papermc.io/v2/projects/" + projectName +
-                            "/versions/" + mcVersion +
-                            "/builds/" + latestBuild
-            );
+            final JsonObject downloads = latestBuild.getAsJsonObject("downloads");
+            final JsonObject serverDefault = downloads.getAsJsonObject("server:default");
+            final String sha256 = serverDefault
+                    .getAsJsonObject("checksums")
+                    .get("sha256")
+                    .getAsString();
 
-            final JsonObject application = buildJson.getAsJsonObject("downloads").getAsJsonObject("application");
-            final String sha256 = application.get("sha256").getAsString();
-
+            // Replace placeholders in the platform download URL
             final String downloadUrl = baseUrl
-                    .replace("{version}", mcVersion)
-                    .replace("{build}", String.valueOf(latestBuild))
+                    .replace("{version}", versionName)
+                    .replace("{build}", String.valueOf(latestBuildId))
                     .replace("{sha256}", sha256);
 
             if (version instanceof PlatformVersionImpl impl) {
@@ -54,5 +67,10 @@ public class PaperBuildParser implements BuildParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String getName() {
+        return projectName;
     }
 }

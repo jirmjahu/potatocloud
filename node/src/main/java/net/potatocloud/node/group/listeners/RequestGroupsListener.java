@@ -20,6 +20,7 @@ public class RequestGroupsListener implements PacketListener<RequestGroupsPacket
                     group.getName(),
                     group.getPlatformName(),
                     group.getPlatformVersionName(),
+                    group.getServiceTemplates(),
                     group.getMinOnlineCount(),
                     group.getMaxOnlineCount(),
                     group.getMaxPlayers(),

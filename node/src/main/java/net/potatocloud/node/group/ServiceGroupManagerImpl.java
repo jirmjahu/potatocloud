@@ -99,11 +99,12 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
 
         addServiceGroup(serviceGroup);
 
-        // send group add packet to clients
+        // Send group add packet to clients
         server.broadcastPacket(new GroupAddPacket(
                 name,
                 platformName,
                 platformVersionName,
+                serviceGroup.getServiceTemplates(),
                 minOnlineCount,
                 maxOnlineCount,
                 maxPlayers,

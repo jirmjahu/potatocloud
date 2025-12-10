@@ -4,36 +4,34 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.potatocloud.api.platform.PlatformVersion;
 import net.potatocloud.api.platform.impl.PlatformVersionImpl;
-import net.potatocloud.api.utils.RequestUtil;
 import net.potatocloud.node.platform.BuildParser;
+import net.potatocloud.node.utils.RequestUtil;
 
 public class PurpurBuildParser implements BuildParser {
 
     @Override
-    public String getName() {
-        return "purpur";
-    }
-
-    @Override
     public void parse(PlatformVersion version, String baseUrl) {
         try {
-            String mcVersion = version.getName();
+            String versionName = version.getName();
 
-            if (mcVersion.equalsIgnoreCase("latest")) {
+            // Find the latest minecraft version if the user wants the latest
+            if (versionName.equalsIgnoreCase("latest")) {
                 final JsonArray versionsArray = RequestUtil.request("https://api.purpurmc.org/v2/purpur/").getAsJsonArray("versions");
 
-                mcVersion = versionsArray.get(versionsArray.size() - 1).getAsString();
+                versionName = versionsArray.get(versionsArray.size() - 1).getAsString();
             }
 
-            final JsonObject versionJson = RequestUtil.request("https://api.purpurmc.org/v2/purpur/" + mcVersion);
-            final String latestBuild = versionJson.getAsJsonObject("builds").get("latest").getAsString();
+            // Get the latest build of the chosen version
+            final JsonObject versionInfo = RequestUtil.request("https://api.purpurmc.org/v2/purpur/" + versionName);
+            final String latestBuildName = versionInfo.getAsJsonObject("builds").get("latest").getAsString();
+            final JsonObject latestBuild = RequestUtil.request("https://api.purpurmc.org/v2/purpur/" + versionName + "/" + latestBuildName);
 
-            final JsonObject buildJson = RequestUtil.request("https://api.purpurmc.org/v2/purpur/" + mcVersion + "/" + latestBuild);
-            final String md5 = buildJson.get("md5").getAsString();
+            final String md5 = latestBuild.get("md5").getAsString();
 
+            // Replace placeholders in the platform download URL
             final String downloadUrl = baseUrl
-                    .replace("{version}", mcVersion)
-                    .replace("{build}", latestBuild);
+                    .replace("{version}", versionName)
+                    .replace("{build}", latestBuildName);
 
             if (version instanceof PlatformVersionImpl impl) {
                 impl.setFileHash(md5);
@@ -42,5 +40,10 @@ public class PurpurBuildParser implements BuildParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String getName() {
+        return "purpur";
     }
 }

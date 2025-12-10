@@ -23,17 +23,18 @@ import net.potatocloud.api.event.events.service.ServiceStartedEvent;
 import net.potatocloud.api.player.CloudPlayer;
 import net.potatocloud.api.player.impl.CloudPlayerImpl;
 import net.potatocloud.api.service.Service;
+import net.potatocloud.api.service.ServiceStatus;
 import net.potatocloud.connector.ConnectorAPI;
 import net.potatocloud.connector.event.ConnectPlayerWithServiceEvent;
 import net.potatocloud.connector.player.CloudPlayerManagerImpl;
+import net.potatocloud.connector.utils.PlatformPlugin;
 import net.potatocloud.core.networking.NetworkConnection;
 import net.potatocloud.core.networking.PacketIds;
 import net.potatocloud.core.networking.packets.player.CloudPlayerConnectPacket;
 import net.potatocloud.core.networking.packets.service.ServiceRemovePacket;
-import net.potatocloud.plugin.PlatformPlugin;
-import net.potatocloud.plugin.PluginUtils;
 
 import java.net.InetSocketAddress;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -62,7 +63,7 @@ public class VelocityPlugin implements PlatformPlugin {
     public void onServiceReady(Service service) {
         currentService = service;
 
-        // register already online services
+        // Register already online services
         for (Service ser : api.getServiceManager().getAllServices()) {
             registerServer(ser);
         }
@@ -108,7 +109,7 @@ public class VelocityPlugin implements PlatformPlugin {
 
     @Subscribe
     public void onPlayerChooseInitialServer(PlayerChooseInitialServerEvent event) {
-        final Optional<RegisteredServer> bestFallbackServer = server.getServer(PluginUtils.getBestFallback().getName());
+        final Optional<RegisteredServer> bestFallbackServer = server.getServer(getBestFallback().getName());
         if (bestFallbackServer.isEmpty()) {
             return;
         }
@@ -167,6 +168,7 @@ public class VelocityPlugin implements PlatformPlugin {
     public void onDisconnect(DisconnectEvent event) {
         final CloudPlayerManagerImpl playerManager = (CloudPlayerManagerImpl) api.getPlayerManager();
         final CloudPlayer player = playerManager.getCloudPlayer(event.getPlayer().getUniqueId());
+
         if (player != null) {
             playerManager.unregisterPlayer(player);
             api.getEventManager().call(new CloudPlayerDisconnectEvent(event.getPlayer().getUniqueId(), event.getPlayer().getUsername()));
@@ -176,7 +178,7 @@ public class VelocityPlugin implements PlatformPlugin {
     @Subscribe
     public void onKicked(KickedFromServerEvent event) {
         final RegisteredServer kickedFrom = event.getServer();
-        final Optional<RegisteredServer> fallback = server.getServer(PluginUtils.getBestFallback().getName());
+        final Optional<RegisteredServer> fallback = server.getServer(getBestFallback().getName());
         if (fallback.isEmpty()) {
             return;
         }
@@ -186,6 +188,14 @@ public class VelocityPlugin implements PlatformPlugin {
         }
 
         event.setResult(KickedFromServerEvent.RedirectPlayer.create(fallback.get()));
+    }
+
+    private Service getBestFallback() {
+        return CloudAPI.getInstance().getServiceManager().getAllServices().stream()
+                .filter(service -> service.getServiceGroup().isFallback())
+                .filter(service -> service.getStatus() == ServiceStatus.RUNNING)
+                .min(Comparator.comparingInt(Service::getOnlinePlayerCount))
+                .orElse(null);
     }
 
     @Override

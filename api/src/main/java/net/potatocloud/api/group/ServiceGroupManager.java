@@ -9,10 +9,24 @@ import java.util.Map;
 
 public interface ServiceGroupManager {
 
+    /**
+     * Gets a service group by its name.
+     *
+     * @param name the name of the service group
+     * @return the service group
+     */
     ServiceGroup getServiceGroup(String name);
 
+    /**
+     * Gets the list of all service groups.
+     *
+     * @return the list of all service groups
+     */
     List<ServiceGroup> getAllServiceGroups();
 
+    /**
+     * Creates a new service group with the given configuration.
+     */
     default void createServiceGroup(
             String name,
             String platformName,
@@ -44,6 +58,9 @@ public interface ServiceGroupManager {
         );
     }
 
+    /**
+     * Creates a new service group with the given configuration.
+     */
     void createServiceGroup(
             String name,
             String platformName,
@@ -61,15 +78,35 @@ public interface ServiceGroupManager {
             Map<String, Property<?>> propertyMap
     );
 
-
+    /**
+     * Deletes the given service group.
+     *
+     * @param name the name of the service group
+     */
     void deleteServiceGroup(String name);
 
+    /**
+     * Deletes the given service group.
+     *
+     * @param group the service group to delete
+     */
     default void deleteServiceGroup(ServiceGroup group) {
         deleteServiceGroup(group.getName());
     }
 
+    /**
+     * Updates an existing service group.
+     *
+     * @param group the service group to update
+     */
     void updateServiceGroup(ServiceGroup group);
 
+    /**
+     * Checks if a service group exists by name.
+     *
+     * @param name the name of the group
+     * @return {@code true} if the group exists, otherwise {@code false}
+     */
     boolean existsServiceGroup(String name);
 
 }

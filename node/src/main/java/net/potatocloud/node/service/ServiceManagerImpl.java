@@ -76,9 +76,9 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public Service getService(String serviceName) {
+    public Service getService(String name) {
         return services.stream()
-                .filter(service -> service.getName().equalsIgnoreCase(serviceName))
+                .filter(service -> service.getName().equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(null);
     }

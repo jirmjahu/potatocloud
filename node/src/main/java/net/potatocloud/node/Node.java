@@ -7,9 +7,9 @@ import net.potatocloud.api.event.EventManager;
 import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.group.ServiceGroupManager;
 import net.potatocloud.api.player.CloudPlayerManager;
+import net.potatocloud.api.property.PropertyHolder;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.core.event.ServerEventManager;
-import net.potatocloud.core.networking.NetworkConnection;
 import net.potatocloud.core.networking.NetworkServer;
 import net.potatocloud.core.networking.PacketManager;
 import net.potatocloud.core.networking.netty.NettyNetworkServer;
@@ -24,6 +24,7 @@ import net.potatocloud.node.platform.DownloadManager;
 import net.potatocloud.node.platform.PlatformManagerImpl;
 import net.potatocloud.node.platform.cache.CacheManager;
 import net.potatocloud.node.player.CloudPlayerManagerImpl;
+import net.potatocloud.node.properties.NodePropertiesHolder;
 import net.potatocloud.node.screen.Screen;
 import net.potatocloud.node.screen.ScreenManager;
 import net.potatocloud.node.service.ServiceDefaultFiles;
@@ -53,6 +54,7 @@ public class Node extends CloudAPI {
     private final PacketManager packetManager;
     private final NetworkServer server;
     private final EventManager eventManager;
+    private final NodePropertiesHolder propertiesHolder;
     private final CloudPlayerManager playerManager;
     private final TemplateManager templateManager;
     private final ServiceGroupManager groupManager;
@@ -63,6 +65,7 @@ public class Node extends CloudAPI {
     private final ServiceStartQueue serviceStartQueue;
 
     private final String previousVersion;
+    private boolean ready = false;
     private boolean isStopping;
 
     public Node(long startupTime) {
@@ -80,7 +83,6 @@ public class Node extends CloudAPI {
 
         commandManager = new CommandManager();
         console = new Console(commandManager, this);
-        console.start();
         logger = new Logger(console, Path.of(config.getLogsFolder()));
         new ExceptionMessageHandler(logger);
 
@@ -88,6 +90,8 @@ public class Node extends CloudAPI {
         final Screen nodeScreen = new Screen(Screen.NODE_SCREEN);
         screenManager.addScreen(nodeScreen);
         screenManager.setCurrentScreen(nodeScreen);
+
+        console.start();
 
         setupManager = new SetupManager();
 
@@ -100,6 +104,7 @@ public class Node extends CloudAPI {
         logger.info("NetworkServer started using &aNetty &7on &a" + config.getNodeHost() + "&8:&a" + config.getNodePort());
 
         eventManager = new ServerEventManager(server);
+        propertiesHolder = new NodePropertiesHolder(server);
         playerManager = new CloudPlayerManagerImpl(server);
         templateManager = new TemplateManager(logger, Path.of(config.getTemplatesFolder()));
         groupManager = new ServiceGroupManagerImpl(Path.of(config.getGroupsFolder()), server);
@@ -127,6 +132,7 @@ public class Node extends CloudAPI {
         logger.info("Startup completed in &a" + (System.currentTimeMillis() - startupTime) + "ms &8| &7Use &8'&ahelp&8' &7to see available commands");
 
         serviceStartQueue.start();
+        ready = true;
     }
 
     private void registerCommands() {
@@ -150,9 +156,6 @@ public class Node extends CloudAPI {
             ((ServiceImpl) service).shutdownBlocking();
         }
 
-        for (NetworkConnection connectedSession : server.getConnectedSessions()) {
-            connectedSession.close();
-        }
         server.shutdown();
 
         FileUtils.deleteDirectory(Path.of(config.getTempServicesFolder()).toFile());
@@ -172,5 +175,10 @@ public class Node extends CloudAPI {
     @Override
     public ServiceGroupManager getServiceGroupManager() {
         return groupManager;
+    }
+
+    @Override
+    public PropertyHolder getGlobalProperties() {
+        return propertiesHolder;
     }
 }

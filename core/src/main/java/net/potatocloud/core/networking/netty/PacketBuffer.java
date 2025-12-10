@@ -84,11 +84,13 @@ public class PacketBuffer {
         } else if (object instanceof Long l) {
             buf.writeByte(4);
             writeLong(l);
+        } else if (object instanceof Float f) {
+            buf.writeByte(5);
+            writeFloat(f);
         } else {
             throw new IllegalArgumentException("Unsupported object: " + object.getClass());
         }
     }
-
 
     public Object readObject() {
         final byte type = buf.readByte();
@@ -97,6 +99,7 @@ public class PacketBuffer {
             case 2 -> readInt();
             case 3 -> readBoolean();
             case 4 -> readLong();
+            case 5 -> readFloat();
             default -> throw new IllegalArgumentException("Unknown object id: " + type);
         };
     }
@@ -141,6 +144,14 @@ public class PacketBuffer {
         return buf.readLong();
     }
 
+    public void writeFloat(float value) {
+        buf.writeFloat(value);
+    }
+
+    public float readFloat() {
+        return buf.readFloat();
+    }
+
     public void writePlatform(Platform platform) {
         writeString(platform.getName());
         writeString(platform.getDownloadUrl());
@@ -156,6 +167,7 @@ public class PacketBuffer {
         for (PlatformVersion version : platform.getVersions()) {
             writeString(version.getPlatformName());
             writeString(version.getName());
+            writeBoolean(version.isLocal());
             writeString(version.getDownloadUrl());
             writeString(version.getFileHash());
             writeBoolean(version.isLegacy());
@@ -180,12 +192,13 @@ public class PacketBuffer {
         for (int i = 0; i < versionCount; i++) {
             final String platformName = readString();
             final String versionName = readString();
+            final boolean local = readBoolean();
             final String versionDownloadUrl = readString();
             final String fileHash = readString();
             final boolean legacy = readBoolean();
 
             final PlatformVersion version = new PlatformVersionImpl(
-                    platformName, versionName, versionDownloadUrl, fileHash, legacy);
+                    platformName, versionName, local, versionDownloadUrl, fileHash, legacy);
             platform.getVersions().add(version);
         }
 

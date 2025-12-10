@@ -1,16 +1,17 @@
 package net.potatocloud.node.setup.validator;
 
-import net.potatocloud.node.setup.SetupAnswerResult;
-import net.potatocloud.node.setup.SetupAnswerValidator;
+import net.potatocloud.node.setup.AnswerResult;
 
-public class BooleanValidator implements SetupAnswerValidator {
+public class BooleanValidator implements AnswerValidator {
 
     @Override
-    public SetupAnswerResult validate(String input) {
+    public AnswerResult validateInput(String input) {
         final String lower = input.toLowerCase();
+
         if (!lower.equals("true") && !lower.equals("false") && !lower.equals("yes") && !lower.equals("no")) {
-            return SetupAnswerResult.error("Please enter true/false or yes/no");
+            return AnswerResult.error("Please enter yes/true or no/false");
         }
-        return SetupAnswerResult.success();
+
+        return AnswerResult.success();
     }
 }

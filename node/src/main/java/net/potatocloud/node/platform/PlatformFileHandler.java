@@ -28,6 +28,7 @@ public class PlatformFileHandler {
         this.logger = logger;
         this.file = new File("platforms.yml");
 
+        // Create platforms.yml if missing
         if (!file.exists()) {
             try (InputStream stream = getClass().getClassLoader().getResourceAsStream("platforms.yml")) {
                 if (stream != null) {
@@ -44,6 +45,7 @@ public class PlatformFileHandler {
     public List<Platform> loadPlatformsFile() {
         final List<Platform> platforms = new ArrayList<>();
 
+        // Read all platforms from the merged config
         for (String key : config.getKeys(false)) {
             final ConfigurationSection section = config.getConfigurationSection(key);
             if (section == null) {
@@ -62,7 +64,7 @@ public class PlatformFileHandler {
                     section.getStringList("prepare-steps")
             );
 
-            // read versions of the platform
+            // Read versions of the platform
             final List<Map<?, ?>> versionMap = section.getMapList("versions");
             if (versionMap == null) {
                 logger.warn("No versions found for platform " + key);
@@ -75,8 +77,9 @@ public class PlatformFileHandler {
                 final String version = String.valueOf(map.get("version"));
                 final String download = map.containsKey("download") ? String.valueOf(map.get("download")) : null;
                 final boolean legacy = map.containsKey("legacy") && Boolean.parseBoolean(map.get("legacy").toString());
+                final boolean local = map.containsKey("local") && Boolean.parseBoolean(map.get("local").toString());
 
-                versions.add(new PlatformVersionImpl(key, version, download, legacy));
+                versions.add(new PlatformVersionImpl(key, version, local, download, legacy));
             }
 
             platform.getVersions().addAll(versions);
@@ -87,11 +90,11 @@ public class PlatformFileHandler {
 
     @SneakyThrows
     private YamlFile mergePlatformsFile() {
-        // load the platforms file in the user directory
+        // Load the platforms file in the user directory
         final YamlFile userConfig = new YamlFile(file);
         userConfig.load();
 
-        // now load the default platforms config
+        // Now load the default platforms config
         final YamlFile defaultConfig = new YamlFile();
         try (InputStream stream = getClass().getClassLoader().getResourceAsStream("platforms.yml")) {
             if (stream != null) {
@@ -101,27 +104,27 @@ public class PlatformFileHandler {
             logger.error("Failed to copy platforms.yml file");
         }
 
-        // merge user and default config so the user config is always up to date
+        // Merge user and default config so the user config is always up to date
         final YamlFile mergedConfig = new YamlFile();
         for (String key : userConfig.getKeys(false)) {
             final ConfigurationSection section = userConfig.getConfigurationSection(key);
             if (section == null) {
                 continue;
             }
-            // we want to keep custom platforms of the user so set them again in the merged config as well
+            // We want to keep custom platforms of the user so set them again in the merged config as well
             if (section.getBoolean("custom", false)) {
                 mergedConfig.set(key, section);
             }
         }
 
-        // set all other missing platforms
+        // Add all other missing platforms
         for (String key : defaultConfig.getKeys(false)) {
             if (!mergedConfig.contains(key)) {
                 mergedConfig.set(key, defaultConfig.get(key));
             }
         }
 
-        // save the new merged config and replace the old user config with it
+        // Save the new merged config and replace the old user config with it
         mergedConfig.save(file);
         return mergedConfig;
     }
@@ -143,8 +146,8 @@ public class PlatformFileHandler {
         config.set(platform.getName() + ".versions", versions);
         config.save(file);
     }
-    @SneakyThrows
 
+    @SneakyThrows
     public void addPlatform(Platform platform) {
         if (platform == null) {
             return;
@@ -152,22 +155,23 @@ public class PlatformFileHandler {
 
         final Map<String, Object> platformMap = new LinkedHashMap<>();
         putIfNotNull(platformMap, "download", platform.getDownloadUrl());
-        putIfNotNull(platformMap,"base", platform.getBase());
-        putIfNotNull(platformMap,"custom", platform.isCustom());
-        putIfNotNull(platformMap,"pre-cache", platform.getPreCacheBuilder());
-        putIfNotNull(platformMap,"parser", platform.getParser());
-        putIfNotNull(platformMap,"proxy", platform.isProxy());
-        putIfNotNull(platformMap,"hash-type", platform.getHashType());
-        putIfNotNull(platformMap,"prepare-steps", new ArrayList<>(platform.getPrepareSteps()));
+        putIfNotNull(platformMap, "base", platform.getBase());
+        putIfNotNull(platformMap, "custom", platform.isCustom());
+        putIfNotNull(platformMap, "pre-cache", platform.getPreCacheBuilder());
+        putIfNotNull(platformMap, "parser", platform.getParser());
+        putIfNotNull(platformMap, "proxy", platform.isProxy());
+        putIfNotNull(platformMap, "hash-type", platform.getHashType());
+        putIfNotNull(platformMap, "prepare-steps", new ArrayList<>(platform.getPrepareSteps()));
 
         final List<Map<String, Object>> versions = new ArrayList<>();
 
         for (PlatformVersion version : platform.getVersions()) {
             final Map<String, Object> versionMap = new LinkedHashMap<>();
 
-            putIfNotNull(versionMap,"version", version.getName());
-            putIfNotNull(versionMap,"download", version.getDownloadUrl());
-            putIfNotNull(versionMap,"legacy", version.isLegacy());
+            putIfNotNull(versionMap, "version", version.getName());
+            putIfNotNull(versionMap, "download", version.getDownloadUrl());
+            putIfNotNull(versionMap, "legacy", version.isLegacy());
+            putIfNotNull(versionMap, "local", version.isLocal());
 
             versions.add(versionMap);
         }

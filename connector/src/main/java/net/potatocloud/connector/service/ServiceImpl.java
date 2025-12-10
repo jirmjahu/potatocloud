@@ -28,12 +28,13 @@ public class ServiceImpl implements Service {
     private final Map<String, Property<?>> propertyMap;
     private ServiceStatus status;
     private int maxPlayers;
+    private int usedMemory;
 
     private final NetworkClient client = ConnectorAPI.getInstance().getClient();
 
     @Override
     public int getUsedMemory() {
-        return 0; //todo request from node;
+        return usedMemory;
     }
 
     @Override

@@ -36,10 +36,7 @@ import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Getter
@@ -154,15 +151,12 @@ public class ServiceImpl implements Service {
         // create service folder
         final Path staticFolder = Path.of(config.getStaticFolder());
         final Path tempFolder = Path.of(config.getTempServicesFolder());
-        directory = serviceGroup.isStatic() ? staticFolder.resolve(getName()) : tempFolder.resolve(getName());
 
-        if (!serviceGroup.isStatic()) {
-            if (Files.exists(directory)) {
-                FileUtils.deleteQuietly(directory.toFile());
-            }
+        directory = serviceGroup.isStatic() ? staticFolder.resolve(getName()) : tempFolder.resolve(getName() + "-" + UUID.randomUUID());
+
+        if (!Files.exists(directory)) {
+            Files.createDirectories(directory);
         }
-
-        Files.createDirectories(directory);
 
         // copy templates
         for (String templateName : serviceGroup.getServiceTemplates()) {

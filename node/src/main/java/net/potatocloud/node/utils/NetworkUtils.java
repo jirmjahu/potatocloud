@@ -3,13 +3,14 @@ package net.potatocloud.node.utils;
 import lombok.experimental.UtilityClass;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.net.ServerSocket;
 
 @UtilityClass
-public class PortCheckUtil {
+public class NetworkUtils {
 
-    public boolean isPortInUse(String host, int port) {
-        try (Socket socket = new Socket(host, port)) {
+    public boolean isPortFree(int port) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            serverSocket.setReuseAddress(true);
             return true;
         } catch (IOException e) {
             return false;

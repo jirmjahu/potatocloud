@@ -32,7 +32,6 @@ import oshi.SystemInfo;
 import oshi.software.os.OSProcess;
 
 import java.io.*;
-import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -44,11 +43,11 @@ public class ServiceImpl implements Service {
 
     private final int serviceId;
     private final int port;
-    private final ServiceGroup serviceGroup;
+    private final ServiceGroup group;
     private final NodeConfig config;
     private final Logger logger;
 
-    private final List<String> logs = new ArrayList<>();
+    private final List<String> logs;
 
     private final NetworkServer server;
     private final ScreenManager screenManager;
@@ -71,7 +70,6 @@ public class ServiceImpl implements Service {
     private ServiceStatus status = ServiceStatus.STOPPED;
 
     private long startTimestamp;
-
     private Path directory;
 
     private Process serverProcess;
@@ -81,10 +79,12 @@ public class ServiceImpl implements Service {
     @Setter
     private ServiceProcessChecker processChecker;
 
+    private ServiceProcessOutputReader outputReader;
+
     public ServiceImpl(
             int serviceId,
             int port,
-            ServiceGroup serviceGroup,
+            ServiceGroup group,
             NodeConfig config,
             Logger logger,
             NetworkServer server,
@@ -99,9 +99,10 @@ public class ServiceImpl implements Service {
     ) {
         this.serviceId = serviceId;
         this.port = port;
-        this.serviceGroup = serviceGroup;
+        this.group = group;
         this.config = config;
         this.logger = logger;
+        this.logs = new ArrayList<>();
         this.server = server;
         this.screenManager = screenManager;
         this.templateManager = templateManager;
@@ -112,8 +113,8 @@ public class ServiceImpl implements Service {
         this.serviceManager = serviceManager;
         this.console = console;
 
-        maxPlayers = serviceGroup.getMaxPlayers();
-        propertyMap = new HashMap<>(serviceGroup.getPropertyMap());
+        maxPlayers = group.getMaxPlayers();
+        propertyMap = new HashMap<>(group.getPropertyMap());
 
         screen = new Screen(getName());
         screenManager.addScreen(screen);
@@ -121,22 +122,29 @@ public class ServiceImpl implements Service {
 
     @Override
     public String getName() {
-        return serviceGroup.getName() + config.getSplitter() + serviceId;
+        return group.getName() + config.getSplitter() + serviceId;
+    }
+
+    @Override
+    public ServiceGroup getServiceGroup() {
+        return group;
     }
 
     public int getUsedMemory() {
-        if (serverProcess == null || !serverProcess.isAlive()) {
+        if (!isAlive()) {
             return 0;
         }
 
-        final SystemInfo info = new SystemInfo();
-        final OSProcess process = info.getOperatingSystem().getProcess((int) serverProcess.pid());
+        final OSProcess process = new SystemInfo()
+                .getOperatingSystem()
+                .getProcess((int) serverProcess.pid());
 
-        if (process != null) {
-            long usedBytes = process.getResidentSetSize();
-            return (int) (usedBytes / 1024 / 1024);
+        if (process == null) {
+            return 0;
         }
-        return 0;
+
+        final long usedBytes = process.getResidentSetSize();
+        return (int) (usedBytes / 1024 / 1024);
     }
 
     @SneakyThrows
@@ -148,108 +156,112 @@ public class ServiceImpl implements Service {
         status = ServiceStatus.STARTING;
         startTimestamp = System.currentTimeMillis();
 
-        // create service folder
-        final Path staticFolder = Path.of(config.getStaticFolder());
-        final Path tempFolder = Path.of(config.getTempServicesFolder());
+        directory = this.getDirectory();
+        Files.createDirectories(directory);
 
-        directory = serviceGroup.isStatic() ? staticFolder.resolve(getName()) : tempFolder.resolve(getName() + "-" + UUID.randomUUID());
-
-        if (!Files.exists(directory)) {
-            Files.createDirectories(directory);
+        for (String template : group.getServiceTemplates()) {
+            templateManager.copyTemplate(template, directory);
         }
 
-        // copy templates
-        for (String templateName : serviceGroup.getServiceTemplates()) {
-            templateManager.copyTemplate(templateName, directory);
-        }
-
-        // copy cloud plugin from data folder into server plugins folder
         final Path pluginsFolder = directory.resolve("plugins");
         Files.createDirectories(pluginsFolder);
 
-        String pluginName = "";
-        if (serviceGroup.getPlatform().isBukkitBased()) {
-            pluginName = "potatocloud-plugin-spigot.jar";
-        } else if (serviceGroup.getPlatform().isVelocityBased()) {
-            pluginName = "potatocloud-plugin-velocity.jar";
-        } else if (serviceGroup.getPlatform().isLimboBased()) {
-            pluginName = "potatocloud-plugin-limbo.jar";
-        }
+        final String pluginName = this.getPlatformPluginName();
+        FileUtils.copyFile(
+                Path.of(config.getDataFolder(), pluginName).toFile(),
+                pluginsFolder.resolve(pluginName).toFile(),
+                StandardCopyOption.REPLACE_EXISTING
+        );
 
-        FileUtils.copyFile(Path.of(config.getDataFolder(), pluginName).toFile(), pluginsFolder.resolve(pluginName).toFile(), StandardCopyOption.REPLACE_EXISTING);
+        final Platform platform = group.getPlatform();
+        final PlatformVersion version = group.getPlatformVersion();
 
-        // download the platform of the service
-        final Platform platform = serviceGroup.getPlatform();
-        final PlatformVersion version = serviceGroup.getPlatformVersion();
+        downloadManager.downloadPlatformVersion(
+                platform,
+                platform.getVersion(group.getPlatformVersionName())
+        );
 
-        downloadManager.downloadPlatformVersion(platform, platform.getVersion(serviceGroup.getPlatformVersionName()));
+        final Path cacheFolder = cacheManager.preCachePlatform(group);
+        cacheManager.copyCacheToService(group, cacheFolder, directory);
 
-        final Path cacheFolder = cacheManager.preCachePlatform(serviceGroup);
+        FileUtils.copyFile(
+                PlatformUtils.getPlatformJarFile(platform, version),
+                directory.resolve("server.jar").toFile()
+        );
 
-        cacheManager.copyCacheToService(serviceGroup, cacheFolder, directory);
-
-        // copy server file
-        final File platformFile = PlatformUtils.getPlatformJarFile(platform, version);
-        final Path finalServerFilePath = directory.resolve("server.jar");
-
-        FileUtils.copyFile(platformFile, finalServerFilePath.toFile());
-
-        // execute the prepare steps
         for (String step : platform.getPrepareSteps()) {
             PlatformPrepareSteps.getStep(step).execute(this, platform, directory);
         }
 
-        // create start arguments
-        final ArrayList<String> args = new ArrayList<>();
-        args.add(serviceGroup.getJavaCommand());
-        args.add("-Xms" + serviceGroup.getMaxMemory() + "M");
-        args.add("-Xmx" + serviceGroup.getMaxMemory() + "M");
-        args.add("-Dpotatocloud.service.name=" + getName());
-        args.add("-Dpotatocloud.node.port=" + config.getNodePort());
+        final List<String> startArguments = this.getStartArguments();
 
-        args.addAll(ServicePerformanceFlags.DEFAULT_FLAGS);
-
-        if (serviceGroup.getCustomJvmFlags() != null) {
-            args.addAll(serviceGroup.getCustomJvmFlags());
-        }
-
-        args.add("-jar");
-        args.add(finalServerFilePath.toAbsolutePath().toString());
-
-        if (platform.isBukkitBased() && !version.isLegacy()) {
-            args.add("-nogui");
-        }
-
-        if (platform.isLimboBased()) {
-            args.add("--nogui");
-        }
-
-        // create and start the service process
-        final ProcessBuilder processBuilder = new ProcessBuilder(args).directory(directory.toFile());
-        serverProcess = processBuilder.start();
+        serverProcess = new ProcessBuilder(startArguments)
+                .directory(directory.toFile())
+                .start();
 
         processWriter = new BufferedWriter(new OutputStreamWriter(serverProcess.getOutputStream()));
         processReader = new BufferedReader(new InputStreamReader(serverProcess.getInputStream()));
 
-        new Thread(() -> {
-            try {
-                String line;
-                while ((line = processReader.readLine()) != null) {
-                    logs.add(line);
-                    screen.addLog(line);
+        outputReader = new ServiceProcessOutputReader(serverProcess, processReader, this);
+        outputReader.start();
 
-                    if (screenManager.getCurrentScreen().getName().equals(getName())) {
-                        console.println(line);
-                    }
+        logger.info("Service &a" + getName() + "&7 is now starting&8... &8[&7Port&8: &a" + port + "&8, &7Group&8: &a" + group.getName() + "&8]");
+        eventManager.call(new PreparedServiceStartingEvent(getName()));
+    }
 
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }, "ProcessReader-" + getName()).start();
+    private Path getDirectory() {
+        return group.isStatic()
+                ? Path.of(config.getStaticFolder()).resolve(getName())
+                : Path.of(config.getTempServicesFolder()).resolve(getName() + "-" + UUID.randomUUID());
+    }
 
-        logger.info("Service &a" + this.getName() + "&7 is now starting&8... &8[&7Port&8: &a" + port + "&8, &7Group&8: &a" + serviceGroup.getName() + "&8]");
-        eventManager.call(new PreparedServiceStartingEvent(this.getName()));
+    private String getPlatformPluginName() {
+        final Platform platform = group.getPlatform();
+
+        String pluginName;
+        if (platform.isBukkitBased()) {
+            pluginName = "potatocloud-plugin-spigot.jar";
+        } else if (platform.isVelocityBased()) {
+            pluginName = "potatocloud-plugin-velocity.jar";
+        } else if (platform.isLimboBased()) {
+            pluginName = "potatocloud-plugin-limbo.jar";
+        } else {
+            logger.error("No Plugin found for platform " + platform.getName());
+            return "";
+        }
+
+        return pluginName;
+    }
+
+    private List<String> getStartArguments() {
+        final List<String> args = new ArrayList<>();
+        args.add(group.getJavaCommand());
+        args.add("-Xms" + group.getMaxMemory() + "M");
+        args.add("-Xmx" + group.getMaxMemory() + "M");
+        args.add("-Dpotatocloud.service.name=" + getName());
+        args.add("-Dpotatocloud.node.port=" + config.getNodePort());
+        args.addAll(ServicePerformanceFlags.DEFAULT_FLAGS);
+
+        if (group.getCustomJvmFlags() != null) {
+            args.addAll(group.getCustomJvmFlags());
+        }
+
+        args.add("-jar");
+        args.add(directory.resolve("server.jar").toAbsolutePath().toString());
+
+        if (group.getPlatform().isBukkitBased()) {
+            args.add("-nogui");
+        }
+        return args;
+    }
+
+    public void addLog(String log) {
+        logs.add(log);
+        screen.addLog(log);
+
+        if (screenManager.getCurrentScreen().getName().equals(getName())) {
+            console.println(log);
+        }
     }
 
     @Override
@@ -266,30 +278,38 @@ public class ServiceImpl implements Service {
             return;
         }
 
+        logger.info("Stopping service &a" + getName() + "&7...");
+        status = ServiceStatus.STOPPING;
+
         if (processChecker != null) {
             processChecker.interrupt();
             processChecker = null;
         }
 
-        logger.info("Stopping service &a" + getName() + "&7...");
-        status = ServiceStatus.STOPPING;
+        eventManager.call(new ServiceStoppingEvent(getName()));
 
-        if (server != null && eventManager != null) {
-            eventManager.call(new ServiceStoppingEvent(this.getName()));
-        }
-
-        final Platform platform = platformManager.getPlatform(serviceGroup.getPlatformName());
+        final Platform platform = platformManager.getPlatform(group.getPlatformName());
         executeCommand(platform.isProxy() ? "end" : "stop");
+
+        if (outputReader != null) {
+            outputReader.interrupt();
+            outputReader = null;
+        }
 
         if (processWriter != null) {
             processWriter.close();
             processWriter = null;
         }
 
+        if (processReader != null) {
+            processReader.close();
+            processReader = null;
+        }
+
         if (serverProcess != null) {
-            final boolean finished = serverProcess.waitFor(10, TimeUnit.SECONDS);
-            if (!finished) {
-                serverProcess.toHandle().destroyForcibly();
+            final boolean exited = serverProcess.waitFor(10, TimeUnit.SECONDS);
+            if (!exited) {
+                serverProcess.destroyForcibly();
                 serverProcess.waitFor();
             }
             serverProcess = null;
@@ -320,7 +340,7 @@ public class ServiceImpl implements Service {
             eventManager.call(new ServiceStoppedEvent(this.getName()));
         }
 
-        if (!serviceGroup.isStatic()) {
+        if (!group.isStatic()) {
             if (Files.exists(directory)) {
                 if (!FileUtils.deleteQuietly(directory.toFile())) {
                     logger.error("Temp directory for " + getName() + " could not be deleted! The service might still be running");
@@ -331,17 +351,21 @@ public class ServiceImpl implements Service {
         logger.info("Service &a" + getName() + " &7has been stopped");
     }
 
-
     @Override
     @SneakyThrows
     public boolean executeCommand(String command) {
-        if (serverProcess == null || !serverProcess.isAlive() || processWriter == null) {
+        if (!isAlive() || processWriter == null) {
             return false;
         }
+
         processWriter.write(command);
         processWriter.newLine();
         processWriter.flush();
         return true;
+    }
+
+    private boolean isAlive() {
+        return serverProcess != null && serverProcess.isAlive();
     }
 
     @Override
@@ -351,9 +375,7 @@ public class ServiceImpl implements Service {
         Path targetPath = templatesFolder.resolve(template);
         Path sourcePath = directory;
 
-        // a filter was set
         if (filter != null && filter.startsWith("/")) {
-            // remove the / symbol
             sourcePath = directory.resolve(filter.substring(1));
             targetPath = targetPath.resolve(filter.substring(1));
         }
@@ -368,8 +390,7 @@ public class ServiceImpl implements Service {
 
         try {
             FileUtils.copyDirectory(sourcePath.toFile(), targetPath.toFile());
-        } catch (FileSystemException ignored) {
-
+        } catch (IOException ignored) {
         }
     }
 

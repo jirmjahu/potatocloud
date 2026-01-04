@@ -18,12 +18,14 @@ import net.potatocloud.node.platform.cache.CacheManager;
 import net.potatocloud.node.screen.ScreenManager;
 import net.potatocloud.node.service.listeners.*;
 import net.potatocloud.node.template.TemplateManager;
+import net.potatocloud.node.utils.NetworkUtils;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 public class ServiceManagerImpl implements ServiceManager {
 
@@ -107,6 +109,7 @@ public class ServiceManagerImpl implements ServiceManager {
 
         final int serviceId = getFreeServiceId(group);
         final int port = getServicePort(group);
+
         final ServiceImpl service = new ServiceImpl(
                 serviceId,
                 port,
@@ -130,7 +133,7 @@ public class ServiceManagerImpl implements ServiceManager {
                 service.getServiceId(),
                 service.getPort(),
                 service.getStartTimestamp(),
-                service.getServiceGroup().getName(),
+                service.getGroup().getName(),
                 service.getPropertyMap(),
                 service.getStatus().name(),
                 service.getMaxPlayers())
@@ -150,32 +153,27 @@ public class ServiceManagerImpl implements ServiceManager {
         services.remove(service);
     }
 
-    private int getFreeServiceId(ServiceGroup serviceGroup) {
-        final Set<Integer> usedIds = new HashSet<>();
-
-        for (Service service : services) {
-            if (service.getServiceGroup().equals(serviceGroup)) {
-                usedIds.add(service.getServiceId());
-            }
-        }
+    private int getFreeServiceId(ServiceGroup group) {
+        final Set<Integer> usedIds = services.stream()
+                .filter(service -> service.getServiceGroup().equals(group))
+                .map(Service::getServiceId)
+                .collect(Collectors.toSet());
 
         int id = 1;
         while (usedIds.contains(id)) {
             id++;
         }
-
         return id;
     }
 
     private int getServicePort(ServiceGroup group) {
-        final Set<Integer> usedPorts = new HashSet<>();
-        for (Service service : services) {
-            usedPorts.add(service.getPort());
-        }
-
         int port = group.getPlatform().isProxy() ? config.getProxyStartPort() : config.getServiceStartPort();
 
-        while (usedPorts.contains(port)) {
+        final Set<Integer> usedPorts = services.stream()
+                .map(Service::getPort)
+                .collect(Collectors.toSet());
+
+        while (usedPorts.contains(port) || !NetworkUtils.isPortFree(port)) {
             port++;
         }
 

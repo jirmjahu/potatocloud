@@ -17,20 +17,29 @@ public class ServiceDefaultFiles {
     @SneakyThrows
     public void copyDefaultFiles(Logger logger, NodeConfig config, ClassLoader classLoader) {
         final Path dataFolder = Path.of(config.getDataFolder());
-        final List<String> files = List.of("server.properties", "spigot.yml", "paper-global.yml",
-                "velocity.toml", "limbo-server.properties", "potatocloud-plugin-spigot.jar",
-                "potatocloud-plugin-velocity.jar", "potatocloud-plugin-limbo.jar");
-
         Files.createDirectories(dataFolder);
+
+        final List<String> files = List.of(
+                "server.properties",
+                "spigot.yml",
+                "paper-global.yml",
+                "velocity.toml",
+                "limbo-server.properties",
+                "potatocloud-plugin-spigot.jar",
+                "potatocloud-plugin-velocity.jar",
+                "potatocloud-plugin-limbo.jar"
+        );
+
         for (String name : files) {
             try (InputStream stream = classLoader.getResourceAsStream("default-files/" + name)) {
                 if (stream == null) {
+                    logger.error("Default file not found in resources: " + name);
                     continue;
                 }
 
                 FileUtils.copyInputStreamToFile(stream, dataFolder.resolve(name).toFile());
             } catch (Exception e) {
-                logger.warn("Failed to copy default service file: " + name);
+                logger.error("Failed to copy default service file: " + name);
             }
         }
     }

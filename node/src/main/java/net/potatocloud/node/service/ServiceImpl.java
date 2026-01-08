@@ -240,6 +240,7 @@ public class ServiceImpl implements Service {
         args.add("-Xmx" + group.getMaxMemory() + "M");
         args.add("-Dpotatocloud.service.name=" + getName());
         args.add("-Dpotatocloud.node.port=" + config.getNodePort());
+
         args.addAll(ServicePerformanceFlags.DEFAULT_FLAGS);
 
         if (group.getCustomJvmFlags() != null) {
@@ -249,9 +250,14 @@ public class ServiceImpl implements Service {
         args.add("-jar");
         args.add(directory.resolve("server.jar").toAbsolutePath().toString());
 
-        if (group.getPlatform().isBukkitBased()) {
+        if (group.getPlatform().isBukkitBased() && !group.getPlatformVersion().isLegacy()) {
             args.add("-nogui");
         }
+
+        if (group.getPlatform().isLimboBased()) {
+            args.add("--nogui");
+        }
+
         return args;
     }
 

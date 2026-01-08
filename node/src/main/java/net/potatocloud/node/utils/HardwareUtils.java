@@ -25,6 +25,6 @@ public class HardwareUtils {
     }
 
     public boolean isLowHardware() {
-        return getCpuCores() < 4 || getRam() < 4096;
+        return getCpuCores() < 4 || getRam() < 4;
     }
 }

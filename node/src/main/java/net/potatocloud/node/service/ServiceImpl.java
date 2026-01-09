@@ -218,19 +218,18 @@ public class ServiceImpl implements Service {
     private String getPlatformPluginName() {
         final Platform platform = group.getPlatform();
 
-        String pluginName;
         if (platform.isBukkitBased()) {
-            pluginName = "potatocloud-plugin-spigot.jar";
+            return group.getPlatformVersion().isLegacy()
+                    ? "potatocloud-plugin-spigot-legacy.jar"
+                    : "potatocloud-plugin-spigot.jar";
         } else if (platform.isVelocityBased()) {
-            pluginName = "potatocloud-plugin-velocity.jar";
+            return "potatocloud-plugin-velocity.jar";
         } else if (platform.isLimboBased()) {
-            pluginName = "potatocloud-plugin-limbo.jar";
+            return "potatocloud-plugin-limbo.jar";
         } else {
             logger.error("No Plugin found for platform " + platform.getName());
             return "";
         }
-
-        return pluginName;
     }
 
     private List<String> getStartArguments() {

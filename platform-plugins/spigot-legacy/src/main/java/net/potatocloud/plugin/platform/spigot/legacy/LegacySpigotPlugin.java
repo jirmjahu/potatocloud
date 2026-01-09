@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class SpigotPlugin extends JavaPlugin implements Listener, PlatformPlugin {
+public class LegacySpigotPlugin extends JavaPlugin implements Listener, PlatformPlugin {
 
     private ConnectorAPI api;
     private Service currentService;

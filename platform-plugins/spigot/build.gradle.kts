@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.shadow)
 }
 
-group = "net.potatocloud.plugin.platform.spigot.legacy"
+group = "net.potatocloud.plugin.platform.spigot"
 
 repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
@@ -18,7 +18,7 @@ dependencies {
 }
 
 tasks.named<ShadowJar>("shadowJar") {
-    archiveBaseName.set("potatocloud-plugin-spigot-legacy")
+    archiveBaseName.set("potatocloud-plugin-spigot")
     archiveVersion.set("")
     archiveClassifier.set("")
 }

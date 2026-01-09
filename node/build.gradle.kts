@@ -27,6 +27,7 @@ dependencies {
     implementation(libs.lombok)
     annotationProcessor(libs.lombok)
 
+    compileOnly(project(":platform-plugins:spigot"))
     compileOnly(project(":platform-plugins:spigot-legacy"))
     compileOnly(project(":platform-plugins:velocity"))
     compileOnly(project(":platform-plugins:limbo"))
@@ -41,6 +42,9 @@ tasks.named<ShadowJar>("shadowJar") {
         attributes["Main-Class"] = "net.potatocloud.node.NodeMain"
     }
 
+    from(project(":platform-plugins:spigot").tasks.named("shadowJar")) {
+        into("default-files")
+    }
     from(project(":platform-plugins:spigot-legacy").tasks.named("shadowJar")) {
         into("default-files")
     }

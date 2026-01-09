@@ -26,6 +26,7 @@ public class ServiceDefaultFiles {
                 "velocity.toml",
                 "limbo-server.properties",
                 "potatocloud-plugin-spigot.jar",
+                "potatocloud-plugin-spigot-legacy.jar",
                 "potatocloud-plugin-velocity.jar",
                 "potatocloud-plugin-limbo.jar"
         );

@@ -11,8 +11,8 @@ import net.potatocloud.plugin.server.proxy.maintenance.LoginListener;
 import net.potatocloud.plugin.server.proxy.motd.ProxyPingListener;
 import net.potatocloud.plugin.server.proxy.tablist.TablistBannerHandler;
 import net.potatocloud.plugin.server.proxy.tablist.TablistHandler;
-import net.potatocloud.plugins.utils.Config;
-import net.potatocloud.plugins.utils.MessagesConfig;
+import net.potatocloud.plugin.server.shared.Config;
+import net.potatocloud.plugin.server.shared.MessagesConfig;
 import org.slf4j.Logger;
 
 import java.util.List;

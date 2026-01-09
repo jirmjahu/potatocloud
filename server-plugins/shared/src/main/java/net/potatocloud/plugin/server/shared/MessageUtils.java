@@ -1,4 +1,4 @@
-package net.potatocloud.plugins.utils;
+package net.potatocloud.plugin.server.shared;
 
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;

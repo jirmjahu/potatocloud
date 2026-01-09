@@ -8,8 +8,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.potatocloud.api.CloudAPI;
 import net.potatocloud.plugin.server.proxy.ProxyPlugin;
-import net.potatocloud.plugins.utils.Config;
-import net.potatocloud.plugins.utils.MessageUtils;
+import net.potatocloud.plugin.server.shared.Config;
+import net.potatocloud.plugin.server.shared.MessageUtils;
 
 @RequiredArgsConstructor
 public class ProxyPingListener {

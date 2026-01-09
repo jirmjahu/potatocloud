@@ -14,7 +14,7 @@ repositories {
 dependencies {
     compileOnly(project(":api"))
     implementation(project(":core"))
-    implementation(project(":server-plugins:utils"))
+    implementation(project(":server-plugins:shared"))
     implementation(libs.simpleyaml)
     implementation(libs.lombok)
     annotationProcessor(libs.lombok)

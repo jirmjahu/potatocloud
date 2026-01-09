@@ -6,8 +6,8 @@ import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.proxy.Player;
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.plugin.server.proxy.ProxyPlugin;
-import net.potatocloud.plugins.utils.Config;
-import net.potatocloud.plugins.utils.MessagesConfig;
+import net.potatocloud.plugin.server.shared.Config;
+import net.potatocloud.plugin.server.shared.MessagesConfig;
 
 @RequiredArgsConstructor
 public class LoginListener {

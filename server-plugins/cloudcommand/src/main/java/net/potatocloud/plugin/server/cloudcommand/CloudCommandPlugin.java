@@ -5,8 +5,8 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.potatocloud.plugin.server.cloudcommand.command.CloudCommand;
-import net.potatocloud.plugins.utils.Config;
-import net.potatocloud.plugins.utils.MessagesConfig;
+import net.potatocloud.plugin.server.shared.Config;
+import net.potatocloud.plugin.server.shared.MessagesConfig;
 
 import java.util.logging.Logger;
 

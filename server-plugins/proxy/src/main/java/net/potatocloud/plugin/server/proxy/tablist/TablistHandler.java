@@ -11,8 +11,8 @@ import net.kyori.adventure.text.Component;
 import net.potatocloud.api.CloudAPI;
 import net.potatocloud.api.player.CloudPlayer;
 import net.potatocloud.api.service.Service;
-import net.potatocloud.plugins.utils.Config;
-import net.potatocloud.plugins.utils.MessageUtils;
+import net.potatocloud.plugin.server.shared.Config;
+import net.potatocloud.plugin.server.shared.MessageUtils;
 
 @RequiredArgsConstructor
 public class TablistHandler {

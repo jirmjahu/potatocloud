@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.labymod.serverapi.server.bukkit.event.LabyModPlayerJoinEvent;
 import net.potatocloud.api.CloudAPI;
 import net.potatocloud.api.service.Service;
-import net.potatocloud.plugins.utils.Config;
+import net.potatocloud.plugin.server.shared.Config;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

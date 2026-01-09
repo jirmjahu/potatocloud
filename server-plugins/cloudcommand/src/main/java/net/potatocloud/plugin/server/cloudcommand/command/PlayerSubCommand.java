@@ -6,7 +6,7 @@ import net.potatocloud.api.CloudAPI;
 import net.potatocloud.api.player.CloudPlayer;
 import net.potatocloud.api.player.CloudPlayerManager;
 import net.potatocloud.api.service.Service;
-import net.potatocloud.plugins.utils.MessagesConfig;
+import net.potatocloud.plugin.server.shared.MessagesConfig;
 
 import java.util.List;
 import java.util.Set;

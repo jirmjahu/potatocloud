@@ -22,7 +22,7 @@
             <option value="$PROJECT_DIR$/server-plugins/labymod" />
             <option value="$PROJECT_DIR$/server-plugins/notify" />
             <option value="$PROJECT_DIR$/server-plugins/proxy" />
-            <option value="$PROJECT_DIR$/server-plugins/utils" />
+            <option value="$PROJECT_DIR$/server-plugins/shared" />
           </set>
         </option>
       </GradleProjectSettings>

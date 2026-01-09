@@ -14,8 +14,8 @@ import net.potatocloud.api.event.events.service.ServiceStartedEvent;
 import net.potatocloud.api.event.events.service.ServiceStoppedEvent;
 import net.potatocloud.api.event.events.service.ServiceStoppingEvent;
 import net.potatocloud.api.service.Service;
-import net.potatocloud.plugins.utils.Config;
-import net.potatocloud.plugins.utils.MessagesConfig;
+import net.potatocloud.plugin.server.shared.Config;
+import net.potatocloud.plugin.server.shared.MessagesConfig;
 
 import java.util.logging.Logger;
 

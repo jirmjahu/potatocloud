@@ -4,20 +4,18 @@ plugins {
     alias(libs.plugins.shadow)
 }
 
-group = "net.potatocloud.plugins.proxy"
+group = "net.potatocloud.plugins.cloudcommand"
 
 repositories {
     maven("https://jitpack.io")
     maven("https://repo.papermc.io/repository/maven-public")
-    maven("https://dist.labymod.net/api/v1/maven/release/")
 }
 
 dependencies {
     compileOnly(project(":api"))
-    implementation(project(":plugins:utils"))
+    implementation(project(":core"))
+    implementation(project(":server-plugins:utils"))
     implementation(libs.simpleyaml)
-    implementation(libs.labymod.common)
-    implementation(libs.labymod.velocity)
     implementation(libs.lombok)
     annotationProcessor(libs.lombok)
 
@@ -25,9 +23,11 @@ dependencies {
 }
 
 tasks.named<ShadowJar>("shadowJar") {
-    archiveBaseName.set("potatocloud-plugin-proxy")
+    archiveBaseName.set("potatocloud-plugin-cloudcommand")
     archiveVersion.set("${rootProject.version}")
     archiveClassifier.set("")
+
+    exclude("net/potatocloud/api/**")
 }
 
 

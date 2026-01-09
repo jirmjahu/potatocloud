@@ -41,13 +41,13 @@ tasks.named<ShadowJar>("shadowJar") {
         attributes["Main-Class"] = "net.potatocloud.node.NodeMain"
     }
 
-    from(project(":plugin-spigot").tasks.named("shadowJar")) {
+    from(project(":platform-plugins:spigot-legacy").tasks.named("shadowJar")) {
         into("default-files")
     }
-    from(project(":plugin-velocity").tasks.named("shadowJar")) {
+    from(project(":platform-plugins:velocity").tasks.named("shadowJar")) {
         into("default-files")
     }
-    from(project(":plugin-limbo").tasks.named("shadowJar")) {
+    from(project(":platform-plugins:limbo").tasks.named("shadowJar")) {
         into("default-files")
     }
 }

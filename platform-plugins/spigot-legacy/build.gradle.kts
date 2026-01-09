@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.shadow)
 }
 
-group = "net.potatocloud.plugin.spigot"
+group = "net.potatocloud.plugin.platform.spigot.legacy"
 
 repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")

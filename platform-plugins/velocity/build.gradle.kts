@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.shadow)
 }
 
-group = "net.potatocloud.plugin.velocity"
+group = "net.potatocloud.plugin.platform.velocity"
 
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/")

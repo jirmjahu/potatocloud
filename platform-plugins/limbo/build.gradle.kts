@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.shadow)
 }
 
-group = "net.potatocloud.plugin.limbo"
+group = "net.potatocloud.plugin.platform.limbo"
 
 repositories {
     maven("https://repo.loohpjames.com/repository")

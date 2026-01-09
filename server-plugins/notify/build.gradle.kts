@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.shadow)
 }
 
-group = "net.potatocloud.plugins.notify"
+group = "net.potatocloud.plugin.server.notify"
 
 repositories {
     maven("https://jitpack.io")

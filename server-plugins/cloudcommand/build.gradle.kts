@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.shadow)
 }
 
-group = "net.potatocloud.plugins.cloudcommand"
+group = "net.potatocloud.plugin.server.cloudcommand"
 
 repositories {
     maven("https://jitpack.io")

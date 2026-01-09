@@ -1,15 +1,15 @@
-package net.potatocloud.plugin.spigot;
+package net.potatocloud.plugin.platform.limbo;
 
+import com.loohp.limbo.events.EventHandler;
+import com.loohp.limbo.events.Listener;
+import com.loohp.limbo.events.player.PlayerLoginEvent;
+import com.loohp.limbo.events.status.StatusPingEvent;
+import net.kyori.adventure.text.Component;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.connector.ConnectorAPI;
 import net.potatocloud.connector.utils.PlatformPlugin;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.server.ServerListPingEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class SpigotPlugin extends JavaPlugin implements Listener, PlatformPlugin {
+public class LimboPlugin extends com.loohp.limbo.plugins.LimboPlugin implements Listener, PlatformPlugin {
 
     private ConnectorAPI api;
     private Service currentService;
@@ -22,7 +22,7 @@ public class SpigotPlugin extends JavaPlugin implements Listener, PlatformPlugin
     @Override
     public void onEnable() {
         initCurrentService();
-        getServer().getPluginManager().registerEvents(this, this);
+        getServer().getEventsManager().registerEvents(this, this);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class SpigotPlugin extends JavaPlugin implements Listener, PlatformPlugin
     }
 
     @EventHandler
-    public void onServerListPing(ServerListPingEvent event) {
+    public void onStatusPing(StatusPingEvent event) {
         if (currentService == null) {
             return;
         }
@@ -43,18 +43,19 @@ public class SpigotPlugin extends JavaPlugin implements Listener, PlatformPlugin
         if (currentService == null) {
             return;
         }
-        if (getServer().getOnlinePlayers().size() < currentService.getMaxPlayers()) {
+        if (getServer().getPlayers().size() < currentService.getMaxPlayers()) {
             return;
         }
-        if (event.getPlayer().hasPermission("potatocloud.maxplayers.bypass")) {
+        if (event.getConnection().getPlayer().hasPermission("potatocloud.maxplayers.bypass")) {
             return;
         }
-        event.disallow(PlayerLoginEvent.Result.KICK_FULL, "§cThe server has reached its maximum players!");
+        event.setCancelReason(Component.text("§cThe server has reached its maximum players!"));
+        event.setCancelled(true);
     }
 
     @Override
     public void runTaskLater(Runnable task, int delaySeconds) {
-        getServer().getScheduler().runTaskLater(this, task, delaySeconds * 20L);
+        getServer().getScheduler().runTaskLater(this, task::run, delaySeconds * 20L);
     }
 
     @Override

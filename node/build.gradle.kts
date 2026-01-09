@@ -27,9 +27,9 @@ dependencies {
     implementation(libs.lombok)
     annotationProcessor(libs.lombok)
 
-    compileOnly(project(":plugin-spigot"))
-    compileOnly(project(":plugin-velocity"))
-    compileOnly(project(":plugin-limbo"))
+    compileOnly(project(":platform-plugins:spigot-legacy"))
+    compileOnly(project(":platform-plugins:velocity"))
+    compileOnly(project(":platform-plugins:limbo"))
 }
 
 tasks.named<ShadowJar>("shadowJar") {

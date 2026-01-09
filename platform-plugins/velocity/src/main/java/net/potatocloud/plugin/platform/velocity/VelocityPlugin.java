@@ -1,4 +1,4 @@
-package net.potatocloud.plugin.velocity;
+package net.potatocloud.plugin.platform.velocity;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;

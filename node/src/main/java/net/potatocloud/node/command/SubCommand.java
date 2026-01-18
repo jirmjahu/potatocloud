@@ -3,26 +3,145 @@ package net.potatocloud.node.command;
 import lombok.Getter;
 import net.potatocloud.node.Node;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 @Getter
-public abstract class SubCommand {
+public class SubCommand {
 
     private final String name;
     private final String description;
-    private final String usage;
+    private final Command parent;
+    private final List<SubCommand> subCommands = new ArrayList<>();
+    private final List<SubCommand> parentSubCommands = new ArrayList<>();
+    private final List<ArgumentType<?>> arguments = new ArrayList<>();
+    private Consumer<CommandContext> executor;
+    private CommandCompleter completer;
 
-    protected SubCommand() {
-        final SubCommandInfo info = this.getClass().getAnnotation(SubCommandInfo.class);
-        if (info == null) {
-            throw new IllegalStateException("SubCommandInfo annotation missing in SubCommand: " + getClass().getSimpleName());
-        }
-        name = info.name();
-        description = info.description();
-        usage = info.usage();
+    public SubCommand(String name, String description, Command parent) {
+        this.name = name;
+        this.description = description;
+        this.parent = parent;
     }
 
-    public abstract void execute(String[] args);
+    public SubCommand argument(ArgumentType<?> argument) {
+        arguments.add(argument);
+        return this;
+    }
 
-    protected void sendUsage() {
-        Node.getInstance().getLogger().info("&cUse&8: &7" + usage);
+    public SubCommand suggests(CommandCompleter completer) {
+        this.completer = completer;
+        return this;
+    }
+
+    public SubCommand executes(Consumer<CommandContext> executor) {
+        this.executor = executor;
+        return this;
+    }
+
+    public SubCommand sub(String name) {
+        return sub(name, null);
+    }
+
+    public SubCommand sub(String name, String description) {
+        final SubCommand sub = new SubCommand(name, description, parent);
+        sub.getParentSubCommands().add(this);
+        subCommands.add(sub);
+        return sub;
+    }
+
+    public void execute(String[] args, int index, CommandContext ctx) {
+        final CommandContext.ParseResult parsed = buildContext(args, index);
+
+        if (!parsed.isComplete()) {
+            final String errorMessage = parsed.getErrorMessage();
+            if (errorMessage == null) {
+                sendHelp();
+            }
+            Node.getInstance().getLogger().info(errorMessage);
+            return;
+        }
+
+        ctx.getValues().putAll(parsed.getContext().getValues());
+
+        final int nextIndex = index + parsed.getParsedArguments();
+        if (nextIndex < args.length) {
+            final String next = args[nextIndex];
+
+            for (SubCommand sub : subCommands) {
+                if (sub.getName().equalsIgnoreCase(next)) {
+                    sub.execute(args, nextIndex + 1, ctx);
+                    return;
+                }
+            }
+        }
+
+        if (executor != null) {
+            executor.accept(ctx);
+        }
+    }
+
+
+    public List<String> suggest(CommandContext ctx, String input) {
+        if (completer == null) {
+            return List.of();
+        }
+        return completer.complete(ctx, input);
+    }
+
+    public CommandContext.ParseResult buildContext(String[] args, int startIndex) {
+        final CommandContext ctx = new CommandContext();
+
+        for (int i = 0; i < arguments.size(); i++) {
+            int idx = startIndex + i;
+
+            if (idx >= args.length) {
+                return new CommandContext.ParseResult(ctx, i, false, getUsageMessage());
+            }
+
+            final ArgumentType.ParseResult<?> result = arguments.get(i).parse(args[idx]);
+            if (!result.isSuccess()) {
+                return new CommandContext.ParseResult(ctx, i, false, result.getError().getMessage());
+            }
+
+            ctx.set(arguments.get(i).getName(), result.getValue());
+        }
+
+        return new CommandContext.ParseResult(ctx, arguments.size(), true);
+    }
+
+    public void sendHelp() {
+        Node.getInstance().getLogger().info(getUsageMessage());
+    }
+
+    public String getUsageMessage() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("&cCorrect Usage&8: &7");
+
+        builder.append(parent.getName()).append(" ");
+
+        for (SubCommand parentSub : parentSubCommands) {
+            builder.append(parentSub.getName()).append(" ");
+        }
+
+        builder.append(name);
+
+        for (ArgumentType<?> arg : arguments) {
+            builder.append(" &8[&a").append(arg.getName()).append("&8]");
+        }
+
+        if (!subCommands.isEmpty()) {
+            builder.append(" &8[&a");
+            for (int i = 0; i < subCommands.size(); i++) {
+                builder.append(subCommands.get(i).getName());
+                if (i < subCommands.size() - 1) {
+                    builder.append("&8|&a");
+                }
+            }
+            builder.append("&8]");
+        }
+
+        return builder.toString();
     }
 }

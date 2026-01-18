@@ -178,7 +178,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
         if (groupName == null) {
             return false;
         }
-        return groups.stream().anyMatch(serviceGroup -> serviceGroup != null && serviceGroup.getName().equalsIgnoreCase(groupName));
+        return groups.stream().anyMatch(group -> group != null && group.getName().equalsIgnoreCase(groupName));
     }
 
 

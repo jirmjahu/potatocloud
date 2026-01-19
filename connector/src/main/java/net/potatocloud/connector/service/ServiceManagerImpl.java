@@ -70,8 +70,8 @@ public class ServiceManagerImpl implements ServiceManager {
     }
 
     @Override
-    public void startServices(String groupName, int count) {
-        for (int i = 0; i < count; i++) {
+    public void startServices(String groupName, int amount) {
+        for (int i = 0; i < amount; i++) {
             startService(groupName);
         }
     }

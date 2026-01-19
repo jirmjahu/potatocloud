@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.service.Service;
-import net.potatocloud.node.command.arguments.ServiceArgument;
-import net.potatocloud.node.command.arguments.ServiceGroupArgument;
-import net.potatocloud.node.command.arguments.StringArgument;
+import net.potatocloud.node.command.arguments.*;
 
 import java.util.List;
 
@@ -31,6 +29,14 @@ public abstract class ArgumentType<T> {
 
     public static ArgumentType<String> String(String name) {
         return new StringArgument(name);
+    }
+
+    public static ArgumentType<String> MultiString(String name) {
+        return new MultiStringArgument(name);
+    }
+
+    public static ArgumentType<Integer> Integer(String name) {
+        return new IntegerArgument(name);
     }
 
     public static ArgumentType<ServiceGroup> Group(String name) {

@@ -2,6 +2,7 @@ package net.potatocloud.node.command;
 
 import lombok.Getter;
 import net.potatocloud.node.Node;
+import net.potatocloud.node.command.arguments.MultiStringArgument;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,20 @@ public class SubCommand {
     }
 
     public SubCommand argument(ArgumentType<?> argument) {
+        if (!arguments.isEmpty() && arguments.getLast().isRequired()) {
+            throw new IllegalStateException("Cannot add arguments after a optional argument");
+        }
+
+        if (!arguments.isEmpty() && arguments.getLast() instanceof MultiStringArgument) {
+            throw new IllegalStateException("Cannot add arguments after a MultiStringArgument");
+        }
+
         arguments.add(argument);
+        return this;
+    }
+
+    public SubCommand optionalArgument(ArgumentType<?> argument) {
+        argument(argument.asOptionalArgument());
         return this;
     }
 
@@ -58,6 +72,7 @@ public class SubCommand {
             final String errorMessage = parsed.getErrorMessage();
             if (errorMessage == null) {
                 sendHelp();
+                return;
             }
             Node.getInstance().getLogger().info(errorMessage);
             return;
@@ -82,7 +97,6 @@ public class SubCommand {
         }
     }
 
-
     public List<String> suggest(CommandContext ctx, String input) {
         if (completer == null) {
             return List.of();
@@ -92,23 +106,52 @@ public class SubCommand {
 
     public CommandContext.ParseResult buildContext(String[] args, int startIndex) {
         final CommandContext ctx = new CommandContext();
+        int parsed = 0;
 
-        for (int i = 0; i < arguments.size(); i++) {
-            int idx = startIndex + i;
+        for (ArgumentType<?> argument : arguments) {
+            final int idx = startIndex + parsed;
 
+            if (argument instanceof MultiStringArgument multiStringArgument) {
+                final String combined = multiStringArgument.combineArguments(args, idx);
+
+                ctx.set(argument.getName(), combined);
+                parsed += args.length - idx;
+                break;
+            }
+
+            // Check if the user has passed enough arguments
             if (idx >= args.length) {
-                return new CommandContext.ParseResult(ctx, i, false, getUsageMessage());
+                if (argument.isRequired()) {
+                    return new CommandContext.ParseResult(ctx, parsed, false, getUsageMessage());
+                }
+                // Argument is optional, its fine that its missing
+                ctx.set(argument.getName(), null);
+                continue;
             }
 
-            final ArgumentType.ParseResult<?> result = arguments.get(i).parse(args[idx]);
+            // Try to parse the argument
+            final ArgumentType.ParseResult<?> result = argument.parse(args[idx]);
+
             if (!result.isSuccess()) {
-                return new CommandContext.ParseResult(ctx, i, false, result.getError().getMessage());
+                if (argument.isRequired()) {
+                    return new CommandContext.ParseResult(ctx, parsed, false, result.getError().getMessage());
+                }
+
+                // Argument is optional, it is fine if parsing fails most of the time
+                // (for now it works because I am only using strings for optional arguments,
+                // and strings cant fail), but later this could be a problem
+                // TODO: there should be a way to also check parsing for optional arguments
+                ctx.set(argument.getName(), null);
+
+                //  parsed++;
+                continue;
             }
 
-            ctx.set(arguments.get(i).getName(), result.getValue());
+            ctx.set(argument.getName(), result.getValue());
+            parsed++;
         }
 
-        return new CommandContext.ParseResult(ctx, arguments.size(), true);
+        return new CommandContext.ParseResult(ctx, parsed, true);
     }
 
     public void sendHelp() {
@@ -127,8 +170,18 @@ public class SubCommand {
 
         builder.append(name);
 
-        for (ArgumentType<?> arg : arguments) {
-            builder.append(" &8[&a").append(arg.getName()).append("&8]");
+        for (ArgumentType<?> argument : arguments) {
+            builder.append(" &8[&a").append(argument.getName());
+
+            if (!argument.isRequired()) {
+                builder.append("?");
+            }
+
+            if (argument instanceof MultiStringArgument) {
+                builder.append("...");
+            }
+
+            builder.append("&8]");
         }
 
         if (!subCommands.isEmpty()) {

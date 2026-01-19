@@ -137,7 +137,6 @@ public class SubCommand {
 
             ctx.set(argument.getName(), result.getValue());
             parsed++;
-
         }
 
         return new CommandContext.ParseResult(ctx, parsed, true);

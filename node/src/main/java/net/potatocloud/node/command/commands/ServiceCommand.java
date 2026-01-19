@@ -6,12 +6,14 @@ import net.potatocloud.api.property.Property;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceManager;
 import net.potatocloud.core.utils.PropertyUtil;
-import net.potatocloud.node.Node;
 import net.potatocloud.node.command.ArgumentType;
 import net.potatocloud.node.command.Command;
 import net.potatocloud.node.command.CommandInfo;
 import net.potatocloud.node.command.SubCommand;
 import net.potatocloud.node.console.Logger;
+import net.potatocloud.node.screen.Screen;
+import net.potatocloud.node.screen.ScreenManager;
+import net.potatocloud.node.service.ServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +22,7 @@ import java.util.List;
 @CommandInfo(name = "service", description = "Manage services", aliases = {"ser", "s"})
 public class ServiceCommand extends Command {
 
-    public ServiceCommand(Logger logger, ServiceManager serviceManager) {
-        final Node node = Node.getInstance();
-
+    public ServiceCommand(Logger logger, ServiceManager serviceManager, ScreenManager screenManager) {
         defaultExecutor(ctx -> sendHelp());
 
         sub("copy", "Copy files from a service to a template")
@@ -233,6 +233,22 @@ public class ServiceCommand extends Command {
                     logger.info("Properties of service &a" + service.getName() + "&8:");
                     for (Property<?> property : properties) {
                         logger.info("&8» &a" + property.getName() + " &7- " + property.getValue());
+                    }
+                });
+
+        sub("screen", "Switch to the screen of the given service")
+                .argument(ArgumentType.Service("service"))
+                .executes(ctx -> {
+                    final Service service = ctx.get("service");
+
+                    if (service instanceof ServiceImpl serviceImpl) {
+                        final Screen screen = serviceImpl.getScreen();
+                        if (screen == null) {
+                            logger.error("&cFailed to switch to screen of service " + name);
+                            return;
+                        }
+
+                        screenManager.switchScreen(screen.getName());
                     }
                 });
 

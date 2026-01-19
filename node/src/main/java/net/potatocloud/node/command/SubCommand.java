@@ -27,7 +27,7 @@ public class SubCommand {
     }
 
     public SubCommand argument(ArgumentType<?> argument) {
-        if (!arguments.isEmpty() && arguments.getLast().isRequired()) {
+        if (!arguments.isEmpty() && !arguments.getLast().isRequired()) {
             throw new IllegalStateException("Cannot add arguments after a optional argument");
         }
 
@@ -125,7 +125,6 @@ public class SubCommand {
                     return new CommandContext.ParseResult(ctx, parsed, false, getUsageMessage());
                 }
                 // Argument is optional, its fine that its missing
-                ctx.set(argument.getName(), null);
                 continue;
             }
 
@@ -133,22 +132,12 @@ public class SubCommand {
             final ArgumentType.ParseResult<?> result = argument.parse(args[idx]);
 
             if (!result.isSuccess()) {
-                if (argument.isRequired()) {
-                    return new CommandContext.ParseResult(ctx, parsed, false, result.getError().getMessage());
-                }
-
-                // Argument is optional, it is fine if parsing fails most of the time
-                // (for now it works because I am only using strings for optional arguments,
-                // and strings cant fail), but later this could be a problem
-                // TODO: there should be a way to also check parsing for optional arguments
-                ctx.set(argument.getName(), null);
-
-                //  parsed++;
-                continue;
+                return new CommandContext.ParseResult(ctx, parsed, false, result.getError().getMessage());
             }
 
             ctx.set(argument.getName(), result.getValue());
             parsed++;
+
         }
 
         return new CommandContext.ParseResult(ctx, parsed, true);

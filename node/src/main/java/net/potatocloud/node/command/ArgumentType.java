@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.group.ServiceGroup;
+import net.potatocloud.api.platform.Platform;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.node.command.arguments.*;
 
@@ -45,6 +46,10 @@ public abstract class ArgumentType<T> {
 
     public static ArgumentType<Service> Service(String name) {
         return new ServiceArgument(name);
+    }
+
+    public static ArgumentType<Platform> Platform(String name) {
+        return new PlatformArgument(name);
     }
 
     public ArgumentType<T> asOptionalArgument() {

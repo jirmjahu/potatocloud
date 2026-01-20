@@ -143,6 +143,7 @@ public class Node extends CloudAPI {
     private void registerCommands() {
         commandManager.registerCommand(new GroupCommand(logger, groupManager));
         commandManager.registerCommand(new ServiceCommand(logger, serviceManager, screenManager));
+        commandManager.registerCommand(new PlatformCommand(logger, platformManager));
     }
 
     @SneakyThrows

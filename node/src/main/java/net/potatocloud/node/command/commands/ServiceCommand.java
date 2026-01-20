@@ -244,7 +244,7 @@ public class ServiceCommand extends Command {
                     if (service instanceof ServiceImpl serviceImpl) {
                         final Screen screen = serviceImpl.getScreen();
                         if (screen == null) {
-                            logger.error("&cFailed to switch to screen of service " + name);
+                            logger.error("&cFailed to switch to screen of service " + service.getName());
                             return;
                         }
 

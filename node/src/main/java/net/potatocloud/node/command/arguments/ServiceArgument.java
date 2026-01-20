@@ -19,7 +19,7 @@ public class ServiceArgument extends ArgumentType<Service> {
                 .getService(input);
 
         if (service == null) {
-            return ParseResult.error("&cNo service found with the name &a" + input);
+            return ParseResult.error("Service &a" + input + " &7does &cnot &7exist");
         }
 
         return ParseResult.success(service);

@@ -19,7 +19,7 @@ public class ServiceGroupArgument extends ArgumentType<ServiceGroup> {
                 .getServiceGroup(input);
 
         if (group == null) {
-            return ParseResult.error("&cNo service group found with the name &a" + input);
+            return ParseResult.error("Group &a" + input + " &7does &cnot &7exist");
         }
 
         return ParseResult.success(group);

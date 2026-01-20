@@ -16,7 +16,7 @@ public class PlatformArgument extends ArgumentType<Platform> {
     public ParseResult<Platform> parse(String input) {
         final Platform platform = Node.getInstance().getPlatformManager().getPlatform(input);
         if (platform == null) {
-            return ParseResult.error("&cNo platform found with the name &a" + input);
+            return ParseResult.error("Platform &a" + input + " &7does &cnot &7exist");
         }
 
         return ParseResult.success(platform);

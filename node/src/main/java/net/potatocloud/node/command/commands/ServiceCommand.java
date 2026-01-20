@@ -60,7 +60,7 @@ public class ServiceCommand extends Command {
                     logger.info("Copied &a" + (filter.isEmpty() ? "all service files" : filter) + " &7to template: &a" + template);
                 });
 
-        sub("edit", "Edit the given service")
+        sub("edit", "Edit a service")
                 .argument(ArgumentType.Service("service"))
                 .argument(ArgumentType.String("key"))
                 .argument(ArgumentType.String("value"))
@@ -99,7 +99,7 @@ public class ServiceCommand extends Command {
                     logger.info("Updated &a" + key + " &7for service &a" + service.getName() + "&7 to &a" + value);
                 });
 
-        sub("execute", "Execute a command on the given sevice")
+        sub("execute", "Execute a command on a sevice")
                 .argument(ArgumentType.Service("service"))
                 .argument(ArgumentType.MultiString("command"))
                 .executes(ctx -> {
@@ -117,7 +117,7 @@ public class ServiceCommand extends Command {
                         logger.info("&cFailed to execute command &a" + command + " &con service &a" + service.getName());
                     }
                 });
-        sub("info", "Show details of the given service")
+        sub("info", "Show details of a service")
                 .argument(ArgumentType.Service("service"))
                 .executes(ctx -> {
                     final Service service = ctx.get("service");
@@ -148,7 +148,7 @@ public class ServiceCommand extends Command {
                     }
                 });
 
-        final SubCommand propertySub = sub("property", "Manage properties of the given service");
+        final SubCommand propertySub = sub("property", "Manage properties of a service");
 
         propertySub.executes(ctx -> propertySub.sendHelp());
 
@@ -236,7 +236,7 @@ public class ServiceCommand extends Command {
                     }
                 });
 
-        sub("screen", "Switch to the screen of the given service")
+        sub("screen", "Switch to a service screen")
                 .argument(ArgumentType.Service("service"))
                 .executes(ctx -> {
                     final Service service = ctx.get("service");
@@ -260,10 +260,10 @@ public class ServiceCommand extends Command {
                     final int amount = ctx.has("amount") ? ctx.get("amount") : 1;
 
                     serviceManager.startServices(group, amount);
-                    logger.info("Starting " + amount + " new service(s) of group &a" + group.getName());
+                    logger.info("Starting " + amount + " service" + (amount == 1 ? "" : "s") + " in group &a" + group.getName());
                 });
 
-        sub("stop", "Stop the given service")
+        sub("stop", "Stop a service")
                 .argument(ArgumentType.Service("service"))
                 .executes(ctx -> {
                     final Service service = ctx.get("service");

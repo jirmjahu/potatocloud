@@ -23,11 +23,11 @@ public class PlatformCommand extends Command {
 
         defaultExecutor(ctx -> sendHelp());
 
-        sub("create").executes(ctx -> {
+        sub("create", "Create a new platform").executes(ctx -> {
             node.getSetupManager().startSetup(new PlatformConfigurationSetup(node.getConsole(), node.getScreenManager(), node.getPlatformManager(), node.getLogger()));
         });
 
-        sub("download")
+        sub("download", "Download a platform version")
                 .argument(ArgumentType.Platform("platform"))
                 .argument(ArgumentType.String("version"))
                 .suggests((ctx, input, argsLength) -> {
@@ -56,7 +56,7 @@ public class PlatformCommand extends Command {
                     node.getDownloadManager().downloadPlatformVersion(platform, version);
                 });
 
-        sub("info")
+        sub("info", "Shows information of a platform")
                 .argument(ArgumentType.Platform("platform"))
                 .executes(ctx -> {
                     final Platform platform = ctx.get("platform");
@@ -81,17 +81,18 @@ public class PlatformCommand extends Command {
                     logger.info("&8» &7Hash Type: &a" + platform.getHashType());
                 });
 
-        sub("list").executes(ctx -> {
-            logger.info("&7Available platforms:");
+        sub("list", "List all platforms")
+                .executes(ctx -> {
+                    logger.info("&7Available platforms:");
 
-            for (Platform platform : platformManager.getPlatforms()) {
-                logger.info("&8» &a" + platform.getName() +
-                        " &7- Proxy: &a" + platform.isProxy() +
-                        " &7- Custom: &a" + platform.isCustom());
-            }
-        });
+                    for (Platform platform : platformManager.getPlatforms()) {
+                        logger.info("&8» &a" + platform.getName() +
+                                " &7- Proxy: &a" + platform.isProxy() +
+                                " &7- Custom: &a" + platform.isCustom());
+                    }
+                });
 
-        final SubCommand versionSub = sub("version");
+        final SubCommand versionSub = sub("version", "Manage versions of a platform");
 
         versionSub.executes(ctx -> versionSub.sendHelp());
 

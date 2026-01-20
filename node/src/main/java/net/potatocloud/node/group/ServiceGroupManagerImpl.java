@@ -80,7 +80,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
             return;
         }
 
-        final ServiceGroup serviceGroup = new ServiceGroupImpl(
+        final ServiceGroup group = new ServiceGroupImpl(
                 name,
                 platformName,
                 platformVersionName,
@@ -97,14 +97,14 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
                 propertyMap
         );
 
-        addServiceGroup(serviceGroup);
+        addServiceGroup(group);
 
         // Send group add packet to clients
         server.broadcastPacket(new GroupAddPacket(
                 name,
                 platformName,
                 platformVersionName,
-                serviceGroup.getServiceTemplates(),
+                group.getServiceTemplates(),
                 minOnlineCount,
                 maxOnlineCount,
                 maxPlayers,

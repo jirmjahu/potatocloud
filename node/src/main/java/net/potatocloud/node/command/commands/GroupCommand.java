@@ -17,7 +17,7 @@ import net.potatocloud.node.setup.setups.GroupConfigurationSetup;
 import java.util.ArrayList;
 import java.util.List;
 
-@CommandInfo(name = "group", description = "Manage service groups", aliases = {"groups", "g"})
+@CommandInfo(name = "group", description = "Manage groups", aliases = {"groups", "g"})
 public class GroupCommand extends Command {
 
     public GroupCommand(Logger logger, ServiceGroupManager groupManager) {
@@ -25,39 +25,41 @@ public class GroupCommand extends Command {
 
         defaultExecutor(ctx -> sendHelp());
 
-        sub("create").executes(ctx -> {
-            node.getSetupManager().startSetup(new GroupConfigurationSetup(
-                    node.getConsole(),
-                    node.getScreenManager(),
-                    groupManager,
-                    node.getPlatformManager())
-            );
-        });
+        sub("create", "Create a new group")
+                .executes(ctx -> {
+                    node.getSetupManager().startSetup(new GroupConfigurationSetup(
+                            node.getConsole(),
+                            node.getScreenManager(),
+                            groupManager,
+                            node.getPlatformManager())
+                    );
+                });
 
-        sub("delete")
+        sub("delete", "Delete a group")
                 .argument(ArgumentType.Group("group"))
                 .executes(ctx -> {
                     final ServiceGroup group = ctx.get("group");
 
                     groupManager.deleteServiceGroup(group);
-                    logger.info("&7Service group &a" + group.getName() + " &7was deleted");
+                    logger.info("&7Group &a" + group.getName() + " &7was deleted");
                 });
 
-        sub("list").executes(ctx -> {
-            final List<ServiceGroup> groups = groupManager.getAllServiceGroups();
+        sub("list", "List all groups")
+                .executes(ctx -> {
+                    final List<ServiceGroup> groups = groupManager.getAllServiceGroups();
 
-            if (groups.isEmpty()) {
-                logger.info("There are &cno &7service groups");
-                return;
-            }
+                    if (groups.isEmpty()) {
+                        logger.info("There are &cno &7groups");
+                        return;
+                    }
 
-            logger.info("Loaded service groups&8:");
-            for (ServiceGroup group : groups) {
-                logger.info("&8» &a" + group.getName());
-            }
-        });
+                    logger.info("Loaded groups&8:");
+                    for (ServiceGroup group : groups) {
+                        logger.info("&8» &a" + group.getName());
+                    }
+                });
 
-        sub("info")
+        sub("info", "Show details of a group")
                 .argument(ArgumentType.Group("group"))
                 .executes(ctx -> {
                     final ServiceGroup group = ctx.get("group");
@@ -75,7 +77,7 @@ public class GroupCommand extends Command {
                     logger.info("&8» &7Static: " + (group.isStatic() ? "&aYes" : "&cNo"));
                 });
 
-        sub("stop")
+        sub("stop", "Stop all services in a group")
                 .argument(ArgumentType.Group("group"))
                 .executes(ctx -> {
                     final ServiceGroup group = ctx.get("group");
@@ -85,7 +87,7 @@ public class GroupCommand extends Command {
                     }
                 });
 
-        final SubCommand propertySub = sub("property");
+        final SubCommand propertySub = sub("property", "Manage properties of a group");
 
         propertySub.executes(ctx -> propertySub.sendHelp());
 
@@ -173,7 +175,7 @@ public class GroupCommand extends Command {
                     }
                 });
 
-        sub("edit")
+        sub("edit", "Edit a group")
                 .argument(ArgumentType.Group("group"))
                 .argument(ArgumentType.String("key"))
                 .argument(ArgumentType.String("value"))
@@ -229,7 +231,7 @@ public class GroupCommand extends Command {
                             case "addjvmflag" -> {
                                 group.addCustomJvmFlag(value);
                                 group.update();
-                                logger.info("Custom JVM flag &a" + value + " &7was added to group &a" + groupName);
+                                logger.info("Added JVM flag &a" + value + " &7to group &a" + groupName);
                                 return;
                             }
                             case "minonlinecount" -> group.setMinOnlineCount(Integer.parseInt(value));

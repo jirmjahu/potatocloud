@@ -16,7 +16,7 @@ public class PlayerCommand extends Command {
     public PlayerCommand(Logger logger, CloudPlayerManager playerManager) {
         defaultExecutor(ctx -> sendHelp());
 
-        sub("connect", "Connect the given player to the given service")
+        sub("connect", "Connect a player to a service")
                 .argument(ArgumentType.Player("player"))
                 .argument(ArgumentType.Service("service"))
                 .executes(ctx -> {
@@ -32,7 +32,7 @@ public class PlayerCommand extends Command {
                     logger.info("Successfully connected player &a" + player.getUsername() + " &7to service &a" + service.getName());
                 });
 
-        sub("list", "List online players of the network")
+        sub("list", "List online players")
                 .executes(ctx -> {
                     final Set<CloudPlayer> players = playerManager.getOnlinePlayers();
                     if (players.isEmpty()) {

@@ -148,7 +148,7 @@ public class SubCommand {
 
     public String getUsageMessage() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("&cCorrect Usage&8: &7");
+        builder.append("&cUse&8: &7");
 
         builder.append(parent.getName()).append(" ");
 

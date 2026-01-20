@@ -17,7 +17,7 @@ public class CloudPlayerArgument extends ArgumentType<CloudPlayer> {
         // Input is the username of the player in this case
         final CloudPlayer player = Node.getInstance().getPlayerManager().getCloudPlayer(input);
         if (player == null) {
-            return ParseResult.error("&cNo player found with the name &a" + input);
+            return ParseResult.error("Player &a" + input + " &7was &cnot &7found");
         }
 
         return ParseResult.success(player);

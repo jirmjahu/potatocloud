@@ -70,7 +70,7 @@ public class Command {
     protected void sendHelp() {
         final Logger logger = Node.getInstance().getLogger();
         for (SubCommand sub : subCommands) {
-            logger.info(name + " " + sub.getName() + " &8- &7" + (sub.getDescription() != null ? sub.getDescription() : ""));
+            logger.info("&8» &a" + name + " " + sub.getName() + " &8- &7" + (sub.getDescription() != null ? sub.getDescription() : ""));
         }
     }
 }

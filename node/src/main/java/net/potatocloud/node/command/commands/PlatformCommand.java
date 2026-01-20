@@ -30,8 +30,8 @@ public class PlatformCommand extends Command {
         sub("download")
                 .argument(ArgumentType.Platform("platform"))
                 .argument(ArgumentType.String("version"))
-                .suggests((ctx, input) -> {
-                    if (!ctx.has("platform") || ctx.has("version")) {
+                .suggests((ctx, input, argsLength) -> {
+                    if (!ctx.has("platform") || argsLength != 1) {
                         return List.of();
                     }
 
@@ -106,8 +106,8 @@ public class PlatformCommand extends Command {
         versionSub.sub("remove")
                 .argument(ArgumentType.Platform("platform"))
                 .argument(ArgumentType.String("version"))
-                .suggests((ctx, input) -> {
-                    if (!ctx.has("platform") || ctx.has("version")) {
+                .suggests((ctx, input, argsLength) -> {
+                    if (!ctx.has("platform") || argsLength != 1) {
                         return List.of();
                     }
 
@@ -157,12 +157,14 @@ public class PlatformCommand extends Command {
         versionSub.sub("info")
                 .argument(ArgumentType.Platform("platform"))
                 .argument(ArgumentType.String("version"))
-                .suggests((ctx, input) -> {
-                    if (!ctx.has("platform") || ctx.has("version")) {
+                .suggests((ctx, input, argsLength) -> {
+                    if (!ctx.has("platform") || argsLength != 1) {
                         return List.of();
                     }
 
                     final Platform platform = ctx.get("platform");
+
+                    logger.info(String.valueOf(platform.getVersions().size()));
 
                     return platform.getVersions()
                             .stream()

@@ -93,8 +93,8 @@ public class GroupCommand extends Command {
                 .argument(ArgumentType.Group("group"))
                 .argument(ArgumentType.String("key"))
                 .argument(ArgumentType.String("value"))
-                .suggests((ctx, input) -> {
-                    if (!ctx.has("group") || ctx.has("key")) {
+                .suggests((ctx, input, argsLength) -> {
+                    if (!ctx.has("group") || argsLength != 1) {
                         return List.of();
                     }
 
@@ -129,8 +129,8 @@ public class GroupCommand extends Command {
         propertySub.sub("remove")
                 .argument(ArgumentType.Group("group"))
                 .argument(ArgumentType.String("key"))
-                .suggests((ctx, input) -> {
-                    if (!ctx.has("group") || ctx.has("key")) {
+                .suggests((ctx, input, argsLength) -> {
+                    if (!ctx.has("group") || argsLength != 1) {
                         return List.of();
                     }
 
@@ -177,8 +177,8 @@ public class GroupCommand extends Command {
                 .argument(ArgumentType.Group("group"))
                 .argument(ArgumentType.String("key"))
                 .argument(ArgumentType.String("value"))
-                .suggests((ctx, input) -> {
-                    if (!ctx.has("group") || ctx.has("key")) {
+                .suggests((ctx, input, argsLength) -> {
+                    if (!ctx.has("group") || argsLength != 1) {
                         return List.of();
                     }
 

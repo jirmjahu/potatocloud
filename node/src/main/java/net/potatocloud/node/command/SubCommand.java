@@ -97,11 +97,11 @@ public class SubCommand {
         }
     }
 
-    public List<String> suggest(CommandContext ctx, String input) {
+    public List<String> suggest(CommandContext ctx, String input, int argsLength) {
         if (completer == null) {
             return List.of();
         }
-        return completer.complete(ctx, input);
+        return completer.complete(ctx, input, argsLength);
     }
 
     public CommandContext.ParseResult buildContext(String[] args, int startIndex) {

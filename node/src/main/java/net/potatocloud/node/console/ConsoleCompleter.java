@@ -100,33 +100,36 @@ public class ConsoleCompleter implements Completer {
             return;
         }
 
+        final String[] argsToParse = words.subList(0, line.wordIndex()).toArray(new String[0]);
         final CommandContext.ParseResult parseResult =
-                currentSubCommand.buildContext(words.toArray(new String[0]), argumentIndex);
+                currentSubCommand.buildContext(argsToParse, argumentIndex);
 
         final CommandContext context = parseResult.getContext();
 
-        if (!parseResult.isComplete()) {
-            final ArgumentType<?> argumentType =
-                    currentSubCommand.getArguments().get(parseResult.getParsedArguments());
+        int expectedArgs = currentSubCommand.getArguments().size();
+        int parsedArgs = parseResult.getParsedArguments();
 
-            final List<String> argumentSuggestions = argumentType.suggest(currentWord);
-
-            if (!argumentSuggestions.isEmpty()) {
-                for (String suggestion : argumentSuggestions) {
-                    candidates.add(new Candidate(suggestion));
-                }
-                return;
-            }
+        if (parsedArgs >= expectedArgs && currentSubCommand.getSubCommands().isEmpty()) {
+            return;
         }
 
-        final List<String> customSuggestions =
-                currentSubCommand.suggest(context, currentWord);
-
+        final int argsLength = parseResult.getParsedArguments();
+        final List<String> customSuggestions = currentSubCommand.suggest(context, currentWord, argsLength);
         if (!customSuggestions.isEmpty()) {
             for (String suggestion : customSuggestions) {
                 candidates.add(new Candidate(suggestion));
             }
             return;
+        }
+
+        if (parsedArgs < expectedArgs) {
+            final ArgumentType<?> argumentType = currentSubCommand.getArguments().get(parsedArgs);
+            final List<String> argumentSuggestions = argumentType.suggest(currentWord);
+            if (!argumentSuggestions.isEmpty()) {
+                for (String suggestion : argumentSuggestions) {
+                    candidates.add(new Candidate(suggestion));
+                }
+            }
         }
 
         if (!currentSubCommand.getSubCommands().isEmpty()

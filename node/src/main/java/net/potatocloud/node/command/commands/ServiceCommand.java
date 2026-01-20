@@ -29,8 +29,8 @@ public class ServiceCommand extends Command {
                 .argument(ArgumentType.Service("service"))
                 .argument(ArgumentType.String("template"))
                 .optionalArgument(ArgumentType.String("filter"))
-                .suggests(((ctx, input) -> {
-                    if (!ctx.has("service") || ctx.has("template")) {
+                .suggests((ctx, input, argsLength) -> {
+                    if (!ctx.has("service") || argsLength != 1) {
                         return List.of();
                     }
 
@@ -45,7 +45,7 @@ public class ServiceCommand extends Command {
                             .filter(name -> name.startsWith(input))
                             .toList();
 
-                }))
+                })
                 .executes(ctx -> {
                     final Service service = ctx.get("service");
                     final String template = ctx.get("template");
@@ -64,8 +64,8 @@ public class ServiceCommand extends Command {
                 .argument(ArgumentType.Service("service"))
                 .argument(ArgumentType.String("key"))
                 .argument(ArgumentType.String("value"))
-                .suggests((ctx, input) -> {
-                    if (!ctx.has("service") || ctx.has("key")) {
+                .suggests((ctx, input, argsLength) -> {
+                    if (!ctx.has("service") || argsLength != 1) {
                         return List.of();
                     }
 
@@ -156,8 +156,8 @@ public class ServiceCommand extends Command {
                 .argument(ArgumentType.Service("service"))
                 .argument(ArgumentType.String("key"))
                 .argument(ArgumentType.String("value"))
-                .suggests((ctx, input) -> {
-                    if (!ctx.has("service") || ctx.has("key")) {
+                .suggests((ctx, input, argsLength) -> {
+                    if (!ctx.has("service") || argsLength != 1) {
                         return List.of();
                     }
 
@@ -192,8 +192,8 @@ public class ServiceCommand extends Command {
         propertySub.sub("remove")
                 .argument(ArgumentType.Service("service"))
                 .argument(ArgumentType.String("key"))
-                .suggests((ctx, input) -> {
-                    if (!ctx.has("service") || ctx.has("key")) {
+                .suggests((ctx, input, argsLength) -> {
+                    if (!ctx.has("service") || argsLength != 1) {
                         return List.of();
                     }
 

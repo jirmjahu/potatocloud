@@ -106,7 +106,7 @@ public class Node extends CloudAPI {
         packetManager = new PacketManager();
         server = new NettyNetworkServer(packetManager);
         server.start(config.getNodeHost(), config.getNodePort());
-        logger.info("NetworkServer started using &aNetty &7on &a" + config.getNodeHost() + "&8:&a" + config.getNodePort());
+        logger.info("Network server started using &aNetty &7on &a" + config.getNodeHost() + "&8:&a" + config.getNodePort());
 
         eventManager = new ServerEventManager(server);
         propertiesHolder = new NodePropertiesHolder(server);
@@ -116,7 +116,9 @@ public class Node extends CloudAPI {
         ((ServiceGroupManagerImpl) groupManager).loadGroups();
 
         if (!groupManager.getAllServiceGroups().isEmpty()) {
-            logger.info("Loaded &a" + groupManager.getAllServiceGroups().size() + "&7 Service Groups&8:");
+            final int groupCount = groupManager.getAllServiceGroups().size();
+            logger.info("Loaded &a" + groupCount + "&7 " + (groupCount == 1 ? "group" : "groups") + "&8:");
+
             for (ServiceGroup group : groupManager.getAllServiceGroups()) {
                 logger.info("&8» &a" + group.getName());
             }
@@ -153,19 +155,24 @@ public class Node extends CloudAPI {
 
     @SneakyThrows
     public void shutdown() {
+        logger.info("Shutting down node&8...");
         isStopping = true;
-        logger.info("&7Starting node &cshutdown&7...");
-        serviceStartQueue.close();
 
-        for (Service service : serviceManager.getAllServices()) {
-            ((ServiceImpl) service).shutdownBlocking();
+        serviceStartQueue.close();
+        if (!serviceManager.getAllServices().isEmpty()) {
+            logger.info("Shutting down all running services&8...");
+            for (Service service : serviceManager.getAllServices()) {
+                ((ServiceImpl) service).shutdownBlocking();
+            }
         }
 
+        logger.info("Stopping network server&8...");
         server.shutdown();
 
+        logger.info("Cleaning up temporary files&8...");
         FileUtils.deleteDirectory(Path.of(config.getTempServicesFolder()).toFile());
 
-        logger.info("&7Shutdown complete. Goodbye!");
+        logger.info("Shutdown complete. Goodbye!");
         console.close();
     }
 

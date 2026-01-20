@@ -24,6 +24,7 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.jline)
     implementation(libs.oshi)
+    implementation(libs.slf4j.nop)
     implementation(libs.lombok)
     annotationProcessor(libs.lombok)
 

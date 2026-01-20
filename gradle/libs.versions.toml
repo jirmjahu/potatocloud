@@ -10,6 +10,7 @@ netty = "4.2.2.Final"
 simpleyaml = "1.8.4"
 commons-codec = "1.20.0"
 oshi = "6.9.1"
+slf4j-nop = "2.0.17"
 spigot = "1.20.4-R0.1-SNAPSHOT"
 limbo = "0.7.18-ALPHA"
 velocity = "3.4.0-SNAPSHOT"
@@ -25,6 +26,7 @@ netty = { module = "io.netty:netty-all", version.ref = "netty" }
 simpleyaml = { module = "com.github.Carleslc.Simple-YAML:Simple-Yaml", version.ref = "simpleyaml" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commons-codec" }
 oshi = { module = "com.github.oshi:oshi-core", version.ref = "oshi" }
+slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j-nop" }
 spigot = { module = "org.spigotmc:spigot-api", version.ref = "spigot" }
 limbo = { module = "com.loohp:Limbo", version.ref = "limbo" }
 velocity = { module = "com.velocitypowered:velocity-api", version.ref = "velocity" }

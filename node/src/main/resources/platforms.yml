@@ -79,21 +79,6 @@ pandaspigot:
     - version: latest
       download: https://downloads.hpfxd.com/v2/projects/pandaspigot/versions/1.8.8/builds/latest/downloads/paperclip
       legacy: true
-pufferfish:
-  base: paper
-  custom: false
-  proxy: false
-  pre-cache: paper
-  prepare-steps:
-    - default-files
-    - eula
-    - port
-    - setup-proxy
-  versions:
-    - version: 1.21.8
-      download: https://ci.pufferfish.host/job/Pufferfish-1.21/33/artifact/pufferfish-server/build/libs/pufferfish-paperclip-1.21.8-R0.1-SNAPSHOT-mojmap.jar
-    - version: 1.20.4
-      download: https://ci.pufferfish.host/job/Pufferfish-1.20/52/artifact/build/libs/pufferfish-paperclip-1.20.4-R0.1-SNAPSHOT-reobf.jar
 limbo:
   base: limbo
   custom: false
@@ -104,8 +89,4 @@ limbo:
     - setup-proxy
   versions:
     - version: 1.21.11
-      download: https://ci.loohpjames.com/job/Limbo/66/artifact/target/Limbo-0.7.17-ALPHA-1.21.11.jar
-    - version: 1.21.10
-      download: https://ci.loohpjames.com/job/Limbo/lastSuccessfulBuild/artifact/target/Limbo-0.7.16-ALPHA-1.21.10.jar
-    - version: 1.21.8
-      download: https://ci.loohpjames.com/job/Limbo/59/artifact/target/Limbo-0.7.16-ALPHA-1.21.8.jar
+      download: https://ci.loohpjames.com/job/Limbo/70/artifact/target/Limbo-0.7.18-ALPHA-1.21.11.jar

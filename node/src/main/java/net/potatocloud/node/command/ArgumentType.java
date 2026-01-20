@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.platform.Platform;
+import net.potatocloud.api.player.CloudPlayer;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.node.command.arguments.*;
 
@@ -50,6 +51,10 @@ public abstract class ArgumentType<T> {
 
     public static ArgumentType<Platform> Platform(String name) {
         return new PlatformArgument(name);
+    }
+
+    public static ArgumentType<CloudPlayer> Player(String name) {
+        return new CloudPlayerArgument(name);
     }
 
     public ArgumentType<T> asOptionalArgument() {

@@ -26,7 +26,7 @@ public class ConsoleReader extends Thread {
                 // Wait until the node is ready
                 if (!Node.getInstance().isReady()) {
                     continue;
-                };
+                }
 
                 final String input = console.getLineReader().readLine(console.getPrompt());
 

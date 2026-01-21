@@ -1,6 +1,6 @@
 package net.potatocloud.core.utils;
 
-public interface Closeable  {
+public interface Closeable {
 
     void close();
 

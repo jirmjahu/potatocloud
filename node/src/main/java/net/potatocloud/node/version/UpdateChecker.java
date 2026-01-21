@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.potatocloud.api.CloudAPI;
-import net.potatocloud.node.utils.RequestUtil;
 import net.potatocloud.node.console.Logger;
+import net.potatocloud.node.utils.RequestUtil;
 
 @RequiredArgsConstructor
 public class UpdateChecker {

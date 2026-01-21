@@ -2,9 +2,9 @@ package net.potatocloud.core.networking.packet.packets.property;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.potatocloud.core.networking.netty.PacketBuffer;
 import net.potatocloud.core.networking.packet.Packet;
 import net.potatocloud.core.networking.packet.PacketIds;
-import net.potatocloud.core.networking.netty.PacketBuffer;
 
 @Data
 @NoArgsConstructor

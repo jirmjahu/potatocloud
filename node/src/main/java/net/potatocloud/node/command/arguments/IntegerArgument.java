@@ -2,8 +2,6 @@ package net.potatocloud.node.command.arguments;
 
 import net.potatocloud.node.command.ArgumentType;
 
-import java.util.List;
-
 public class IntegerArgument extends ArgumentType<Integer> {
 
     public IntegerArgument(String name) {

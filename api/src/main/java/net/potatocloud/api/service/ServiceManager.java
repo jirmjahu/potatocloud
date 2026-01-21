@@ -79,14 +79,14 @@ public interface ServiceManager {
      * Starts services in the given group
      *
      * @param groupName the name of the group
-     * @param amount     the amount of services to start
+     * @param amount    the amount of services to start
      */
     void startServices(String groupName, int amount);
 
     /**
      * Starts services in the given group
      *
-     * @param group the group
+     * @param group  the group
      * @param amount the amount of services to start
      */
     default void startServices(ServiceGroup group, int amount) {

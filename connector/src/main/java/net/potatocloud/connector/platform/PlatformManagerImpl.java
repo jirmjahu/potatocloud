@@ -23,15 +23,15 @@ public class PlatformManagerImpl implements PlatformManager {
         this.client = client;
 
         // Since this class is very short just keep the package listeners here as long as there are not too many and they are not too big
-        client.on(PlatformAddPacket.class, (connection, packet) ->  {
+        client.on(PlatformAddPacket.class, (connection, packet) -> {
             platforms.add(packet.getPlatform());
         });
 
-        client.on(PlatformRemovePacket.class, (connection, packet) ->  {
+        client.on(PlatformRemovePacket.class, (connection, packet) -> {
             platforms.remove(getPlatform(packet.getPlatformName()));
         });
 
-        client.on(PlatformUpdatePacket.class, (connection, packet) ->  {
+        client.on(PlatformUpdatePacket.class, (connection, packet) -> {
             final Platform platform = getPlatform(packet.getPlatform().getName());
             if (platform == null) {
                 return;

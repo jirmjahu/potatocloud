@@ -10,11 +10,11 @@ import net.potatocloud.core.networking.packet.packets.platform.PlatformRemovePac
 import net.potatocloud.core.networking.packet.packets.platform.PlatformUpdatePacket;
 import net.potatocloud.core.networking.packet.packets.platform.RequestPlatformsPacket;
 import net.potatocloud.core.networking.packet.packets.player.*;
-import net.potatocloud.core.networking.packet.packets.service.*;
 import net.potatocloud.core.networking.packet.packets.property.PropertyAddPacket;
 import net.potatocloud.core.networking.packet.packets.property.PropertyRemovePacket;
 import net.potatocloud.core.networking.packet.packets.property.PropertyUpdatePacket;
 import net.potatocloud.core.networking.packet.packets.property.RequestPropertiesPacket;
+import net.potatocloud.core.networking.packet.packets.service.*;
 
 public class PacketRegistry {
 

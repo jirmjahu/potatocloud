@@ -34,13 +34,11 @@ public class ServiceStartedListener implements PacketListener<ServiceStartedPack
         service.setStatus(ServiceStatus.RUNNING);
         service.update();
 
-        // call service started event
         eventManager.call(new ServiceStartedEvent(packet.getServiceName()));
 
-        //start process checker
-        if (service instanceof ServiceImpl impl) {
-            impl.setProcessChecker(new ServiceProcessChecker(impl));
-            impl.getProcessChecker().start();
+        if (service instanceof ServiceImpl serviceImpl) {
+            serviceImpl.setProcessChecker(new ServiceProcessChecker(serviceImpl));
+            serviceImpl.getProcessChecker().start();
         }
 
         new ServiceMemoryUpdateTask(service, Node.getInstance().getServer()).start();

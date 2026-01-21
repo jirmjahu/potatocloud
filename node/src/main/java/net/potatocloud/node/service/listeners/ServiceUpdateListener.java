@@ -8,6 +8,7 @@ import net.potatocloud.api.service.ServiceStatus;
 import net.potatocloud.core.networking.NetworkConnection;
 import net.potatocloud.core.networking.packet.PacketListener;
 import net.potatocloud.core.networking.packet.packets.service.ServiceUpdatePacket;
+import net.potatocloud.core.utils.PropertyUtil;
 import net.potatocloud.node.Node;
 
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class ServiceUpdateListener implements PacketListener<ServiceUpdatePacket
         service.setMaxPlayers(packet.getMaxPlayers());
         service.getPropertyMap().clear();
         for (Property<?> property : packet.getPropertyMap().values()) {
-            service.setProperty((Property) property, property.getValue(), false);
+            PropertyUtil.setPropertyUnchecked(service, property);
         }
 
         Node.getInstance().getServer().getConnectedSessions().stream()

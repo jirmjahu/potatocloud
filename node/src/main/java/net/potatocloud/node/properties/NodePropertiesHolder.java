@@ -29,9 +29,7 @@ public class NodePropertiesHolder implements PropertyHolder {
             propertyMap.put(packet.getProperty().getName(), packet.getProperty());
 
             // Add the property on all other connectors as well
-            server.getConnectedSessions().stream()
-                    .filter(conn -> !conn.equals(connection))
-                    .forEach(conn -> conn.send(packet));
+            server.generateBroadcast().exclude(connection).broadcast(packet);
         });
 
         server.on(PropertyUpdatePacket.class, (connection, packet) -> {
@@ -41,9 +39,7 @@ public class NodePropertiesHolder implements PropertyHolder {
             }
 
             // Update the property on all other connectors as well
-            server.getConnectedSessions().stream()
-                    .filter(conn -> !conn.equals(connection))
-                    .forEach(conn -> conn.send(packet));
+            server.generateBroadcast().exclude(connection).broadcast(packet);
         });
     }
 

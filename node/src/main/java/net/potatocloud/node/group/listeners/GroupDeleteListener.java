@@ -4,14 +4,15 @@ import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.group.ServiceGroupManager;
 import net.potatocloud.core.networking.NetworkConnection;
+import net.potatocloud.core.networking.NetworkServer;
 import net.potatocloud.core.networking.packet.PacketListener;
 import net.potatocloud.core.networking.packet.packets.group.GroupDeletePacket;
-import net.potatocloud.node.Node;
 
 @RequiredArgsConstructor
 public class GroupDeleteListener implements PacketListener<GroupDeletePacket> {
 
     private final ServiceGroupManager groupManager;
+    private final NetworkServer server;
 
     @Override
     public void onPacket(NetworkConnection connection, GroupDeletePacket packet) {
@@ -19,10 +20,9 @@ public class GroupDeleteListener implements PacketListener<GroupDeletePacket> {
         if (group == null) {
             return;
         }
+
         groupManager.deleteServiceGroup(group);
 
-        Node.getInstance().getServer().getConnectedSessions().stream()
-                .filter(networkConnection -> !networkConnection.equals(connection))
-                .forEach(networkConnection -> networkConnection.send(packet));
+        server.generateBroadcast().exclude(connection).broadcast(packet);
     }
 }

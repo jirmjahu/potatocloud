@@ -16,9 +16,7 @@ public class ServerEventManager extends BaseEventManager {
             if (event != null) {
                 callLocal(event);
 
-                server.getConnectedSessions().stream()
-                        .filter(networkConnection -> !networkConnection.equals(connection))
-                        .forEach(networkConnection -> networkConnection.send(packet));
+                server.generateBroadcast().exclude(connection).broadcast(packet);
             }
         });
     }

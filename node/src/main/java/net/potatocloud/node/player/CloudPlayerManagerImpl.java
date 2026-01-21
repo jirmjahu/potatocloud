@@ -21,9 +21,9 @@ public class CloudPlayerManagerImpl implements CloudPlayerManager {
     public CloudPlayerManagerImpl(NetworkServer server) {
         this.server = server;
 
-        server.on(CloudPlayerAddPacket.class, new CloudPlayerAddListener(this));
+        server.on(CloudPlayerAddPacket.class, new CloudPlayerAddListener(this, server));
         server.on(CloudPlayerRemovePacket.class, new CloudPlayerRemoveListener(this));
-        server.on(CloudPlayerUpdatePacket.class, new CloudPlayerUpdateListener(this));
+        server.on(CloudPlayerUpdatePacket.class, new CloudPlayerUpdateListener(this, server));
         server.on(RequestCloudPlayersPacket.class, new RequestCloudPlayersListener(this));
     }
 

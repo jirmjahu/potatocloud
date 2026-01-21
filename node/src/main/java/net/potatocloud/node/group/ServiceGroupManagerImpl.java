@@ -41,9 +41,9 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
         this.server = server;
 
         server.on(RequestGroupsPacket.class, new RequestGroupsListener(this));
-        server.on(GroupUpdatePacket.class, new GroupUpdateListener(this));
-        server.on(GroupAddPacket.class, new GroupAddListener(this));
-        server.on(GroupDeletePacket.class, new GroupDeleteListener(this));
+        server.on(GroupUpdatePacket.class, new GroupUpdateListener(this, server));
+        server.on(GroupAddPacket.class, new GroupAddListener(this, server));
+        server.on(GroupDeletePacket.class, new GroupDeleteListener(this, server));
     }
 
     @Override

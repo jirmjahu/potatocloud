@@ -2,7 +2,7 @@ package net.potatocloud.core.event;
 
 import com.google.gson.Gson;
 import net.potatocloud.api.event.Event;
-import net.potatocloud.core.networking.packets.EventPacket;
+import net.potatocloud.core.networking.packet.packets.event.EventPacket;
 
 public class EventSerializer {
 

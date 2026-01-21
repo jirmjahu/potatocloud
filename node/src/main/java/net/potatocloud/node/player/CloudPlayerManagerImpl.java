@@ -3,8 +3,7 @@ package net.potatocloud.node.player;
 import net.potatocloud.api.player.CloudPlayer;
 import net.potatocloud.api.player.CloudPlayerManager;
 import net.potatocloud.core.networking.NetworkServer;
-import net.potatocloud.core.networking.PacketIds;
-import net.potatocloud.core.networking.packets.player.CloudPlayerConnectPacket;
+import net.potatocloud.core.networking.packet.packets.player.*;
 import net.potatocloud.node.player.listeners.CloudPlayerAddListener;
 import net.potatocloud.node.player.listeners.CloudPlayerRemoveListener;
 import net.potatocloud.node.player.listeners.CloudPlayerUpdateListener;
@@ -22,10 +21,10 @@ public class CloudPlayerManagerImpl implements CloudPlayerManager {
     public CloudPlayerManagerImpl(NetworkServer server) {
         this.server = server;
 
-        server.registerPacketListener(PacketIds.PLAYER_ADD, new CloudPlayerAddListener(this));
-        server.registerPacketListener(PacketIds.PLAYER_REMOVE, new CloudPlayerRemoveListener(this));
-        server.registerPacketListener(PacketIds.PLAYER_UPDATE, new CloudPlayerUpdateListener(this));
-        server.registerPacketListener(PacketIds.REQUEST_PLAYERS, new RequestCloudPlayersListener(this));
+        server.on(CloudPlayerAddPacket.class, new CloudPlayerAddListener(this));
+        server.on(CloudPlayerRemovePacket.class, new CloudPlayerRemoveListener(this));
+        server.on(CloudPlayerUpdatePacket.class, new CloudPlayerUpdateListener(this));
+        server.on(RequestCloudPlayersPacket.class, new RequestCloudPlayersListener(this));
     }
 
     public void registerPlayer(CloudPlayer player) {
@@ -59,7 +58,7 @@ public class CloudPlayerManagerImpl implements CloudPlayerManager {
 
     @Override
     public void connectPlayerWithService(String playerName, String serviceName) {
-        server.broadcastPacket(new CloudPlayerConnectPacket(playerName, serviceName));
+        server.generateBroadcast().broadcast(new CloudPlayerConnectPacket(playerName, serviceName));
     }
 
     @Override

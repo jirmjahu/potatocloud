@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.player.CloudPlayer;
 import net.potatocloud.api.player.impl.CloudPlayerImpl;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.player.CloudPlayerAddPacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.player.CloudPlayerAddPacket;
 import net.potatocloud.node.Node;
 import net.potatocloud.node.player.CloudPlayerManagerImpl;
 

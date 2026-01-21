@@ -4,9 +4,9 @@ import net.potatocloud.api.platform.Platform;
 import net.potatocloud.api.platform.PlatformManager;
 import net.potatocloud.api.platform.impl.PlatformImpl;
 import net.potatocloud.core.networking.NetworkServer;
-import net.potatocloud.core.networking.PacketIds;
-import net.potatocloud.core.networking.packets.platform.PlatformAddPacket;
-import net.potatocloud.core.networking.packets.platform.PlatformUpdatePacket;
+import net.potatocloud.core.networking.packet.packets.platform.PlatformAddPacket;
+import net.potatocloud.core.networking.packet.packets.platform.PlatformUpdatePacket;
+import net.potatocloud.core.networking.packet.packets.platform.RequestPlatformsPacket;
 import net.potatocloud.node.console.Logger;
 import net.potatocloud.node.platform.listeners.PlatformAddListener;
 import net.potatocloud.node.platform.listeners.PlatformUpdateListener;
@@ -28,9 +28,9 @@ public class PlatformManagerImpl implements PlatformManager {
         this.fileHandler = new PlatformFileHandler(logger);
         this.platforms = fileHandler.loadPlatformsFile();
 
-        server.registerPacketListener(PacketIds.REQUEST_PLATFORMS, new RequestPlatformsListener(this));
-        server.registerPacketListener(PacketIds.PLATFORM_UPDATE, new PlatformUpdateListener(this));
-        server.registerPacketListener(PacketIds.PLATFORM_ADD, new PlatformAddListener(this));
+        server.on(RequestPlatformsPacket.class, new RequestPlatformsListener(this));
+        server.on(PlatformUpdatePacket.class, new PlatformUpdateListener(this));
+        server.on(PlatformAddPacket.class, new PlatformAddListener(this));
 
         logger.info("Loaded &a" + platforms.size() + " &7platforms");
     }
@@ -55,7 +55,7 @@ public class PlatformManagerImpl implements PlatformManager {
 
         addPlatform(platform);
 
-        server.broadcastPacket(new PlatformAddPacket(platform));
+        server.generateBroadcast().broadcast(new PlatformAddPacket(platform));
 
         logger.info("Platform &a" + name + " &7was successfully created");
 
@@ -64,7 +64,7 @@ public class PlatformManagerImpl implements PlatformManager {
 
     @Override
     public void updatePlatform(Platform platform) {
-        server.broadcastPacket(new PlatformUpdatePacket(platform));
+        server.generateBroadcast().broadcast(new PlatformUpdatePacket(platform));
 
         fileHandler.updatePlatform(platform);
     }

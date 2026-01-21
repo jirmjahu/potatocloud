@@ -1,14 +1,14 @@
 package net.potatocloud.core.networking;
 
-public interface NetworkClient {
+import net.potatocloud.core.networking.packet.Packet;
+
+public interface NetworkClient extends NetworkComponent {
 
     void connect(String host, int port);
 
     void send(Packet packet);
 
-    void disconnect();
-
-    <T extends Packet> void registerPacketListener(int id, PacketListener<T> listener);
+    void close();
 
     boolean isConnected();
 

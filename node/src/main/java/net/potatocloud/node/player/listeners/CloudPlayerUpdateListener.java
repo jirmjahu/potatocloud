@@ -5,8 +5,8 @@ import net.potatocloud.api.player.CloudPlayerManager;
 import net.potatocloud.api.player.impl.CloudPlayerImpl;
 import net.potatocloud.api.property.Property;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.player.CloudPlayerUpdatePacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.player.CloudPlayerUpdatePacket;
 import net.potatocloud.node.Node;
 
 @RequiredArgsConstructor

@@ -11,8 +11,8 @@ import net.potatocloud.api.property.PropertyHolder;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.core.event.ServerEventManager;
 import net.potatocloud.core.networking.NetworkServer;
-import net.potatocloud.core.networking.PacketManager;
-import net.potatocloud.core.networking.netty.NettyNetworkServer;
+import net.potatocloud.core.networking.packet.PacketManager;
+import net.potatocloud.core.networking.netty.server.NettyNetworkServer;
 import net.potatocloud.node.command.CommandManager;
 import net.potatocloud.node.command.commands.*;
 import net.potatocloud.node.config.NodeConfig;
@@ -167,7 +167,7 @@ public class Node extends CloudAPI {
         }
 
         logger.info("Stopping network server&8...");
-        server.shutdown();
+        server.close();
 
         logger.info("Cleaning up temporary files&8...");
         FileUtils.deleteDirectory(Path.of(config.getTempServicesFolder()).toFile());

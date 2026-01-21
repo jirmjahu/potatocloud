@@ -3,8 +3,8 @@ package net.potatocloud.node.player.listeners;
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.player.CloudPlayer;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.player.CloudPlayerRemovePacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.player.CloudPlayerRemovePacket;
 import net.potatocloud.node.Node;
 import net.potatocloud.node.player.CloudPlayerManagerImpl;
 

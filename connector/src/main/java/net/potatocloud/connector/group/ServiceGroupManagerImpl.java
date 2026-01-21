@@ -8,11 +8,10 @@ import net.potatocloud.connector.group.listeners.GroupAddListener;
 import net.potatocloud.connector.group.listeners.GroupDeleteListener;
 import net.potatocloud.connector.group.listeners.GroupUpdateListener;
 import net.potatocloud.core.networking.NetworkClient;
-import net.potatocloud.core.networking.PacketIds;
-import net.potatocloud.core.networking.packets.group.GroupAddPacket;
-import net.potatocloud.core.networking.packets.group.GroupDeletePacket;
-import net.potatocloud.core.networking.packets.group.GroupUpdatePacket;
-import net.potatocloud.core.networking.packets.group.RequestGroupsPacket;
+import net.potatocloud.core.networking.packet.packets.group.GroupAddPacket;
+import net.potatocloud.core.networking.packet.packets.group.GroupDeletePacket;
+import net.potatocloud.core.networking.packet.packets.group.GroupUpdatePacket;
+import net.potatocloud.core.networking.packet.packets.group.RequestGroupsPacket;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,9 +28,9 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
 
         client.send(new RequestGroupsPacket());
 
-        client.registerPacketListener(PacketIds.GROUP_ADD, new GroupAddListener(this));
-        client.registerPacketListener(PacketIds.GROUP_DELETE, new GroupDeleteListener(this));
-        client.registerPacketListener(PacketIds.GROUP_UPDATE, new GroupUpdateListener(this));
+        client.on(GroupAddPacket.class, new GroupAddListener(this));
+        client.on(GroupDeletePacket.class, new GroupDeleteListener(this));
+        client.on(GroupUpdatePacket.class, new GroupUpdateListener(this));
     }
 
     public void addServiceGroup(ServiceGroup group) {

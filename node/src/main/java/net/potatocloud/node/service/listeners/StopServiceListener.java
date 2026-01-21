@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceManager;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.service.StopServicePacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.service.StopServicePacket;
 
 @AllArgsConstructor
 public class StopServiceListener implements PacketListener<StopServicePacket> {

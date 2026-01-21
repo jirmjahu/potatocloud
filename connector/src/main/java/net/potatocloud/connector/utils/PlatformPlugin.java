@@ -3,7 +3,7 @@ package net.potatocloud.connector.utils;
 import net.potatocloud.api.CloudAPI;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.connector.ConnectorAPI;
-import net.potatocloud.core.networking.packets.service.ServiceStartedPacket;
+import net.potatocloud.core.networking.packet.packets.service.ServiceStartedPacket;
 
 public interface PlatformPlugin {
 

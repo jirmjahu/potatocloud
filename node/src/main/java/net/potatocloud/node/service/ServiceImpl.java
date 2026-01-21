@@ -15,7 +15,7 @@ import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceManager;
 import net.potatocloud.api.service.ServiceStatus;
 import net.potatocloud.core.networking.NetworkServer;
-import net.potatocloud.core.networking.packets.service.ServiceRemovePacket;
+import net.potatocloud.core.networking.packet.packets.service.ServiceRemovePacket;
 import net.potatocloud.node.config.NodeConfig;
 import net.potatocloud.node.console.Console;
 import net.potatocloud.node.console.Logger;
@@ -340,7 +340,7 @@ public class ServiceImpl implements Service {
         }
 
         if (server != null) {
-            server.broadcastPacket(new ServiceRemovePacket(this.getName(), this.getPort()));
+            server.generateBroadcast().broadcast(new ServiceRemovePacket(this.getName(), this.getPort()));
 
             eventManager.call(new ServiceStoppedEvent(this.getName()));
         }

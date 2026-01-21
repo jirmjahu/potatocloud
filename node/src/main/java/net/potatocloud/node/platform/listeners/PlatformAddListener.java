@@ -2,8 +2,8 @@ package net.potatocloud.node.platform.listeners;
 
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.platform.PlatformAddPacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.platform.PlatformAddPacket;
 import net.potatocloud.node.platform.PlatformManagerImpl;
 
 @RequiredArgsConstructor

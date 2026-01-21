@@ -4,11 +4,9 @@ import lombok.Getter;
 import net.potatocloud.api.property.Property;
 import net.potatocloud.api.property.PropertyHolder;
 import net.potatocloud.core.networking.NetworkClient;
-import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketIds;
-import net.potatocloud.core.networking.packets.property.PropertyAddPacket;
-import net.potatocloud.core.networking.packets.property.PropertyUpdatePacket;
-import net.potatocloud.core.networking.packets.property.RequestPropertiesPacket;
+import net.potatocloud.core.networking.packet.packets.property.PropertyAddPacket;
+import net.potatocloud.core.networking.packet.packets.property.PropertyUpdatePacket;
+import net.potatocloud.core.networking.packet.packets.property.RequestPropertiesPacket;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,11 +23,11 @@ public class ConnectorPropertiesHolder implements PropertyHolder {
 
         client.send(new RequestPropertiesPacket());
 
-        client.registerPacketListener(PacketIds.PROPERTY_ADD, (NetworkConnection connection, PropertyAddPacket packet) -> {
+        client.on(PropertyAddPacket.class, (connection, packet) ->  {
             propertyMap.put(packet.getProperty().getName(), packet.getProperty());
         });
 
-        client.registerPacketListener(PacketIds.PROPERTY_UPDATE, (NetworkConnection connection, PropertyUpdatePacket packet) -> {
+        client.on(PropertyUpdatePacket.class, (connection, packet) ->  {
             final Property<?> property = propertyMap.get(packet.getName());
             if (property != null) {
                 property.setValueObject(packet.getValue());

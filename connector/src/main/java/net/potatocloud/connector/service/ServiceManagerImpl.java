@@ -6,12 +6,7 @@ import net.potatocloud.connector.service.listeners.ServiceAddListener;
 import net.potatocloud.connector.service.listeners.ServiceMemoryUpdateListener;
 import net.potatocloud.connector.service.listeners.ServiceUpdateListener;
 import net.potatocloud.core.networking.NetworkClient;
-import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketIds;
-import net.potatocloud.core.networking.packets.service.RequestServicesPacket;
-import net.potatocloud.core.networking.packets.service.ServiceRemovePacket;
-import net.potatocloud.core.networking.packets.service.ServiceUpdatePacket;
-import net.potatocloud.core.networking.packets.service.StartServicePacket;
+import net.potatocloud.core.networking.packet.packets.service.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,14 +22,15 @@ public class ServiceManagerImpl implements ServiceManager {
 
         client.send(new RequestServicesPacket());
 
-        client.registerPacketListener(PacketIds.SERVICE_ADD, new ServiceAddListener(this));
+        client.on(ServiceAddPacket.class, new ServiceAddListener(this));
 
-        client.registerPacketListener(PacketIds.SERVICE_REMOVE, (NetworkConnection connection, ServiceRemovePacket packet) ->
-                services.remove(getService(packet.getServiceName())));
+        client.on(ServiceRemovePacket.class, (connection, packet) -> {
+            services.remove(getService(packet.getServiceName()));
+        });
 
-        client.registerPacketListener(PacketIds.SERVICE_UPDATE, new ServiceUpdateListener(this));
+        client.on(ServiceUpdatePacket.class, new ServiceUpdateListener(this));
 
-        client.registerPacketListener(PacketIds.SERVICE_MEMORY_UPDATE, new ServiceMemoryUpdateListener(this));
+        client.on(ServiceMemoryUpdatePacket.class, new ServiceMemoryUpdateListener(this));
     }
 
     public void addService(Service service) {

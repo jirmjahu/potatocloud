@@ -9,9 +9,9 @@ import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceStatus;
 import net.potatocloud.connector.ConnectorAPI;
 import net.potatocloud.core.networking.NetworkClient;
-import net.potatocloud.core.networking.packets.service.ServiceCopyPacket;
-import net.potatocloud.core.networking.packets.service.ServiceExecuteCommandPacket;
-import net.potatocloud.core.networking.packets.service.StopServicePacket;
+import net.potatocloud.core.networking.packet.packets.service.ServiceCopyPacket;
+import net.potatocloud.core.networking.packet.packets.service.ServiceExecuteCommandPacket;
+import net.potatocloud.core.networking.packet.packets.service.StopServicePacket;
 
 import java.util.Map;
 

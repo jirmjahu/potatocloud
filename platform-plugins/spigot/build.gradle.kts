@@ -21,5 +21,6 @@ tasks.named<ShadowJar>("shadowJar") {
     archiveBaseName.set("potatocloud-plugin-spigot")
     archiveVersion.set("")
     archiveClassifier.set("")
+    relocate("io.netty", "net.potatocloud.shaded.netty")
 }
 

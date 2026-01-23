@@ -41,7 +41,7 @@ public class GroupConfigurationSetup extends Setup {
                 .add();
 
         question("platform")
-                .text("Which platform should be used by this group? (e.g. Paper, Velocity, Limbo)")
+                .text("Which platform should be used by this group?")
                 .suggestions(() -> platformManager.getPlatforms().stream()
                         .map(Platform::getName)
                         .collect(Collectors.toList()))

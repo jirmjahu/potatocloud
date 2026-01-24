@@ -283,7 +283,7 @@ public class ServiceImpl implements Service {
             return;
         }
 
-        logger.info("Stopping service &a" + getName() + "&7...");
+        logger.info("Service &a" + getName() + "&7 is now stopping&8...");
         status = ServiceStatus.STOPPING;
 
         if (processChecker != null) {

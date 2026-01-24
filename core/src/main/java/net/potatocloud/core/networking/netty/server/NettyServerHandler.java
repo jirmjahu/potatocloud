@@ -7,11 +7,21 @@ import net.potatocloud.core.networking.netty.NettyNetworkConnection;
 import net.potatocloud.core.networking.packet.Packet;
 import net.potatocloud.core.networking.packet.PacketManager;
 
+import java.net.SocketException;
+
 @RequiredArgsConstructor
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     private final NettyNetworkServer server;
     private final PacketManager packetManager;
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if (cause instanceof SocketException) {
+            return;
+        }
+        super.exceptionCaught(ctx, cause);
+    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -31,7 +41,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                     .filter(conn -> conn instanceof NettyNetworkConnection nettyConn && nettyConn.getChannel().equals(ctx.channel()))
                     .findFirst()
                     .ifPresent(connection -> packetManager.onPacket(connection, packet));
-
         }
     }
 }

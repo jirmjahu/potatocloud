@@ -46,8 +46,10 @@ public class AddVersionToPlatformSetup extends Setup {
                 .answerAction((answers, answer) -> {
                     // Only if using local platform file, create the needed folder
                     final boolean usingLocalFile = answer.equalsIgnoreCase("false") || answer.equalsIgnoreCase("no");
+
                     if (usingLocalFile) {
-                        final File platformFolder = new File("platforms/" + platform.getName() + "/" + answer);
+                        final File platformFolder = new File("platforms/" + platform.getName() + "/" + answers.get("name"));
+
                         platformFolder.mkdirs();
                     }
                 })

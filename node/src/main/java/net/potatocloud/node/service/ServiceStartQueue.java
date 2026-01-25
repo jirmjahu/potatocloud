@@ -81,15 +81,13 @@ public class ServiceStartQueue extends Thread {
                         continue;
                     }
 
-                    final int groupStartPercentage = group.getStartPercentage();
-                    if (groupStartPercentage == -1) { // if this is on -1 no server will be started
+                    if (group.getStartPercentage() == -1) {
                         continue;
                     }
 
                     final int usagePercent = (int) ((group.getOnlinePlayerCount() / (double) maxPlayers) * 100);
-                    final boolean hasStarting = services.stream().anyMatch(service -> service.getStatus() == ServiceStatus.STARTING);
 
-                    if (usagePercent >= groupStartPercentage && !hasStarting) {
+                    if (usagePercent >= group.getStartPercentage() && (group.getMaxOnlineCount() - services.size() > 0)) {
                         serviceManager.startService(group);
                         break;
                     }
@@ -104,7 +102,6 @@ public class ServiceStartQueue extends Thread {
             }
         }
     }
-
 
     public void close() {
         isRunning = false;

@@ -6,8 +6,9 @@ import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceManager;
 import net.potatocloud.api.service.ServiceStatus;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.service.ServiceUpdatePacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.service.ServiceUpdatePacket;
+import net.potatocloud.core.utils.PropertyUtil;
 
 @RequiredArgsConstructor
 public class ServiceUpdateListener implements PacketListener<ServiceUpdatePacket> {
@@ -26,7 +27,7 @@ public class ServiceUpdateListener implements PacketListener<ServiceUpdatePacket
 
         service.getPropertyMap().clear();
         for (Property<?> property : packet.getPropertyMap().values()) {
-            service.setProperty((Property) property, property.getValue(), false);
+            PropertyUtil.setPropertyUnchecked(service, property);
         }
     }
 }

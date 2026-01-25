@@ -1,10 +1,8 @@
 package net.potatocloud.core.event;
 
 import net.potatocloud.api.event.Event;
-import net.potatocloud.core.networking.NetworkConnection;
 import net.potatocloud.core.networking.NetworkServer;
-import net.potatocloud.core.networking.PacketIds;
-import net.potatocloud.core.networking.packets.EventPacket;
+import net.potatocloud.core.networking.packet.packets.event.EventPacket;
 
 public class ServerEventManager extends BaseEventManager {
 
@@ -13,14 +11,12 @@ public class ServerEventManager extends BaseEventManager {
     public ServerEventManager(NetworkServer server) {
         this.server = server;
 
-        server.registerPacketListener(PacketIds.EVENT, (NetworkConnection connection, EventPacket packet) -> {
+        server.on(EventPacket.class, (connection, packet) -> {
             final Event event = EventSerializer.deserialize(packet);
             if (event != null) {
                 callLocal(event);
 
-                server.getConnectedSessions().stream()
-                        .filter(networkConnection -> !networkConnection.equals(connection))
-                        .forEach(networkConnection -> networkConnection.send(packet));
+                server.generateBroadcast().exclude(connection).broadcast(packet);
             }
         });
     }
@@ -28,6 +24,6 @@ public class ServerEventManager extends BaseEventManager {
     @Override
     public <T extends Event> void call(T event) {
         callLocal(event);
-        server.broadcastPacket(EventSerializer.serialize(event));
+        server.generateBroadcast().broadcast(EventSerializer.serialize(event));
     }
 }

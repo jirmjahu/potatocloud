@@ -2,45 +2,75 @@ package net.potatocloud.node.command;
 
 import lombok.Getter;
 import net.potatocloud.node.Node;
+import net.potatocloud.node.console.Logger;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 @Getter
-public abstract class Command {
+public class Command {
 
     private final String name;
     private final String description;
     private final List<String> aliases;
 
-    private final Set<SubCommand> subCommands;
+    private final List<SubCommand> subCommands = new ArrayList<>();
+    private Consumer<CommandContext> defaultExecutor;
 
     protected Command() {
         final CommandInfo info = this.getClass().getAnnotation(CommandInfo.class);
         if (info == null) {
             throw new IllegalStateException("CommandInfo annotation missing in Command: " + getClass().getSimpleName());
         }
-        name = info.name();
-        description = info.description();
-        aliases = Arrays.asList(info.aliases());
-        subCommands = new HashSet<>();
+
+        this.name = info.name();
+        this.description = info.description();
+        this.aliases = Arrays.asList(info.aliases());
     }
 
-    public abstract void execute(String[] args);
-
-    public SubCommand getSubCommand(String name) {
-        return subCommands.stream().filter(subCommand -> subCommand.getName().equals(name)).findFirst().orElse(null);
+    public void defaultExecutor(Consumer<CommandContext> executor) {
+        this.defaultExecutor = executor;
     }
 
-    public void addSubCommand(SubCommand subCommand) {
-        subCommands.add(subCommand);
+    public SubCommand sub(String name) {
+        return sub(name, null);
+    }
+
+    public SubCommand sub(String name, String description) {
+        final SubCommand sub = new SubCommand(name, description, this);
+        subCommands.add(sub);
+        return sub;
+    }
+
+    public void execute(String[] args) {
+        final CommandContext ctx = new CommandContext();
+
+        if (args.length == 0) {
+            if (defaultExecutor != null) {
+                defaultExecutor.accept(ctx);
+            }
+            return;
+        }
+
+        final String arg = args[0];
+        for (SubCommand sub : subCommands) {
+            if (sub.getName().equalsIgnoreCase(arg)) {
+                sub.execute(args, 1, ctx);
+                return;
+            }
+        }
+
+        if (defaultExecutor != null) {
+            defaultExecutor.accept(ctx);
+        }
     }
 
     protected void sendHelp() {
-        for (SubCommand subCommand : subCommands) {
-            Node.getInstance().getLogger().info(subCommand.getUsage() + " &8- &7" + subCommand.getDescription());
+        final Logger logger = Node.getInstance().getLogger();
+        for (SubCommand sub : subCommands) {
+            logger.info("&8» &a" + name + " " + sub.getName() + " &8- &7" + (sub.getDescription() != null ? sub.getDescription() : ""));
         }
     }
 }

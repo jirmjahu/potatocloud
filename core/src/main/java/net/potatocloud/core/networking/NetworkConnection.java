@@ -1,9 +1,14 @@
 package net.potatocloud.core.networking;
 
-public interface NetworkConnection {
+import net.potatocloud.core.networking.packet.Packet;
+import net.potatocloud.core.utils.Closeable;
+
+import java.util.UUID;
+
+public interface NetworkConnection extends Closeable {
+
+    UUID getId();
 
     void send(Packet packet);
-
-    void close();
 
 }

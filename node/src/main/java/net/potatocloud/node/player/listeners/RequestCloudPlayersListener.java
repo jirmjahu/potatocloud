@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.player.CloudPlayer;
 import net.potatocloud.api.player.CloudPlayerManager;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.player.CloudPlayerAddPacket;
-import net.potatocloud.core.networking.packets.player.RequestCloudPlayersPacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.player.CloudPlayerAddPacket;
+import net.potatocloud.core.networking.packet.packets.player.RequestCloudPlayersPacket;
 
 @RequiredArgsConstructor
 public class RequestCloudPlayersListener implements PacketListener<RequestCloudPlayersPacket> {

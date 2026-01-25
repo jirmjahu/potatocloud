@@ -9,11 +9,10 @@ import net.potatocloud.connector.player.listeners.CloudPlayerAddListener;
 import net.potatocloud.connector.player.listeners.CloudPlayerRemoveListener;
 import net.potatocloud.connector.player.listeners.CloudPlayerUpdateListener;
 import net.potatocloud.core.networking.NetworkClient;
-import net.potatocloud.core.networking.PacketIds;
-import net.potatocloud.core.networking.packets.player.CloudPlayerAddPacket;
-import net.potatocloud.core.networking.packets.player.CloudPlayerRemovePacket;
-import net.potatocloud.core.networking.packets.player.CloudPlayerUpdatePacket;
-import net.potatocloud.core.networking.packets.player.RequestCloudPlayersPacket;
+import net.potatocloud.core.networking.packet.packets.player.CloudPlayerAddPacket;
+import net.potatocloud.core.networking.packet.packets.player.CloudPlayerRemovePacket;
+import net.potatocloud.core.networking.packet.packets.player.CloudPlayerUpdatePacket;
+import net.potatocloud.core.networking.packet.packets.player.RequestCloudPlayersPacket;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,9 +30,9 @@ public class CloudPlayerManagerImpl implements CloudPlayerManager {
 
         client.send(new RequestCloudPlayersPacket());
 
-        client.registerPacketListener(PacketIds.PLAYER_ADD, new CloudPlayerAddListener(this));
-        client.registerPacketListener(PacketIds.PLAYER_REMOVE, new CloudPlayerRemoveListener(this));
-        client.registerPacketListener(PacketIds.PLAYER_UPDATE, new CloudPlayerUpdateListener(this));
+        client.on(CloudPlayerAddPacket.class, new CloudPlayerAddListener(this));
+        client.on(CloudPlayerRemovePacket.class, new CloudPlayerRemoveListener(this));
+        client.on(CloudPlayerUpdatePacket.class, new CloudPlayerUpdateListener(this));
     }
 
     public void registerPlayer(CloudPlayer player) {

@@ -5,8 +5,9 @@ import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.group.ServiceGroupManager;
 import net.potatocloud.api.property.Property;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.group.GroupUpdatePacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.group.GroupUpdatePacket;
+import net.potatocloud.core.utils.PropertyUtil;
 
 @RequiredArgsConstructor
 public class GroupUpdateListener implements PacketListener<GroupUpdatePacket> {
@@ -36,7 +37,7 @@ public class GroupUpdateListener implements PacketListener<GroupUpdatePacket> {
 
         group.getPropertyMap().clear();
         for (Property<?> property : packet.getPropertyMap().values()) {
-            group.setProperty((Property) property, property.getValue(), false);
+            PropertyUtil.setPropertyUnchecked(group, property);
         }
     }
 }

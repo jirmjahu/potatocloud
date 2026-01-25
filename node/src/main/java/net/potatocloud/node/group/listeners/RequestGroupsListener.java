@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.group.ServiceGroupManager;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.group.GroupAddPacket;
-import net.potatocloud.core.networking.packets.group.RequestGroupsPacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.group.GroupAddPacket;
+import net.potatocloud.core.networking.packet.packets.group.RequestGroupsPacket;
 
 @RequiredArgsConstructor
 public class RequestGroupsListener implements PacketListener<RequestGroupsPacket> {

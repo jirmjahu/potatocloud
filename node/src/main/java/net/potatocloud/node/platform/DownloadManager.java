@@ -29,7 +29,7 @@ public class DownloadManager {
     @SneakyThrows
     public void downloadPlatformVersion(Platform platform, PlatformVersion version) {
         if (platform == null) {
-            logger.info("&cThis platform does not exist.");
+            logger.info("&cThis platform does not exist");
             return;
         }
 

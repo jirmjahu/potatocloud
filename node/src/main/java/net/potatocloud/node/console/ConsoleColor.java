@@ -8,7 +8,7 @@ public enum ConsoleColor {
 
     DARK_GRAY('8', 240),
     GRAY('7', 188),
-    RED('c', 203),
+    RED('c', 9),
     BLUE('9', 63),
     YELLOW('e', 220),
     GREEN('a', 42),

@@ -11,8 +11,8 @@ import net.potatocloud.api.property.PropertyHolder;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.core.event.ServerEventManager;
 import net.potatocloud.core.networking.NetworkServer;
-import net.potatocloud.core.networking.PacketManager;
-import net.potatocloud.core.networking.netty.NettyNetworkServer;
+import net.potatocloud.core.networking.netty.server.NettyNetworkServer;
+import net.potatocloud.core.networking.packet.PacketManager;
 import net.potatocloud.node.command.CommandManager;
 import net.potatocloud.node.command.commands.*;
 import net.potatocloud.node.config.NodeConfig;
@@ -33,7 +33,8 @@ import net.potatocloud.node.service.ServiceManagerImpl;
 import net.potatocloud.node.service.ServiceStartQueue;
 import net.potatocloud.node.setup.SetupManager;
 import net.potatocloud.node.template.TemplateManager;
-import net.potatocloud.node.utils.PortCheckUtil;
+import net.potatocloud.node.utils.HardwareUtils;
+import net.potatocloud.node.utils.NetworkUtils;
 import net.potatocloud.node.version.UpdateChecker;
 import net.potatocloud.node.version.VersionFile;
 import org.apache.commons.io.FileUtils;
@@ -73,7 +74,7 @@ public class Node extends CloudAPI {
 
         config = new NodeConfig();
 
-        if (PortCheckUtil.isPortInUse(config.getNodeHost(), config.getNodePort())) {
+        if (!NetworkUtils.isPortFree(config.getNodePort())) {
             System.err.println("The configured node port is already in use. Is another instance of potatocloud already running on this port?");
             System.exit(0);
         }
@@ -93,6 +94,10 @@ public class Node extends CloudAPI {
 
         console.start();
 
+        if (HardwareUtils.isLowHardware()) {
+            logger.warn("Your hardware is low, you may experience performance issues. Recommended: 4 cores, 4GB RAM");
+        }
+
         setupManager = new SetupManager();
 
         updateChecker = new UpdateChecker(logger);
@@ -101,7 +106,7 @@ public class Node extends CloudAPI {
         packetManager = new PacketManager();
         server = new NettyNetworkServer(packetManager);
         server.start(config.getNodeHost(), config.getNodePort());
-        logger.info("NetworkServer started using &aNetty &7on &a" + config.getNodeHost() + "&8:&a" + config.getNodePort());
+        logger.info("Network server started using &aNetty &7on &a" + config.getNodeHost() + "&8:&a" + config.getNodePort());
 
         eventManager = new ServerEventManager(server);
         propertiesHolder = new NodePropertiesHolder(server);
@@ -111,7 +116,9 @@ public class Node extends CloudAPI {
         ((ServiceGroupManagerImpl) groupManager).loadGroups();
 
         if (!groupManager.getAllServiceGroups().isEmpty()) {
-            logger.info("Loaded &a" + groupManager.getAllServiceGroups().size() + "&7 Service Groups&8:");
+            final int groupCount = groupManager.getAllServiceGroups().size();
+            logger.info("Loaded &a" + groupCount + "&7 " + (groupCount == 1 ? "group" : "groups") + "&8:");
+
             for (ServiceGroup group : groupManager.getAllServiceGroups()) {
                 logger.info("&8» &a" + group.getName());
             }
@@ -136,31 +143,36 @@ public class Node extends CloudAPI {
     }
 
     private void registerCommands() {
-        commandManager.registerCommand(new GroupCommand(logger, groupManager));
-        commandManager.registerCommand(new ServiceCommand(logger, serviceManager, groupManager));
-        commandManager.registerCommand(new ShutdownCommand(this));
-        commandManager.registerCommand(new PlatformCommand(logger, platformManager, downloadManager));
         commandManager.registerCommand(new ClearCommand(console));
+        commandManager.registerCommand(new GroupCommand(logger, groupManager));
         commandManager.registerCommand(new HelpCommand(logger, commandManager));
-        commandManager.registerCommand(new PlayerCommand(logger, playerManager, serviceManager));
         commandManager.registerCommand(new InfoCommand(logger));
+        commandManager.registerCommand(new PlatformCommand(logger, platformManager));
+        commandManager.registerCommand(new PlayerCommand(logger, playerManager));
+        commandManager.registerCommand(new ServiceCommand(logger, serviceManager, screenManager));
+        commandManager.registerCommand(new ShutdownCommand(this));
     }
 
     @SneakyThrows
     public void shutdown() {
+        logger.info("Shutting down node&8...");
         isStopping = true;
-        logger.info("&7Starting node &cshutdown&7...");
-        serviceStartQueue.close();
 
-        for (Service service : serviceManager.getAllServices()) {
-            ((ServiceImpl) service).shutdownBlocking();
+        serviceStartQueue.close();
+        if (!serviceManager.getAllServices().isEmpty()) {
+            logger.info("Shutting down all running services&8...");
+            for (Service service : serviceManager.getAllServices()) {
+                ((ServiceImpl) service).shutdownBlocking();
+            }
         }
 
-        server.shutdown();
+        logger.info("Stopping network server&8...");
+        server.close();
 
+        logger.info("Cleaning up temporary files&8...");
         FileUtils.deleteDirectory(Path.of(config.getTempServicesFolder()).toFile());
 
-        logger.info("&7Shutdown complete. Goodbye!");
+        logger.info("Shutdown complete. Goodbye!");
         console.close();
     }
 

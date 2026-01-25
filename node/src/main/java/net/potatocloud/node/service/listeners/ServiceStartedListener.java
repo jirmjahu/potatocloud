@@ -7,8 +7,8 @@ import net.potatocloud.api.service.Service;
 import net.potatocloud.api.service.ServiceManager;
 import net.potatocloud.api.service.ServiceStatus;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.service.ServiceStartedPacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.service.ServiceStartedPacket;
 import net.potatocloud.node.Node;
 import net.potatocloud.node.console.Logger;
 import net.potatocloud.node.service.ServiceImpl;
@@ -34,13 +34,11 @@ public class ServiceStartedListener implements PacketListener<ServiceStartedPack
         service.setStatus(ServiceStatus.RUNNING);
         service.update();
 
-        // call service started event
         eventManager.call(new ServiceStartedEvent(packet.getServiceName()));
 
-        //start process checker
-        if (service instanceof ServiceImpl impl) {
-            impl.setProcessChecker(new ServiceProcessChecker(impl));
-            impl.getProcessChecker().start();
+        if (service instanceof ServiceImpl serviceImpl) {
+            serviceImpl.setProcessChecker(new ServiceProcessChecker(serviceImpl));
+            serviceImpl.getProcessChecker().start();
         }
 
         new ServiceMemoryUpdateTask(service, Node.getInstance().getServer()).start();

@@ -5,8 +5,8 @@ import net.potatocloud.api.group.ServiceGroup;
 import net.potatocloud.api.group.ServiceGroupManager;
 import net.potatocloud.api.service.ServiceManager;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.service.StartServicePacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.service.StartServicePacket;
 
 @RequiredArgsConstructor
 public class StartServiceListener implements PacketListener<StartServicePacket> {

@@ -7,8 +7,8 @@ import net.potatocloud.api.service.ServiceStatus;
 import net.potatocloud.connector.service.ServiceImpl;
 import net.potatocloud.connector.service.ServiceManagerImpl;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.service.ServiceAddPacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.service.ServiceAddPacket;
 
 @RequiredArgsConstructor
 public class ServiceAddListener implements PacketListener<ServiceAddPacket> {

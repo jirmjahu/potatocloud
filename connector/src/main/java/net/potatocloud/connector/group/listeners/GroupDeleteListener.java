@@ -3,8 +3,8 @@ package net.potatocloud.connector.group.listeners;
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.connector.group.ServiceGroupManagerImpl;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.group.GroupDeletePacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.group.GroupDeletePacket;
 
 @RequiredArgsConstructor
 public class GroupDeleteListener implements PacketListener<GroupDeletePacket> {

@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import net.potatocloud.api.platform.Platform;
 import net.potatocloud.api.platform.PlatformManager;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.platform.PlatformUpdatePacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.platform.PlatformUpdatePacket;
 
 @RequiredArgsConstructor
 public class PlatformUpdateListener implements PacketListener<PlatformUpdatePacket> {

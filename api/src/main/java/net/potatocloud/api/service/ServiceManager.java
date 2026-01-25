@@ -79,18 +79,18 @@ public interface ServiceManager {
      * Starts services in the given group
      *
      * @param groupName the name of the group
-     * @param count     the amount of services to start
+     * @param amount    the amount of services to start
      */
-    void startServices(String groupName, int count);
+    void startServices(String groupName, int amount);
 
     /**
      * Starts services in the given group
      *
-     * @param group the group
-     * @param count the amount of services to start
+     * @param group  the group
+     * @param amount the amount of services to start
      */
-    default void startServices(ServiceGroup group, int count) {
-        startServices(group.getName(), count);
+    default void startServices(ServiceGroup group, int amount) {
+        startServices(group.getName(), amount);
     }
 
     /**

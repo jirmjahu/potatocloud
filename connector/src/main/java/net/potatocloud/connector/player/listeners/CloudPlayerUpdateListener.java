@@ -5,8 +5,9 @@ import net.potatocloud.api.player.impl.CloudPlayerImpl;
 import net.potatocloud.api.property.Property;
 import net.potatocloud.connector.player.CloudPlayerManagerImpl;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.player.CloudPlayerUpdatePacket;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.player.CloudPlayerUpdatePacket;
+import net.potatocloud.core.utils.PropertyUtil;
 
 @RequiredArgsConstructor
 public class CloudPlayerUpdateListener implements PacketListener<CloudPlayerUpdatePacket> {
@@ -25,7 +26,7 @@ public class CloudPlayerUpdateListener implements PacketListener<CloudPlayerUpda
 
         player.getPropertyMap().clear();
         for (Property<?> property : packet.getPropertyMap().values()) {
-            player.setProperty((Property) property, property.getValue(), false);
+            PropertyUtil.setPropertyUnchecked(player, property);
         }
     }
 }

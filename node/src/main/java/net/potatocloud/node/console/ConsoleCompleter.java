@@ -1,12 +1,8 @@
 package net.potatocloud.node.console;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.potatocloud.node.Node;
-import net.potatocloud.node.command.Command;
-import net.potatocloud.node.command.CommandManager;
-import net.potatocloud.node.command.SubCommand;
-import net.potatocloud.node.command.TabCompleter;
+import net.potatocloud.node.command.*;
 import net.potatocloud.node.screen.Screen;
 import net.potatocloud.node.screen.ScreenManager;
 import net.potatocloud.node.setup.Setup;
@@ -15,10 +11,8 @@ import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
 import org.jline.reader.ParsedLine;
 
-import java.util.Arrays;
 import java.util.List;
 
-@Slf4j
 @RequiredArgsConstructor
 public class ConsoleCompleter implements Completer {
 
@@ -62,55 +56,90 @@ public class ConsoleCompleter implements Completer {
         final List<String> words = line.words();
         final String currentWord = line.word();
 
-        // If there are no words, just show all commands
         if (line.wordIndex() == 0) {
             for (String cmd : commandManager.getAllCommandNames()) {
                 if (cmd.startsWith(currentWord)) {
                     candidates.add(new Candidate(cmd));
                 }
             }
-        } else {
-            // If the user typed something try to find commands or subcommands that match the input
-            final String commandName = words.getFirst();
-            final Command command = commandManager.getCommand(commandName);
-            if (command == null) {
-                return;
+            return;
+        }
+
+        final Command command = commandManager.getCommand(words.getFirst());
+        if (command == null) {
+            return;
+        }
+
+        SubCommand currentSubCommand = null;
+        List<SubCommand> currentLevel = command.getSubCommands();
+        int argumentIndex = 1;
+
+        while (argumentIndex < words.size() - 1) {
+            final String token = words.get(argumentIndex);
+
+            final SubCommand subCommand = currentLevel.stream()
+                    .filter(sub -> sub.getName().equalsIgnoreCase(token))
+                    .findFirst()
+                    .orElse(null);
+
+            if (subCommand == null) {
+                break;
             }
 
-            final String[] args = words.subList(1, words.size()).toArray(new String[0]);
+            currentSubCommand = subCommand;
+            currentLevel = subCommand.getSubCommands();
+            argumentIndex++;
+        }
 
-            if (!command.getSubCommands().isEmpty() && args.length > 0) {
-                final SubCommand subCommand = command.getSubCommand(args[0]);
-
-                if (subCommand == null) {
-                    for (SubCommand sub : command.getSubCommands()) {
-                        if (sub.getName().startsWith(args[0])) {
-                            candidates.add(new Candidate(sub.getName()));
-                        }
-                    }
-                    return;
-                }
-
-                // Handle tab completions for subcommands
-                if (subCommand instanceof TabCompleter completer) {
-                    for (String suggestion : completer.complete(Arrays.copyOfRange(args, 1, args.length))) {
-                        if (suggestion.startsWith(currentWord)) {
-                            candidates.add(new Candidate(suggestion));
-                        }
-                    }
-                }
-                return;
-            }
-
-            // Handle tab completions for commands (A bit useless now but lets just keep it)
-            if (command instanceof TabCompleter completer) {
-                for (String suggestion : completer.complete(args)) {
-                    if (suggestion.startsWith(currentWord)) {
-                        candidates.add(new Candidate(suggestion));
-                    }
+        if (currentSubCommand == null) {
+            for (SubCommand subCommand : currentLevel) {
+                if (subCommand.getName().startsWith(currentWord)) {
+                    candidates.add(new Candidate(subCommand.getName()));
                 }
             }
+            return;
+        }
 
+        final String[] argsToParse = words.subList(0, line.wordIndex()).toArray(new String[0]);
+        final CommandContext.ParseResult parseResult =
+                currentSubCommand.buildContext(argsToParse, argumentIndex);
+
+        final CommandContext context = parseResult.getContext();
+
+        int expectedArgs = currentSubCommand.getArguments().size();
+        int parsedArgs = parseResult.getParsedArguments();
+
+        if (parsedArgs >= expectedArgs && currentSubCommand.getSubCommands().isEmpty()) {
+            return;
+        }
+
+        final int argsLength = parseResult.getParsedArguments();
+        final List<String> customSuggestions = currentSubCommand.suggest(context, currentWord, argsLength);
+        if (!customSuggestions.isEmpty()) {
+            for (String suggestion : customSuggestions) {
+                candidates.add(new Candidate(suggestion));
+            }
+            return;
+        }
+
+        if (parsedArgs < expectedArgs) {
+            final ArgumentType<?> argumentType = currentSubCommand.getArguments().get(parsedArgs);
+            final List<String> argumentSuggestions = argumentType.suggest(currentWord);
+            if (!argumentSuggestions.isEmpty()) {
+                for (String suggestion : argumentSuggestions) {
+                    candidates.add(new Candidate(suggestion));
+                }
+            }
+        }
+
+        if (!currentSubCommand.getSubCommands().isEmpty()
+                && currentSubCommand.getArguments().isEmpty()) {
+
+            for (SubCommand sub : currentSubCommand.getSubCommands()) {
+                if (sub.getName().startsWith(currentWord)) {
+                    candidates.add(new Candidate(sub.getName()));
+                }
+            }
         }
     }
 }

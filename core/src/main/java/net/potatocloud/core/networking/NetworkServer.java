@@ -1,24 +1,22 @@
 package net.potatocloud.core.networking;
 
+import net.potatocloud.core.networking.packet.Packet;
+
 import java.util.List;
 
-public interface NetworkServer {
+public interface NetworkServer extends NetworkComponent {
 
     void start(String hostname, int port);
 
-    void shutdown();
-
     boolean isRunning();
-
-    <T extends Packet> void registerPacketListener(int id, PacketListener<T> listener);
 
     List<NetworkConnection> getConnectedSessions();
 
     int getPort();
 
-    void sendToClient(NetworkConnection client, Packet packet);
+    void send(NetworkConnection client, Packet packet);
 
-    default void broadcastPacket(Packet packet) {
-        getConnectedSessions().forEach(connectedSession -> sendToClient(connectedSession, packet));
+    default Broadcast generateBroadcast() {
+        return new Broadcast(this);
     }
 }

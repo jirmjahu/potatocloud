@@ -1,15 +1,17 @@
 package net.potatocloud.core.utils;
 
-import lombok.experimental.UtilityClass;
 import net.potatocloud.api.property.Property;
+import net.potatocloud.api.property.PropertyHolder;
 
-@UtilityClass
-public class PropertyUtil {
+public final class PropertyUtil {
+
+    private PropertyUtil() {
+    }
 
     /**
      * Converts a string into a Property with the right type (needed for property commands both in node and cloud command)
      */
-    public Property<?> stringToProperty(String key, String value) {
+    public static Property<?> stringToProperty(String key, String value) {
         if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
             return Property.ofBoolean(key, Boolean.parseBoolean(value));
         }
@@ -27,5 +29,11 @@ public class PropertyUtil {
         }
 
         return Property.ofString(key, value);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> void setPropertyUnchecked(PropertyHolder holder, Property<?> property) {
+        final Property<T> typed = (Property<T>) property;
+        holder.setProperty(typed, typed.getValue(), false);
     }
 }

@@ -31,17 +31,17 @@ public class GroupConfigurationSetup extends Setup {
     @Override
     public void initQuestions() {
         question("name")
-                .text("What is the name of the group?")
+                .text("What is the name of this group?")
                 .customValidator(input -> {
                     if (groupManager.existsServiceGroup(input)) {
-                        return AnswerResult.error("A service group with the same name already exists");
+                        return AnswerResult.error("A group with the same name already exists");
                     }
                     return AnswerResult.success();
                 })
                 .add();
 
         question("platform")
-                .text("What is the platform (server version) of the group?")
+                .text("Which platform should be used by this group?")
                 .suggestions(() -> platformManager.getPlatforms().stream()
                         .map(Platform::getName)
                         .collect(Collectors.toList()))
@@ -72,21 +72,21 @@ public class GroupConfigurationSetup extends Setup {
                 .add();
 
         question("min_online_count")
-                .number("What is the min online count of the group?")
+                .number("How many services of this group should always be online?")
                 .defaultAnswer("1")
                 .add();
 
         question("max_online_count")
-                .number("What is the max online count of the group?")
+                .number("What is the maximum number of online services in this group?")
                 .defaultAnswer("1")
                 .add();
 
         question("max_players")
-                .number("What are the max players of the group?")
+                .number("What is the maximum number of players per service?")
                 .add();
 
         question("max_memory")
-                .number("What is the max memory of the group?")
+                .number("What is the maximum memory a service can use in this group? (In MB)")
                 .suggestions(() -> List.of("256", "512", "1024", "1536", "2048", "3072", "4096", "6144", "8192"))
                 .add();
 
@@ -104,12 +104,12 @@ public class GroupConfigurationSetup extends Setup {
                 .add();
 
         question("static_servers")
-                .bool("Is this group static?")
+                .bool("Are services in this group static? (Service files will not be deleted on shutdown)")
                 .suggestions(() -> List.of("true", "false", "yes", "no"))
                 .add();
 
         question("start_priority")
-                .number("What is the start priority of the group? (higher = starts first)")
+                .number("What is the start priority of this group? (higher = starts first)")
                 .defaultAnswer("1")
                 .add();
 
@@ -130,7 +130,6 @@ public class GroupConfigurationSetup extends Setup {
                     return platform == null || !platform.isVelocityBased();
                 })
                 .add();
-
     }
 
     @Override

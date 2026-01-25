@@ -4,11 +4,15 @@ import io.netty.channel.Channel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.Packet;
+import net.potatocloud.core.networking.packet.Packet;
+
+import java.util.UUID;
 
 @Getter
 @RequiredArgsConstructor
 public class NettyNetworkConnection implements NetworkConnection {
+
+    private final UUID id = UUID.randomUUID();
 
     private final Channel channel;
 

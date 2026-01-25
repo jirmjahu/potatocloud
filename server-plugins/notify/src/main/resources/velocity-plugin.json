@@ -1,0 +1,12 @@
+{
+  "id": "potatocloud-plugin-notify",
+  "name": "potatocloud-plugin-notify",
+  "version": "1.4.2",
+  "main": "net.potatocloud.plugin.server.notify.NotifyPlugin",
+  "authors": [
+    "TruaYT",
+    "einCode_",
+    "jirmjahu"
+  ],
+  "depends": ["potatocloud-plugin"]
+}

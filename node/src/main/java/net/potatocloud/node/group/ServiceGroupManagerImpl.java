@@ -8,9 +8,10 @@ import net.potatocloud.api.group.impl.ServiceGroupImpl;
 import net.potatocloud.api.property.Property;
 import net.potatocloud.api.service.Service;
 import net.potatocloud.core.networking.NetworkServer;
-import net.potatocloud.core.networking.PacketIds;
-import net.potatocloud.core.networking.packets.group.GroupAddPacket;
-import net.potatocloud.core.networking.packets.group.GroupUpdatePacket;
+import net.potatocloud.core.networking.packet.packets.group.GroupAddPacket;
+import net.potatocloud.core.networking.packet.packets.group.GroupDeletePacket;
+import net.potatocloud.core.networking.packet.packets.group.GroupUpdatePacket;
+import net.potatocloud.core.networking.packet.packets.group.RequestGroupsPacket;
 import net.potatocloud.node.Node;
 import net.potatocloud.node.group.listeners.GroupAddListener;
 import net.potatocloud.node.group.listeners.GroupDeleteListener;
@@ -39,10 +40,10 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
         this.groupsPath = groupsPath;
         this.server = server;
 
-        server.registerPacketListener(PacketIds.REQUEST_GROUPS, new RequestGroupsListener(this));
-        server.registerPacketListener(PacketIds.GROUP_UPDATE, new GroupUpdateListener(this));
-        server.registerPacketListener(PacketIds.GROUP_ADD, new GroupAddListener(this));
-        server.registerPacketListener(PacketIds.GROUP_DELETE, new GroupDeleteListener(this));
+        server.on(RequestGroupsPacket.class, new RequestGroupsListener(this));
+        server.on(GroupUpdatePacket.class, new GroupUpdateListener(this, server));
+        server.on(GroupAddPacket.class, new GroupAddListener(this, server));
+        server.on(GroupDeletePacket.class, new GroupDeleteListener(this, server));
     }
 
     @Override
@@ -80,7 +81,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
             return;
         }
 
-        final ServiceGroup serviceGroup = new ServiceGroupImpl(
+        final ServiceGroup group = new ServiceGroupImpl(
                 name,
                 platformName,
                 platformVersionName,
@@ -97,14 +98,14 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
                 propertyMap
         );
 
-        addServiceGroup(serviceGroup);
+        addServiceGroup(group);
 
         // Send group add packet to clients
-        server.broadcastPacket(new GroupAddPacket(
+        server.generateBroadcast().broadcast(new GroupAddPacket(
                 name,
                 platformName,
                 platformVersionName,
-                serviceGroup.getServiceTemplates(),
+                group.getServiceTemplates(),
                 minOnlineCount,
                 maxOnlineCount,
                 maxPlayers,
@@ -158,7 +159,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
     public void updateServiceGroup(ServiceGroup group) {
         ServiceGroupStorage.saveToFile(group, groupsPath);
 
-        server.broadcastPacket(new GroupUpdatePacket(
+        server.generateBroadcast().broadcast(new GroupUpdatePacket(
                 group.getName(),
                 group.getMinOnlineCount(),
                 group.getMaxOnlineCount(),
@@ -178,7 +179,7 @@ public class ServiceGroupManagerImpl implements ServiceGroupManager {
         if (groupName == null) {
             return false;
         }
-        return groups.stream().anyMatch(serviceGroup -> serviceGroup != null && serviceGroup.getName().equalsIgnoreCase(groupName));
+        return groups.stream().anyMatch(group -> group != null && group.getName().equalsIgnoreCase(groupName));
     }
 
 

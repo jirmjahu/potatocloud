@@ -24,12 +24,14 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.jline)
     implementation(libs.oshi)
+    implementation(libs.slf4j.nop)
     implementation(libs.lombok)
     annotationProcessor(libs.lombok)
 
-    compileOnly(project(":plugin-spigot"))
-    compileOnly(project(":plugin-velocity"))
-    compileOnly(project(":plugin-limbo"))
+    compileOnly(project(":platform-plugins:spigot"))
+    compileOnly(project(":platform-plugins:spigot-legacy"))
+    compileOnly(project(":platform-plugins:velocity"))
+    compileOnly(project(":platform-plugins:limbo"))
 }
 
 tasks.named<ShadowJar>("shadowJar") {
@@ -41,13 +43,16 @@ tasks.named<ShadowJar>("shadowJar") {
         attributes["Main-Class"] = "net.potatocloud.node.NodeMain"
     }
 
-    from(project(":plugin-spigot").tasks.named("shadowJar")) {
+    from(project(":platform-plugins:spigot").tasks.named("shadowJar")) {
         into("default-files")
     }
-    from(project(":plugin-velocity").tasks.named("shadowJar")) {
+    from(project(":platform-plugins:spigot-legacy").tasks.named("shadowJar")) {
         into("default-files")
     }
-    from(project(":plugin-limbo").tasks.named("shadowJar")) {
+    from(project(":platform-plugins:velocity").tasks.named("shadowJar")) {
+        into("default-files")
+    }
+    from(project(":platform-plugins:limbo").tasks.named("shadowJar")) {
         into("default-files")
     }
 }

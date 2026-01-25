@@ -5,14 +5,16 @@ import net.potatocloud.api.player.CloudPlayerManager;
 import net.potatocloud.api.player.impl.CloudPlayerImpl;
 import net.potatocloud.api.property.Property;
 import net.potatocloud.core.networking.NetworkConnection;
-import net.potatocloud.core.networking.PacketListener;
-import net.potatocloud.core.networking.packets.player.CloudPlayerUpdatePacket;
-import net.potatocloud.node.Node;
+import net.potatocloud.core.networking.NetworkServer;
+import net.potatocloud.core.networking.packet.PacketListener;
+import net.potatocloud.core.networking.packet.packets.player.CloudPlayerUpdatePacket;
+import net.potatocloud.core.utils.PropertyUtil;
 
 @RequiredArgsConstructor
 public class CloudPlayerUpdateListener implements PacketListener<CloudPlayerUpdatePacket> {
 
     private final CloudPlayerManager playerManager;
+    private final NetworkServer server;
 
     @Override
     public void onPacket(NetworkConnection connection, CloudPlayerUpdatePacket packet) {
@@ -26,11 +28,9 @@ public class CloudPlayerUpdateListener implements PacketListener<CloudPlayerUpda
 
         player.getPropertyMap().clear();
         for (Property<?> property : packet.getPropertyMap().values()) {
-            player.setProperty((Property) property, property.getValue(), false);
+            PropertyUtil.setPropertyUnchecked(player, property);
         }
 
-        Node.getInstance().getServer().getConnectedSessions().stream()
-                .filter(networkConnection -> !networkConnection.equals(connection))
-                .forEach(networkConnection -> networkConnection.send(packet));
+        server.generateBroadcast().exclude(connection).broadcast(packet);
     }
 }
